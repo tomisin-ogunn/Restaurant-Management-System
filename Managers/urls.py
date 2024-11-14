@@ -21,12 +21,9 @@ from django.conf.urls.static import static
 from django.conf import settings
 import debug_toolbar
 
-#Routes for respective interfaces in the application, by mapping urls to their corresponding views
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.display_homepage),
-    path('__debug__', include(debug_toolbar.urls)),
-    path('managers/', include('Managers.urls'))
+    #Route for manager login page, maps the url '/login/' to the 'display_managerLogin' view
+    path('login/', views.display_managerlogin)
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
