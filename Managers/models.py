@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
+from django.db.models import Max
 
 # Create your models here.
 
@@ -22,6 +23,33 @@ class Manager(models.Model):
             self.password = make_password(self.password)
             #Calls the parent class's save method
             super().save(*args, **kwargs)
+    
+    # Function to provide 7 characters including 4 digits(starting 0001 incremented) with prefix 'JJM' to the manager ID
+    @classmethod
+    def generateManagerID(cls):
+        # Prefix of manager id
+        
+        prefix = 'JJM'
+        
+        #Obtains maximum current ID no from model
+        last_manager = Manager.objects.all().aggregate(Max('managerId'))
+
+         # Extract the current max number, or default to 0 if no records exist
+        last_manager_id = last_manager.get('managerId__max', None)
+        
+        #Start from 0001
+        if last_manager_id is None:
+            new_manager_number = 1
+        else:
+            #Extract number from last manager id (000x)
+            last_number = int(last_manager_id[3:])
+            new_manager_number = last_number + 1
+            
+        #Format the new manager ID with prefix and 4 digit number
+        new_manager_id = f"{prefix}{new_manager_number:04d}"
+        
+        return new_manager_id
+    
     
     #Provides display of object in Django Admin/Shell
     def __str__(self):

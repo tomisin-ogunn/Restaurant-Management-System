@@ -20,10 +20,12 @@ from . import views
 from django.conf.urls.static import static
 from django.conf import settings
 import debug_toolbar
+from .views import create_manager
 
 urlpatterns = [
     #Route for manager login page, maps the url '/login/' to the 'display_managerLogin' view
-    path('login/', views.display_managerlogin)
+    path('login/', views.display_managerlogin),
+    path('create-manager/', create_manager, name='create_manager'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

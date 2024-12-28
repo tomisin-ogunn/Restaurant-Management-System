@@ -4,5 +4,7 @@ from .models import Manager
 # Register your models here.
 
 #Model Manager being registered
-class ManagerAdmin(admin.ModelAdmin):
-    list_display = ('managerID', 'first_name', 'last_name', 'password', 'email')
+# class ManagerAdmin(admin.ModelAdmin):
+#     list_display = ('managerID', 'first_name', 'last_name', 'password', 'email')
+
+admin.site.register(Manager)
