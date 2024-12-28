@@ -23,7 +23,7 @@ class Customer(models.Model):
             #Calls the parent class's save method
             super().save(*args, **kwargs)
             
-    # Function to provide 7 characters including 4 digits(starting 0001 incremented) with prefix 'JJC' to the manager ID
+    # Function to provide 8 characters including 5 digits(starting 00001 incremented) with prefix 'JJC' to the manager ID
     @classmethod
     def generateCustomerID(cls):
         # Prefix of customer id
