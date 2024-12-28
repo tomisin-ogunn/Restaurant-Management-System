@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'Orders',
     'Products',
-    'Managers'
+    'Managers',
+    'Customers'
 ]
 
 MIDDLEWARE = [
