@@ -29,3 +29,19 @@ class Drink(Product):
     
     def __str__(self):
         return self.name
+
+
+#Model holding inventory (stock) information
+class Inventory(models.Model):
+    itemID = models.CharField(max_length=50, unique=True, primary_key=True)
+    description = models.CharField(max_length=50)
+    status = models.CharField(max_length=20, choices=[('in_stock', 'In Stock'), ('low', 'Low'), ('out_of_stock', 'Out of Stock')])
+    last_updated = models.CharField(max_length=50)
+    updated_by = models.DateTimeField()
+    foodId = 'test'
+    drinkId = 'test'
+
+
+
+
+
