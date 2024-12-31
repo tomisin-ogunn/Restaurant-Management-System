@@ -6,10 +6,10 @@ from django.db.models import Max
 
 #Model holding customers information
 class Customer(models.Model):
-    customerId = models.CharField(max_length=10, unique=True)
+    customerId = models.CharField(max_length=10, unique=True, primary_key=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    email = models.CharField(max_length=50)
+    email = models.CharField(max_length=100)
     password = models.CharField(max_length=128)
     
     # Function to hash the password for each manager, with parameters to allow additional positional and keyword arguements

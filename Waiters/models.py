@@ -6,7 +6,7 @@ from django.db.models import Max
 
 #Model holding waiters information
 class Waiter(models.Model):
-    waiterId = models.CharField(max_length=10, unique=True)
+    waiterId = models.CharField(max_length=10, unique=True, primary_key=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.CharField(max_length=50)
