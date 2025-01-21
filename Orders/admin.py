@@ -9,7 +9,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('orderID', 'tableNo', 'order_placed_at', 'notes', 'status', 'total_price', 'customer_name', 'delivered_at')
     search_fields = ('orderID',)
     list_filter = ('order_placed_at',)
-    
+     
 #Model Order Item being registered
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):

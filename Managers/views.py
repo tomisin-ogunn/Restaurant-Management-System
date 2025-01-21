@@ -1,13 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from Managers.models import Manager
+from django.conf import settings
 
 # Create your views here.
 
 #Function to display Restaurant Manager login page
 
 def display_managerlogin(request):
-    return render(request, 'manager/login.html')
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+    }
+    return render(request, 'manager/login.html', context)
 
 def create_manager(request):
     # Attempting to get the first manager instance

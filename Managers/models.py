@@ -7,7 +7,7 @@ from django.db.models import Max
 # Model (Table) holding managers information
 
 class Manager(models.Model):
-    managerId = models.CharField(max_length=10, unique=True)
+    managerId = models.CharField(max_length=10, unique=True, blank=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     password = models.CharField(max_length=128)
@@ -24,6 +24,18 @@ class Manager(models.Model):
             #Calls the parent class's save method
             super().save(*args, **kwargs)
     
+    #Function to hash password and increment manager Id after record has been added manually to Managers table
+    def save(self, *args, **kwargs):
+        # Call hashPassword before saving the model
+        self.hashPassword(*args, **kwargs)
+        # Save the model instance
+        super().save(*args, **kwargs)
+        
+        # Automatically generate a managerId if not set or if manually inputted
+        if not self.managerId:
+            self.managerId = self.generateManagerID()
+        super().save(*args, **kwargs)  # Call the parent class's save metho
+    
     # Function to provide 7 characters including 4 digits(starting 0001 incremented) with prefix 'JJM' to the manager ID
     @classmethod
     def generateManagerID(cls):
@@ -38,7 +50,7 @@ class Manager(models.Model):
         last_manager_id = last_manager.get('managerId__max', None)
         
         #Start from 0001
-        if last_manager_id is None:
+        if not last_manager_id:
             new_manager_number = 1
         else:
             #Extract number from last manager id (000x)
@@ -49,7 +61,6 @@ class Manager(models.Model):
         new_manager_id = f"{prefix}{new_manager_number:04d}"
         
         return new_manager_id
-    
     
     #Provides display of object in Django Admin/Shell
     def __str__(self):
