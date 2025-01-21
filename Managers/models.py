@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.auth.hashers import make_password
 from django.db.models import Max
 
@@ -12,6 +13,9 @@ class Manager(models.Model):
     last_name = models.CharField(max_length=50)
     password = models.CharField(max_length=128)
     email = models.CharField(max_length=50)
+    
+    USERNAME_FIELD = 'managerId'
+    REQUIRED_FIELDS = []
     
     # Function to hash the password for each manager, with parameters to allow additional positional and keyword arguements
     def hashPassword(self, *args, **kwargs):
@@ -65,7 +69,3 @@ class Manager(models.Model):
     #Provides display of object in Django Admin/Shell
     def __str__(self):
         return f"{self.managerId}: {self.first_name} {self.last_name}"
-            
-            
-            
-            

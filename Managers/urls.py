@@ -24,8 +24,9 @@ from .views import create_manager
 
 urlpatterns = [
     #Route for manager login page, maps the url '/login/' to the 'display_managerLogin' view
-    path('login/', views.display_managerlogin),
+    path('login/', views.manager_login, name="manager_login"),
     path('create-manager/', create_manager, name='create_manager'),
+    path("home/", views.displayHomePage, name="home"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
