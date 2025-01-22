@@ -2,9 +2,10 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.contrib.auth.hashers import make_password
 from django.db.models import Max
+from django.utils.timezone import now
 
 # Create your models here.
-
+    
 # Model (Table) holding managers information
 
 class Manager(models.Model):
@@ -13,10 +14,34 @@ class Manager(models.Model):
     last_name = models.CharField(max_length=50)
     password = models.CharField(max_length=128)
     email = models.CharField(max_length=50)
+    last_login = models.DateTimeField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=True)
+    has_permission = models.BooleanField(default=True)
     
     USERNAME_FIELD = 'managerId'
     REQUIRED_FIELDS = []
     
+    @property
+    def is_authenticated(self):
+        return True  # Always return True for authenticated users
+
+    def has_module_perms(self, app_label):
+        # Implement this method to check if the manager has permission to access a particular app
+        # For example, if the manager is allowed to access all apps:
+        return True
+    
+    #Function to call after successfull login
+    def update_last_login(self):
+        self.last_login = now()
+        self.save()
+    
+    #Function to check if user has permissions
+    def has_perm(self, perm, obj=None):
+        # Check if the manager has a specific permission
+        # Implement your custom permission checking logic here
+        return self.has_permission    
+        
     # Function to hash the password for each manager, with parameters to allow additional positional and keyword arguements
     def hashPassword(self, *args, **kwargs):
         # Ensures passwords are not re-hashed by running checks

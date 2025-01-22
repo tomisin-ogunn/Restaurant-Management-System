@@ -44,13 +44,26 @@
     <br> <br>
 
     {% endblock %}
+    
+    <!-- Dynamic JavaScript Functionality -->
+    {% block scripts %}
 
-    {% if messages %}
-        <div class="alert alert-danger" role="alert">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-        </div>
-    {% endif %}
+        {% if messages %}
+            <script>
+                //Checks for any error messages, and displays swal pop up
+                {% for message in messages %}
+                    {% if message.tags == "error" %}
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid Login!',
+                            text: 'Incorrect Employee number or password',
+                        });
+                       
+                    {% endif %}
+                {% endfor %}
+            </script>
+
+        {% endif %}
+    {% endblock %}
 
 </body>

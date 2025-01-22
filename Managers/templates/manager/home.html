@@ -10,9 +10,6 @@ Restaurant Manager Home Page
 
 <p> TEST: WELCOME TO THE JOLLY JOLLOF RMS APP!! </p>
 
-{% if user.is_authenticated %}
-    <p> Hello, {{user.managerId }}: {{ user.first_name }} {{ user.last_name }}</p>
-
-{% endif %}
+<p> Hello {{ user.managerId }}
 
 {% endblock %}

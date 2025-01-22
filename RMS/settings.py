@@ -115,7 +115,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# AUTH_USER_MODEL = 'Managers.Manager'
+AUTHENTICATION_BACKENDS = (
+    'Managers.backends.ManagerAuthenticationBackend',
+    'django.contrib.auth.backends.ModelBackend',  # To allow admin and other default user auth
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

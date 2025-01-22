@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
+
 # Create your views here.
 
 #Function to display Restaurant Manager login page
@@ -55,7 +56,7 @@ def manager_login(request):
         password = request.POST.get("password")
         
         #Authenticate the user
-        user = authenticate(request, username=employeeID, password=password)
+        user = authenticate(request, managerId=employeeID, password=password)
         print(f"Authenticated User: {user}")
 
         if user is not None:
