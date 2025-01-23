@@ -5,6 +5,8 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.hashers import make_password
+import re
 
 
 # Create your views here.
@@ -75,3 +77,52 @@ def manager_login(request):
      
     return render(request, "manager/login.html", context)
 
+#Function to verify if email address exists in the managers model
+def email_verifier(request):
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip()
+        if email != "":
+            try:
+                # Check if email exists in the database
+                manager = Manager.objects.get(email=email)
+                messages.success(request, "Email exists!")
+                context = {
+                    'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+                    'email': email,  # Pass email to the template
+                }
+                return render(request, "manager/login.html", context)  # Pass email to template
+                
+                
+            except Manager.DoesNotExist:
+                    messages.error(request, "Email does not exist.")
+                        
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+    }
+    return render(request, "manager/login.html", context)
+
+#Function to update password
+def update_password(request):
+    if request.method == "POST":
+        # Retrieve the passwords entered by the user
+        new_password = request.POST.get("manpassword")
+        confirm_password = request.POST.get("manpassword2")
+        email = request.POST.get("hiddenEmail")
+        
+        try:
+            # Find the manager by the provided email and update the password
+            manager = Manager.objects.get(email=email)
+            manager.password = make_password(new_password)
+            manager.save()
+
+            # Show success message and redirect to login page
+            messages.success(request, "Your password has been updated successfully!")
+            # return redirect("manager_login")  # Redirect back to login page
+
+        except Manager.DoesNotExist:
+            messages.error(request, "Email does not exist.")
+            
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+    }
+    return render(request, "manager/login.html", context)

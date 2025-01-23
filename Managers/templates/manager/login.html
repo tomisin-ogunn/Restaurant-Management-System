@@ -36,11 +36,67 @@
             </div>
             <br>
             <div>
-                <button type="submit" class="btn btn-secondary" style="width:100%">Forgot Password</button>
+                <button type="button" class="btn btn-secondary" id="forgotpass-btn" style="width:100%">Forgot Password</button>
             </div>
         </form>
     </div>
-    
+
+    <!-- Forgot Password Modal ~ Enter Email Address-->
+    <div class="modal fade" id="FPModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Forgot Password Portal</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="EmailAddForm" method="post" action="{% url 'email_verifier' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Enter your email</label>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="example@example.com">
+                    </div>
+                
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </form>
+          </div>
+        </div>
+    </div>
+
+    <!-- Update Password Modal -->
+    <div class="modal fade" id="UPModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Update Password</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updatePasswordForm" method="post" action="{% url 'update_password' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="new password" class="form-label">Enter new password</label>
+                        <input type="email" id="hiddenEmail" name="hiddenEmail" hidden/> 
+                        <input type="password" class="form-control" name="manpassword" id="manpassword" placeholder="Enter at least 7 characters (a-z, A-Z, 0-9, *#$)">
+                    </div>
+                    <div class="mb-3">
+                        <label for="new password2" class="form-label">Confirm new password</label>
+                        <input type="password" class="form-control" name="manpassword2" id="manpassword2">
+                    </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+            </form>
+          </div>
+        </div>
+    </div>
+
     <br> <br>
 
     {% endblock %}
@@ -48,22 +104,132 @@
     <!-- Dynamic JavaScript Functionality -->
     {% block scripts %}
 
+        {% comment %} Checks for any error messages, and displays swal pop ups{% endcomment %}
         {% if messages %}
             <script>
-                //Checks for any error messages, and displays swal pop up
                 {% for message in messages %}
-                    {% if message.tags == "error" %}
+
+                    var messageText = "{{ message|escapejs }}"
+                   
+                    {% comment %} Invalid login Swal Pop up  {% endcomment %}
+                    if(messageText == "Invalid Employee ID / Password"){
                         Swal.fire({
                             icon: 'error',
                             title: 'Invalid Login!',
-                            text: 'Incorrect Employee number or password',
+                            text: 'Incorrect Employee ID or Password',
                         });
-                       
-                    {% endif %}
+                    }
+
+                    {% comment %} Email Unsuccessfully verified Swal pop up {% endcomment %}
+                    if(messageText == "Email does not exist."){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Email not found!',
+                            text: 'Please check your details for verification',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirecting after the alert is dismissed
+                                window.location.href = "{% url 'manager_login' %}";
+                            }
+                        });
+                    }
+
+                    {% comment %} Email Successfully verified Swal Pop up {% endcomment %}
+                    if(messageText == "Email exists!"){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Email verified!',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirects user to update password
+                                var updatePassModal = new bootstrap.Modal(document.getElementById("UPModal"));
+                                updatePassModal.show();
+                                // Set the email in the hidden field inside the modal
+                                document.getElementById("hiddenEmail").value = "{{ email }}"
+                            }
+                        });
+                    }
+
+                    {% comment %} Successful password update Swal Pop Up{% endcomment %}
+                    if(messageText == "Your password has been updated successfully!"){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Password Updated Successfully!',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirects user to manager login page
+                                window.location.href = "{% url 'manager_login' %}"
+                            }
+                        });
+                    }
+                    
+
                 {% endfor %}
             </script>
 
         {% endif %}
+
+        <script>
+            //Displays modal when button 'forgot password' is clicked
+            var button = document.getElementById("forgotpass-btn");
+            button.addEventListener("click", function() {
+                var myModal = new bootstrap.Modal(document.getElementById("FPModal"));
+                myModal.show();
+            });
+
+            {% comment %} No input Swal Pop Up {% endcomment %}
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("EmailAddForm").addEventListener("submit", function(event) {
+                    var email = document.getElementById("email").value.trim();
+        
+                    // Check if the email field is empty
+                    if (!email) {
+                        // Show the alert if the email is empty
+                        alert("Email is required.");
+        
+                        // Prevent form submission
+                        event.preventDefault();
+                    }
+                });
+            });
+
+            //Checks that all values are filled in the form
+            document.getElementById("updatePasswordForm").addEventListener("submit", function(event) {
+                var newPassword = document.getElementById("manpassword").value;
+                var confirmPassword = document.getElementById("manpassword2").value;
+                
+                // Regular expression for password validation
+                var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{7,}$/;
+
+                // Check if the password fields are empty
+                if (!newPassword || !confirmPassword) {
+                    // Show the alert
+                    alert("Please fill in the new password fields!");
+        
+                    // Prevent the form submission from redirecting or reloading the page
+                    event.preventDefault();
+                }
+
+                //Password Validation Checks
+                else{
+                    // Check if password meets the strength requirements
+                    if (!passwordPattern.test(newPassword)) {
+                        alert("Password must be at least 7 characters long and contain uppercase, lowercase letters, and special characters.");
+                        event.preventDefault();  // Prevent form submission
+                        return;
+                    }
+
+                    // Check if passwords match
+                    if (newPassword !== confirmPassword) {
+                        alert("Passwords do not match.");
+                        event.preventDefault();  // Prevent form submission
+                        return;
+                    }
+                }
+            });
+          
+        </script>
+
     {% endblock %}
 
 </body>
