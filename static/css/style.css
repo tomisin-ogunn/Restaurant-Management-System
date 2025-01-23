@@ -15,11 +15,13 @@ body {
 }
 
 
+/* Manager Login Page Style*/
 main {
     flex-grow: 1;
     display: grid;
     place-content: center;
 }
 
-
-/* Manager Login Page Style*/
+.cursor-pointer{
+    cursor: pointer;
+}

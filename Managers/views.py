@@ -43,7 +43,7 @@ def create_manager(request):
     return HttpResponse(f"New manager created with ID: {new_manager.managerId}")
 
 #Function to display Restaurant Manager home interface
-@login_required
+@login_required(login_url="manager_login")
 def displayHomePage(request):
     context = {
         'media_url': settings.MEDIA_URL,

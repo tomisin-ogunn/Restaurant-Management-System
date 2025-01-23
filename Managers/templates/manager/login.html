@@ -9,95 +9,111 @@
 <body>
     {% block content %}
 
-    <br> <br>
+        <br> <br>
 
-    <!-- Login In Container-->
-    <div class="container shadow-lg" style="padding:30px;">
-        <h1>Restaurant Manager Login</h1>
-        <br>
-        <div class="container-image">
-            <img style="border-radius:5px; max-width:100%; height:40vh" src="{{ media_url }}RestaurantLogoDesign-FYP.png" class="card-img-top" alt="Card Image">
-        </div>
-        <br>
-        <!-- Form -->
-        <form method="post" action="{% url 'manager_login' %}">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="username" class="form-label">Employee Id</label>
-                <input type="text" class="form-control" id="username" name="username">
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password">
-            </div>
-            <div>
-                <button type="submit" class="btn man-login-btn" style="width:100%; background-color:#FFB000" onmouseover="this.style.backgroundColor='#CC8A00';"
-                onmouseout="this.style.backgroundColor='#FFB000';">Login</button>
+        <!-- Login In Container-->
+        <div class="container shadow-lg" style="padding:30px;">
+            <h1>Restaurant Manager Login</h1>
+            <br>
+            <div class="container-image">
+                <img style="border-radius:5px; max-width:100%; height:40vh" src="{{ media_url }}RestaurantLogoDesign-FYP.png" class="card-img-top" alt="Card Image">
             </div>
             <br>
-            <div>
-                <button type="button" class="btn btn-secondary" id="forgotpass-btn" style="width:100%">Forgot Password</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Forgot Password Modal ~ Enter Email Address-->
-    <div class="modal fade" id="FPModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Forgot Password Portal</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="EmailAddForm" method="post" action="{% url 'email_verifier' %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Enter your email</label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="example@example.com">
-                    </div>
-                
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
+            <!-- Form -->
+            <form method="post" action="{% url 'manager_login' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Employee Id</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                <div>
+                    <button type="submit" class="btn man-login-btn" style="width:100%; background-color:#FFB000" onmouseover="this.style.backgroundColor='#CC8A00';"
+                    onmouseout="this.style.backgroundColor='#FFB000';">Login</button>
+                </div>
+                <br>
+                <div>
+                    <button type="button" class="btn btn-secondary" id="forgotpass-btn" style="width:100%">Forgot Password</button>
+                </div>
             </form>
-          </div>
         </div>
-    </div>
 
-    <!-- Update Password Modal -->
-    <div class="modal fade" id="UPModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Update Password</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Forgot Password Modal ~ Enter Email Address-->
+        <div class="modal fade" id="FPModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Forgot Password Portal</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="EmailAddForm" method="post" action="{% url 'email_verifier' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Enter your email</label>
+                            <input type="email" class="form-control" name="email" id="email" placeholder="example@example.com">
+                        </div>
+                    
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                </form>
             </div>
-            <div class="modal-body">
-                <form id="updatePasswordForm" method="post" action="{% url 'update_password' %}">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="new password" class="form-label">Enter new password</label>
-                        <input type="email" id="hiddenEmail" name="hiddenEmail" hidden/> 
-                        <input type="password" class="form-control" name="manpassword" id="manpassword" placeholder="Enter at least 7 characters (a-z, A-Z, 0-9, *#$)">
-                    </div>
-                    <div class="mb-3">
-                        <label for="new password2" class="form-label">Confirm new password</label>
-                        <input type="password" class="form-control" name="manpassword2" id="manpassword2">
-                    </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Update</button>
-            </div>
-            </form>
-          </div>
         </div>
-    </div>
 
-    <br> <br>
+        <!-- Update Password Modal -->
+        <div class="modal fade" id="UPModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Update Password</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updatePasswordForm" method="post" action="{% url 'update_password' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="new password" class="form-label">Enter new password</label>
+                            <input type="email" id="hiddenEmail" name="hiddenEmail" hidden/> 
+                            <div class="position-relative">
+                                <input type="password" class="form-control" name="manpassword" id="manpassword" placeholder="Enter at least 7 characters (a-z, A-Z, 0-9, *#$)">
+                                <!-- Eye icon-->
+                                <span 
+                                    class="position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer" 
+                                    onclick="togglePasswordVisibility('manpassword', 'togglePasswordIcon1')">
+                                    <i class="fas fa-eye" id="togglePasswordIcon1"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new password2" class="form-label">Confirm new password</label>
+                            <div class="position-relative">
+                                <input type="password" class="form-control" name="manpassword2" id="manpassword2">
+                                <!-- Eye icon-->
+                                <span 
+                                    class="position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer" 
+                                    onclick="togglePasswordVisibility('manpassword2', 'togglePasswordIcon2')">
+                                    <i class="fas fa-eye" id="togglePasswordIcon2"></i>
+                                </span>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+                </form>
+            </div>
+            </div>
+        </div>
+
+        <br> <br>
 
     {% endblock %}
     
@@ -228,6 +244,23 @@
                 }
             });
           
+            //Function to toggle password toggle Password Visibility
+            function togglePasswordVisibility(password, iconId){
+                const passwordField = document.getElementById(password);
+                const icon = document.getElementById(iconId);
+
+                if(passwordField.type === "password"){
+                    passwordField.type = "text";
+                    icon.classList.remove("fa-eye");
+                    icon.classList.add("fa-eye-slash");
+                } else{
+                    passwordField.type = "password";
+                    icon.classList.remove("fa-eye-slash");
+                    icon.classList.add("fa-eye");
+                }
+            }
+
+
         </script>
 
     {% endblock %}
