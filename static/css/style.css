@@ -25,3 +25,47 @@ main {
 .cursor-pointer{
     cursor: pointer;
 }
+
+/* Manager Home Page Style */
+#JJNav{
+    background-color: #300909;
+}
+
+.navbar-brand img {
+    height: 65px;
+    width: 130%;
+}
+
+.user-seg .nav-link {
+    color: white;
+}
+
+.Man-sidebar{
+    height: 100%;
+    width: 230px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #F5E9DC;
+    padding-top: 110px;
+    color: #444444;
+    z-index: 1;
+}
+
+nav{
+    position: fixed;
+    width: 100%;
+    z-index: 2;
+}
+
+.Man-sidebar a {
+    display: block;
+    padding: 18px;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.Man-sidebar a:hover {
+    background-color: #efc292;
+    cursor: pointer;
+}
