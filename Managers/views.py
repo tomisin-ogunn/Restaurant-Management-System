@@ -135,7 +135,13 @@ def manager_logout(request):
     
     #redirect user back to login page
     return redirect("manager_login")
-    
+
+#Function to display waiter management interface
+def displayWaiterManagement(request):
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+    }
+    return render(request, 'manager/waiter_management.html', context)
 
 
 

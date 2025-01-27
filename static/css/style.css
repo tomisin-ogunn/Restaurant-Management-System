@@ -47,7 +47,7 @@ main {
     top: 0;
     left: 0;
     background-color: #F5E9DC;
-    padding-top: 100px;
+    padding-top: 95px;
     color: #444444;
     z-index: 1;
 }
@@ -68,4 +68,39 @@ nav{
 .Man-sidebar a:hover {
     background-color: #efc292;
     cursor: pointer;
+}
+
+
+/* Manager Waiter Management Style */
+
+.WaiterMan-container {
+    display: flex;
+    margin-left: 270px;
+}
+
+.box {
+    width: 25vw;
+    height: 40vh;
+    background: #ffffff;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    background: #fab00f;
+}
+
+.box span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #444444;
 }
