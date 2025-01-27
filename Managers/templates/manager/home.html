@@ -10,6 +10,7 @@ Restaurant Manager Home Page
 <body>
 
     {% block content %}
+
     <!-- Webpage Navbar -->
     <nav style="background-color:#300909" class="navbar navbar-expand-lg">
         <div class="container-fluid">
@@ -24,7 +25,7 @@ Restaurant Manager Home Page
                 {{ user.first_name }} {{ user.last_name }}
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">
+                    <li><a class="dropdown-item" onclick="logOutConfirmation()">
                         <span style="color:black;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
@@ -82,7 +83,7 @@ Restaurant Manager Home Page
                     <path d="M7.066 6.76A1.665 1.665 0 0 0 4 7.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 0 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 7.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 0 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/>
                 </svg>
             </span> &nbsp; Customer Reviews</a>
-        <a>
+        <a onclick="logOutConfirmation()">
             <span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
@@ -93,6 +94,34 @@ Restaurant Manager Home Page
 
 
     {% endblock %}
+
+    <!-- Dynamic JavaScript Functionality -->
+
+    {% block scripts %}
+
+        <script>
+
+            //Function to display Swal Pop Up for when 'Log Out' is clicked
+            function logOutConfirmation(){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Do you want to log out?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Logic for logging out
+                        window.location.href = "{% url 'manager_logout' %}";
+                    } else if (result.isDismissed) {
+                        // Logic for canceling logout
+                        return false;
+                    }
+                });
+            }
+
+        </script>
+    {% endblock%}
 
   </body>
 

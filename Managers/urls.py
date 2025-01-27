@@ -29,6 +29,7 @@ urlpatterns = [
     path("home/", views.displayHomePage, name="home"),
     path('email_verifier', views.email_verifier, name='email_verifier'),
     path('update-password/', views.update_password, name='update_password'),
+    path('logout/', views.manager_logout, name="manager_logout"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
