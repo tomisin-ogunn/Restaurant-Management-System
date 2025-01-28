@@ -21,15 +21,15 @@
                 </div>
                 <br>
                 <!-- Form -->
-                <form method="post">
+                <form method="post" action="{% url 'manager_ver' %}">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="username" class="form-label">Employee Id</label>
-                        <input type="text" class="form-control" id="username" name="username">
+                        <input type="text" class="form-control" id="username" name="username" required>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password">
+                        <input type="password" class="form-control" id="password" name="password" required>
                     </div>
                     <div>
                         <button type="submit" class="btn man-login-btn" style="width:100%; background-color:#FFB000" onmouseover="this.style.backgroundColor='#CC8A00';"
@@ -51,7 +51,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="EmailAddForm" method="post">
+                        <form id="EmailAddForm" method="post" action="{% url 'manager_email_verifier' %}">
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="email" class="form-label">Enter your email</label>
@@ -77,7 +77,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="updatePasswordForm" method="post">
+                        <form id="updatePasswordForm" method="post" action = "{% url 'manager-update-password' %}">
                             {% csrf_token %}
                             <div class="mb-3">
                                 <label for="new password" class="form-label">Enter new password</label>
@@ -129,13 +129,18 @@
                 {% for message in messages %}
 
                     var messageText = "{{ message|escapejs }}"
-                   
+                    
                     {% comment %} Invalid login Swal Pop up  {% endcomment %}
                     if(messageText == "Invalid Employee ID / Password"){
                         Swal.fire({
                             icon: 'error',
                             title: 'Invalid Login!',
                             text: 'Incorrect Employee ID or Password',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirecting after the alert is dismissed
+                                window.location.href = "{% url 'manager-login' %}";
+                            }
                         });
                     }
 
@@ -148,7 +153,7 @@
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 // Redirecting after the alert is dismissed
-                                window.location.href = "{% url 'manager_login' %}";
+                                window.location.href = "{% url 'manager-login' %}";
                             }
                         });
                     }
@@ -177,7 +182,7 @@
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 // Redirects user to manager login page
-                                window.location.href = "{% url 'manager_login' %}"
+                                window.location.href = "{% url 'manager-login' %}"
                             }
                         });
                     }
