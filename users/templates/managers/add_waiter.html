@@ -55,7 +55,7 @@
     <!-- Add Waiter form-->
     <div class="Add-Waiter-container">
         <br>
-        <form class="add-waiter-form" method="POST">
+        <form class="add-waiter-form" method="POST" action="{% url 'append-waiter' %}">
             {% csrf_token %}
             <div class="form-group">
                 <label for="first-name">First Name:</label><br>
