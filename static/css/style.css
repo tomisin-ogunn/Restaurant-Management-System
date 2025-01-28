@@ -56,6 +56,7 @@ nav{
     position: fixed;
     width: 100%;
     z-index: 2;
+    position: sticky;
 }
 
 .Man-sidebar a {
@@ -93,6 +94,7 @@ nav{
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
 .box:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
@@ -104,3 +106,60 @@ nav{
     font-weight: bold;
     color: #444444;
 }
+
+/* Add Waiter Container */
+.Add-Waiter-container{
+    width: 35vw;
+    height:62vh;
+    display:flex;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 2px solid #eeeeee;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.add-waiter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* Space between form fields */
+    width: 100%; /* Make form take full width */
+    margin: 0 auto; /* Center form horizontally */
+    padding: 20px; /* Add padding around the form */
+    background-color: #fbfbfb; /* Light background for contrast */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.form-control {
+    padding: 10px;
+    border: 1px solid #ccc; /* Subtle border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    width:100%;
+}
+
+.form-control:focus {
+    border-color: #007bff; /* Highlight border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Focus shadow effect */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -39,13 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
-    'Orders',
-    'Products',
-    'Managers',
-    'Customers',
-    'Waiters',
-    'Tables',
-    'Ratings'
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -116,7 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'Managers.backends.ManagerAuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',  # To allow admin and other default user auth
 )
 
