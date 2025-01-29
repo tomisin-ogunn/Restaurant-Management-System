@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -26,29 +26,29 @@ def manager_loginAuth(request):
     if request.method == "POST":
         manager_id = request.POST.get("username")  # Get managerId from the form
         password = request.POST.get("password")  # Get password from the form
-
+        
         try:
             # Fetch the manager with the given managerId
             manager = Manager.objects.get(managerId=manager_id)
 
             # Verify the password
-            if check_password(password, manager.password):
-                # Authentication successful, store manager in session
-                request.session["manager_id"] = manager.managerId
-                request.session["manager_name"] = manager.first_name
-                messages.success(request, "Login successful!")
-                return redirect("manager-home")  # Redirect to home page
-            else:
-                # Incorrect password
-                messages.error(request, "Invalid Employee ID / Password")
-        except Manager.DoesNotExist:
-            # Manager with the given managerId does not exist
-            messages.error(request, "Manager ID not found. Please try again.")
+            if not check_password(password, manager.password):
+                raise ValueError("Invalid credentials")  # Raise an error for incorrect password
 
-    context = {
-        "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
-    }
-    return render(request, "managers/login.html", context)  # Render login form on failure
+            # Authentication successful, store manager in session
+            request.session["manager_id"] = manager.managerId
+            request.session["manager_name"] = manager.first_name
+            messages.success(request, "Login successful!")
+            return redirect("manager-home")  # Redirect to home page
+
+        except (Manager.DoesNotExist, ValueError):
+            # Either the manager does not exist or the password is incorrect
+            messages.error(request, "Invalid Employee ID / Password")
+
+            context = {
+                "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
+            }
+            return render(request, "managers/login.html", context)  # Render login form on failure
 
 #Function to display Restaurant Manager home interface after authentication
 def displayManagerHome(request):
