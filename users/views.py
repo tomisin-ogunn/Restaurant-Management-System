@@ -151,7 +151,6 @@ def displayWaiterAddForm(request):
     }
     return render(request, 'managers/add_waiter.html', context)
 
-
 #Function to generate a random password
 def generate_random_password(length=8):
     """Generate a secure random password."""
