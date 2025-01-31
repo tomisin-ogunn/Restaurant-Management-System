@@ -153,6 +153,66 @@ nav{
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Focus shadow effect */
 }
 
+/* Edit Waiter Container */
+.Edit-Waiter-container{
+    width: 35vw;
+    height:73vh;
+    display:flex;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 2px solid #eeeeee;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* overflow-y:auto; */
+}
+
+.edit-waiter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* Space between form fields */
+    width: 100%; /* Make form take full width */
+    margin: 0 auto; /* Center form horizontally */
+    padding: 20px; /* Add padding around the form */
+    background-color: #fbfbfb; /* Light background for contrast */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    
+}
+
+.dropdown-container {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select {
+    appearance: none; /* Hide default dropdown arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 12px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Add custom dropdown icon */
+.dropdown-container::after {
+    content: "▼"; /* Unicode for dropdown arrow */
+    font-size: 14px;
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    pointer-events: none; /* Ensures click goes to select, not icon */
+    color: #555;
+}
+
+
+
+
 
 
 

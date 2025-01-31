@@ -30,8 +30,10 @@ urlpatterns = [
     path('manager_email_verifier', views.managerEmail_verifier, name='manager_email_verifier'),
     path('manager-update-password', views.update_ManagerPassword, name="manager-update-password"),
     path('manager-waiter-management/', views.displayWaiterManagement, name="manager-waiter-management"),
-    path('add-waiter/', views.displayWaiterAddForm, name="add-waiter"),
-    path('append-waiter/', views.addWaiter, name="append-waiter")
+    path('manager-add-waiter/', views.displayWaiterAddForm, name="add-waiter"),
+    path('manager-edit-waiter/', views.displayWaiterEditForm, name="edit-waiter"),
+    path('append-waiter/', views.addWaiter, name="append-waiter"),
+    path('get-waiter-details/<str:waiter_id>/', views.get_waiter_details, name='get_waiter_details'),
 ]
  
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

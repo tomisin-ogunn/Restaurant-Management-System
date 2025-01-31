@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -200,8 +200,36 @@ def addWaiter(request):
         }
         return render(request, "managers/add_waiter.html", context)
 
-
-
+#Function to display edit waiter form
+def displayWaiterEditForm(request):
+    manager_id = request.session.get("manager_id")
+    manager = Manager.objects.get(managerId=manager_id)
+    waiters = Waiter.objects.all()
+     
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        "manager": manager,
+        'waiters': waiters
+    }
+    return render(request, 'managers/edit_waiter.html', context)
+    
+#Function to fetch waiter details
+def get_waiter_details(request, waiter_id):
+    try:
+        waiter = Waiter.objects.get(waiterId=waiter_id)
+        data = {
+            "success": True,
+            "first-name": waiter.first_name,
+            "last-name": waiter.last_name,
+            "email": waiter.email,
+        }
+        return JsonResponse(data)
+    except Waiter.DoesNotExist:
+        return JsonResponse({"success": False, "message": "Waiter not found"}, status=404)
+    
+#Function to update waiter details
+def updateWaiterDetails(request):
+    return True
 
 
 

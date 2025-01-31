@@ -1,4 +1,4 @@
-<!-- Restaurant Manager ~ Add Waiter Interface -->
+<!-- Restaurant Manager ~ Edit Waiter Interface-->
 
 {% extends 'layout.html' %}
 
@@ -52,29 +52,40 @@
 
     <br><br><br>
 
-    <!-- Add Waiter form-->
-    <div class="Add-Waiter-container">
+    <!-- Edit Waiter form-->
+    <div class="Edit-Waiter-container">
         <br>
-        <form class="add-waiter-form" method="POST" action="{% url 'append-waiter' %}">
+        <form class="edit-waiter-form" method="POST">
             {% csrf_token %}
             <div class="form-group">
-                <label for="first-name">First Name:</label><br>
+                <label for="first-name">Select Waiter</label><br>
+                <div class="dropdown-container">
+                    <select onchange="fetchWaiterDetails()" class="form-control custom-select" id="waiter-details" name="waiter-details" required>
+                        <option value="" disabled selected style="color:gray;">Please select a waiter</option>
+                        {% for waiter in waiters %}
+                            <option>{{ waiter.waiterId }}: {{ waiter.first_name }} {{ waiter.last_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="first-name">First Name:</label>
                 <input 
                     type="text" 
                     class="form-control" 
-                    id="first-name" 
-                    name="first-name" 
-                    placeholder="Enter first name" 
+                    id="waiter-first-name" 
+                    name="updfirst-name" 
                     required>
             </div>
+
             <div class="form-group">
                 <label for="last-name">Last Name:</label>
                 <input 
                     type="text" 
                     class="form-control" 
-                    id="last-name" 
-                    name="last-name" 
-                    placeholder="Enter last name" 
+                    id="waiter-last-name" 
+                    name="updlast-name" 
                     required>
             </div>
             <div class="form-group">
@@ -84,7 +95,6 @@
                     class="form-control" 
                     id="waiter-email" 
                     name="waiter-email" 
-                    placeholder="Enter email" 
                     required>
             </div>
 
@@ -93,37 +103,13 @@
             <div></div>
             <button type="submit" class="btn submit-button" style="width:100%; 
                 background-color:#FFB000" onmouseover="this.style.backgroundColor='#CC8A00';"
-                onmouseout="this.style.backgroundColor='#FFB000';" >Add Waiter
+                onmouseout="this.style.backgroundColor='#FFB000';" >Update Details
             </button>
                         
              <button type="button" onclick="resetForm()" class="btn btn-secondary">Clear </button>   
         </form>
 
 
-    </div>
-
-    <!-- Generated Password Display Modal -->
-    <div class="modal fade" id="GPDModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Generated Password</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="text" class="form-control" name="email" id="gpassword">
-                    </div>
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" onclick="window.location.href ='{% url 'add-waiter' %}'" class="btn btn-primary">Ok</button>
-            </div>
-            </form>
-        </div>
-        </div>
     </div>
 
     {% endblock %}
@@ -136,13 +122,13 @@
         {% if messages %}
             <script>
                 {% for message in messages %}
-
+                    {% comment %} 
                     var messageText = "{{ message|escapejs }}"
                     var gpasswordField = document.getElementById("gpassword");
-                    var gpasswordModal = new bootstrap.Modal(document.getElementById("GPDModal"));
+                    var gpasswordModal = new bootstrap.Modal(document.getElementById("GPDModal")); {% endcomment %}
 
                     {% comment %} If form is successfully submitted, display swal pop up {% endcomment %}
-                    if(messageText === "Waiter added successfully!"){
+                    {% comment %} if(messageText === "Waiter added successfully!"){
                         Swal.fire({
                             icon: 'success',
                             title: 'Waiter Added Successfully!',
@@ -153,7 +139,7 @@
                                 gpasswordField.value = "{{ generated_password }}";
                             }
                         });
-                    }   
+                    }    {% endcomment %}
                
                 {% endfor %}
             </script>
@@ -184,13 +170,14 @@
 
             {% comment %} No input Swal Pop Up {% endcomment %}
             document.addEventListener("DOMContentLoaded", function() {
-                document.getElementsByClassName("add-waiter-form")[0].addEventListener("submit", function(event) {
+                document.getElementsByClassName("edit-waiter-form")[0].addEventListener("submit", function(event) {
                     var email = document.getElementById("waiter-email").value.trim();
                     var fname = document.getElementById("first-name").value;
                     var lname = document.getElementById("last-name").value;
+                    var waiterDetails = document.getElementById("waiter-details").value;
 
                     // Check if the email field is empty
-                    if (!email || !fname || !lname) {
+                    if (!email || !fname || !lname || !waiterDetails) {
                         // Show the alert if the email is empty
                         alert("Please enter all fields!");
         
@@ -207,6 +194,30 @@
                 form.reset();
             }
 
+            //Function to fetch waiter details when dropdown is changed
+            function fetchWaiterDetails() {
+                var waiterId = document.getElementById("waiter-details").value.substring(0, 7);
+
+                if (waiterId) {
+                    fetch(`/users/get-waiter-details/${waiterId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                // If the response status code is not 2xx, throw an error
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();  // Parse the response as JSON only if it's successful
+                        })
+                        .then(data => {
+                            //Display fetched data into form
+                            document.getElementById("waiter-first-name").value = data["first-name"];
+                            document.getElementById("waiter-last-name").value = data["last-name"];
+                            document.getElementById("waiter-email").value = data["email"];
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);  // Handle any errors, including response issues
+                        });
+                }
+            }
 
 
         </script>
