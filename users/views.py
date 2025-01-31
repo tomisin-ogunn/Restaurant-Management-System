@@ -117,9 +117,8 @@ def update_ManagerPassword(request):
             manager.password = make_password(new_password)
             manager.save()
 
-            # Show success message and redirect to login page
+            # Show success message
             messages.success(request, "Your password has been updated successfully!")
-            # return redirect("manager_login")  # Redirect back to login page
 
         except Manager.DoesNotExist:
             messages.error(request, "Email does not exist.")
@@ -229,10 +228,32 @@ def get_waiter_details(request, waiter_id):
     
 #Function to update waiter details
 def updateWaiterDetails(request):
-    return True
+    if request.method == "POST":
+        #Retrieve form inputs
+        upd_first_name = request.POST.get("updfirst-name")
+        upd_last_name = request.POST.get("updlast-name")
+        upd_email = request.POST.get("waiter-email")
+        waiter_id = request.POST.get("updWaiterID")
 
+        #Get the specific waiter being edited
+        try:
+            waiter = Waiter.objects.get(waiterId=waiter_id)
+            waiter.first_name = upd_first_name
+            waiter.last_name = upd_last_name
+            waiter.email = upd_email
+            waiter.save()
+            
+            # Show success message
+            messages.success(request, "Waiter details have been successfully updated!")
 
-
+        except Waiter.DoesNotExist:
+            messages.error(request, "Waiter does not exist.")
+        
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+    }
+    
+    return render(request, "managers/edit_waiter.html", context)
 
 
 
