@@ -1,12 +1,13 @@
-<!-- Restaurant Manager ~ Edit Waiter Interface-->
+<!-- Restaurant Manager ~ Assign Waiter Interface -->
 
 {% extends 'layout.html' %}
 
 {% block title %}
-   Edit Waiter
+   Assign Waiter
 {% endblock %}
 
 <body>
+
     {% block content %}
 
     <!-- Webpage Navbar -->
@@ -52,15 +53,15 @@
 
     <br><br><br>
 
-    <!-- Edit Waiter form-->
-    <div class="Edit-Waiter-container">
+    <!-- Assign Waiter form-->
+    <div class="Assign-Waiter-container">
         <br>
-        <form class="edit-waiter-form" method="POST" action="{% url 'update-waiter-details' %}">
+        <form class="assign-waiter-form" method="POST">
             {% csrf_token %}
             <div class="form-group">
                 <label for="first-name">Select Waiter</label><br>
                 <div class="dropdown-container">
-                    <select onchange="fetchWaiterDetails()" class="form-control custom-select" id="waiter-details" name="waiter-details" required>
+                    <select class="form-control custom-select" id="waiters" name="waiters" required>
                         <option value="" disabled selected style="color:gray;">Please select a waiter</option>
                         {% for waiter in waiters %}
                             <option>{{ waiter.waiterId }}: {{ waiter.first_name }} {{ waiter.last_name }}</option>
@@ -70,41 +71,24 @@
             </div>
 
             <div class="form-group">
-                <label for="first-name">First Name:</label>
-                <input 
-                    type="text" 
-                    class="form-control" 
-                    id="waiter-first-name" 
-                    name="updfirst-name" 
-                    required>
-                <input id="waiterID" name="updWaiterID" hidden>
+                <label for="table-select">Select Table</label><br>
+                <div class="dropdown-container">
+                    <select class="form-control custom-select" id="waiters" name="waiters" required>
+                        <option value="" disabled selected style="color:gray;">Please select a table</option>
+                        {% for table in tables %}
+                            <option>{{ table.tableNo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="last-name">Last Name:</label>
-                <input 
-                    type="text" 
-                    class="form-control" 
-                    id="waiter-last-name" 
-                    name="updlast-name" 
-                    required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input 
-                    type="email" 
-                    class="form-control" 
-                    id="waiter-email" 
-                    name="waiter-email" 
-                    required>
-            </div>
-
+            
             <div></div>
             <div></div>
             <div></div>
             <button type="submit" class="btn submit-button" style="width:100%; 
                 background-color:#FFB000" onmouseover="this.style.backgroundColor='#CC8A00';"
-                onmouseout="this.style.backgroundColor='#FFB000';" >Update Details
+                onmouseout="this.style.backgroundColor='#FFB000';" >Assign
             </button>
                         
              <button type="button" onclick="resetForm()" class="btn btn-secondary">Clear </button>   
@@ -122,23 +106,6 @@
         {% comment %} Checks for any error messages, and displays swal pop ups{% endcomment %}
         {% if messages %}
             <script>
-                {% for message in messages %}
-                    var messageText = "{{ message|escapejs }}"
-                    
-                    {% comment %} If form is successfully submitted, display swal pop up {% endcomment %}
-                    if(messageText === "Waiter details have been successfully updated!"){
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Waiter Details updated successfully!',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                // Redirects back to page
-                                window.location.href="{% url 'edit-waiter' %}"
-                            }
-                        });
-                    }    
-               
-                {% endfor %}
             </script>
 
         {% endif %}
@@ -165,99 +132,8 @@
                 });
             }
 
-            {% comment %} No input Swal Pop Up {% endcomment %}
-            document.addEventListener("DOMContentLoaded", function() {
-                document.getElementsByClassName("edit-waiter-form")[0].addEventListener("submit", function(event) {
-                    var email = document.getElementById("waiter-email").value.trim();
-                    var fname = document.getElementById("first-name").value;
-                    var lname = document.getElementById("last-name").value;
-                    var waiterDetails = document.getElementById("waiter-details").value;
-
-                    // Check if the email field is empty
-                    if (!email || !fname || !lname || !waiterDetails) {
-                        // Show the alert if the email is empty
-                        alert("Please enter all fields!");
-        
-                        // Prevent form submission
-                        event.preventDefault();
-                    }
-                });
-            });
-
-            //Function to reset form values, when 'clear' button is clicked
-            function resetForm(){
-                var form = document.querySelector('.edit-waiter-form');
-
-                form.reset();
-            }
-
-            //Function to fetch waiter details when dropdown is changed
-            function fetchWaiterDetails() {
-                var waiterId = document.getElementById("waiter-details").value.substring(0, 7);
-
-                if (waiterId) {
-                    fetch(`/users/get-waiter-details/${waiterId}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                // If the response status code is not 2xx, throw an error
-                                throw new Error(`HTTP error! Status: ${response.status}`);
-                            }
-                            return response.json();  // Parse the response as JSON only if it's successful
-                        })
-                        .then(data => {
-                            //Display fetched data into form
-                            document.getElementById("waiter-first-name").value = data["first-name"];
-                            document.getElementById("waiter-last-name").value = data["last-name"];
-                            document.getElementById("waiter-email").value = data["email"];
-                            document.getElementById("waiterID").value = waiterId;
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);  // Handle any errors, including response issues
-                        });
-                }
-            }
-
-
         </script>
      
     {% endblock%}
 
 </body>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from .models import Manager, Waiter
+from restaurant.models import Table
 import string
 import secrets
 import re
@@ -255,9 +256,23 @@ def updateWaiterDetails(request):
     
     return render(request, "managers/edit_waiter.html", context)
 
+#Function to display assign waiter form
+def displayAssignWaiterForm(request):
+    manager_id = request.session.get("manager_id")
+    manager = Manager.objects.get(managerId=manager_id)
+    waiters = Waiter.objects.all()
+    tables = Table.objects.all()
+     
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        "manager": manager,
+        'waiters': waiters,
+        'tables': tables
+    }
 
-
-
+    return render(request, 'managers/assign_waiter.html', context)
+    
+    
 
 
 

@@ -34,7 +34,8 @@ urlpatterns = [
     path('manager-edit-waiter/', views.displayWaiterEditForm, name="edit-waiter"),
     path('append-waiter/', views.addWaiter, name="append-waiter"),
     path('get-waiter-details/<str:waiter_id>/', views.get_waiter_details, name='get_waiter_details'),
-    path('update-waiter-details', views.updateWaiterDetails, name="update-waiter-details")
+    path('update-waiter-details', views.updateWaiterDetails, name="update-waiter-details"),
+    path('manager-assign-waiter/', views.displayAssignWaiterForm, name="assign-waiter")
 ]
  
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
