@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth import authenticate, login
@@ -272,7 +272,32 @@ def displayAssignWaiterForm(request):
 
     return render(request, 'managers/assign_waiter.html', context)
     
+#Function to assign waiter (mapping each waiter to table)
+def assignWaiter(request):
+    if request.method == "POST":
+        #Retrieve form inputs
+        waiter_id = request.POST.get("waiters", "")[:7]
+        tableNo = request.POST.get("tables")
+        
+        #Assign waiter to table
+        try:
+            table = Table.objects.get(tableNo=tableNo)
+            waiter = get_object_or_404(Waiter, waiterId=waiter_id)
+            table.waiter = waiter
+            table.save()
+            
+            # Show success message
+            messages.success(request, "Waiter has been successfully assigned!")
+            
+        except Waiter.DoesNotExist:
+            messages.error(request, "Waiter does not exist.")
+            
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+    }
     
+    return render(request, "managers/assign_waiter.html", context)
+
 
 
 
