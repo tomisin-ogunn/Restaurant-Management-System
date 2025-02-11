@@ -22,7 +22,7 @@ from django.conf import settings
 import debug_toolbar
 
 urlpatterns = [
-    #Route for user views
+    #Route for user views (manager)
     path('manager-login/', views.display_managerLogin, name="manager-login"),
     path('manager-home/', views.displayManagerHome, name="manager-home"),
     path('manager_verification/', views.manager_loginAuth, name="manager_ver"),
@@ -36,7 +36,9 @@ urlpatterns = [
     path('get-waiter-details/<str:waiter_id>/', views.get_waiter_details, name='get_waiter_details'),
     path('update-waiter-details', views.updateWaiterDetails, name="update-waiter-details"),
     path('manager-assign-waiter/', views.displayAssignWaiterForm, name="assign-waiter"),
-    path('assign-waiter-table/', views.assignWaiter, name="assign-waiter-table")
+    path('assign-waiter-table/', views.assignWaiter, name="assign-waiter-table"),
+    path('manager-table-reservation/', views.displayTableReservation, name="manager-table-reservation"),
+    path('get-table-details/<str:tableId>/', views.get_table_details, name="get-table-details")
 ]
  
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

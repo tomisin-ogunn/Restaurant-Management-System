@@ -299,6 +299,37 @@ def assignWaiter(request):
     return render(request, "managers/assign_waiter.html", context)
 
 
+#Function which displays table reservation interface for managers
+def displayTableReservation(request):
+    manager_id = request.session.get("manager_id")
+    manager = Manager.objects.get(managerId=manager_id)
+    tables = Table.objects.all()
+    
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        'tables': tables,
+        'manager': manager
+    }
+    return render(request, 'managers/reserve_table.html', context)
+
+#Function to fetch table details from model
+def get_table_details(request, tableId):    
+    try:
+        table = Table.objects.select_related('waiter').get(tableNo=tableId)
+        data = {
+            "success": True,
+            "capacity": table.capacity,
+            "status": table.status,
+            "waiter": {
+                "id": table.waiter.waiterId if table.waiter else None,
+                "name": f"{table.waiter.first_name} {table.waiter.last_name}" if table.waiter else None
+            },
+        }
+        return JsonResponse(data)
+    except Table.DoesNotExist:
+        return JsonResponse({"success": False, "message": "Table not found"}, status=404)
+        
+
 
 
 
