@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import Waiter
 from django.db.models import Max
+from django.utils import timezone
 
 # Create your models here.
 
@@ -25,6 +26,7 @@ class Reservation(models.Model):
     duration = models.CharField(max_length=20)
     time_booked = models.DateTimeField(auto_now_add=True)
     customer_name = models.CharField(max_length=50)
+    reservation_date = models.DateTimeField(default=timezone.now)
 
     #Function to increment reservation id after record has been added manually to the Reservations table.
     def save(self, *args, **kwargs):

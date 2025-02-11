@@ -182,12 +182,59 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"0>Close</button>
-                  <button type="button" class="btn" style="background-color:#FFB000;" onmouseover="this.style.backgro.undColor='#CC8A00';"
-                    onmouseout="this.style.backgroundColor='#FFB000';">Reserve Table</button>
+                  <button type="button" class="btn" style="background-color:#FFB000;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                    onmouseout="this.style.backgroundColor='#FFB000';" onclick="openReserveTablePortal(document.getElementById('tableID').textContent)">Reserve Table</button>
                 </div>
               </div>
             </div>
         </div> 
+
+        <!-- Reserve Table (Booking) Modal -->
+        <div class="modal fade" id="ReserveTableModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Reserve Table</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="" class="form-label">Table No</label>
+                                <input id="reservationTableNo" type="text" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="Date" class="form-label">Date</label>
+                                <input type="date" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            From:
+                                <input type="time" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            To:
+                                <input type="time" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="size" class="form-label">Size</label>
+                            <input type="text" class="form-control">
+                            <input type="text" id="tableCapacity" hidden>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comment" class="form-label"> Comments</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn" style="background-color:#FFB000;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                onmouseout="this.style.backgroundColor='#FFB000';">Make Booking</button>
+                </div>
+                </form>
+            </div>
+            </div>
+        </div>
 
     {% endblock %}
 
@@ -306,7 +353,33 @@
                     });
             }
 
-
+            //Function to open reserve table portal
+            function openReserveTablePortal(tableId){
+                fetch(`/users/get-table-details/${tableId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            
+                            // Populate modal fields with table details
+                            document.getElementById("reservationTableNo").value = tableId;
+                            document.getElementById("tableCapacity").value = data["capacity"]; 
+                            // Show the first modal (ReserveTableModal)
+                            var modal = new bootstrap.Modal(document.getElementById("ReserveTableModal"));
+                            modal.show();
+                        } else {
+                            console.error("Error:", data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching table details:", error);
+                    });
+                
+            }
 
         </script>
   
