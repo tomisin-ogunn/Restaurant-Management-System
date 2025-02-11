@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Table
+from .models import Table, Reservation
 
 # Register your models here.
 
@@ -11,3 +11,14 @@ class TableAdmin(admin.ModelAdmin):
     
 # Register the Table model with the custom admin class
 admin.site.register(Table, TableAdmin)
+
+#Custom admin class for Reservation
+class ReservationAdmin(admin.ModelAdmin):
+    #Customize fields displayed in the admin list view
+    list_display = ('reservationId', 'size', 'comments', 'tableNo', 'duration', 'time_booked', 'customer_name')
+    search_fields = ('reservationId', 'size', 'comments', 'tableNo', 'duration', 'time_booked', 'customer_name')
+    
+#Register the Reservation model with the custom admin class
+admin.site.register(Reservation, ReservationAdmin)
+
+
