@@ -27,6 +27,8 @@ class Reservation(models.Model):
     time_booked = models.DateTimeField(auto_now_add=True)
     customer_name = models.CharField(max_length=50)
     reservation_date = models.DateTimeField(default=timezone.now)
+    startTime = models.TimeField(default=timezone.now)
+    endTime = models.TimeField(default=timezone.now)
 
     #Function to increment reservation id after record has been added manually to the Reservations table.
     def save(self, *args, **kwargs):

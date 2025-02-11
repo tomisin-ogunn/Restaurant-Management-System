@@ -202,19 +202,20 @@
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="" class="form-label">Table No</label>
-                                <input id="reservationTableNo" type="text" class="form-control">
+                                <input id="reservationTableNo" type="text" class="form-control" disabled>
                         </div>
                         <div class="mb-3">
                             <label for="Date" class="form-label">Date</label>
-                                <input type="date" class="form-control">
+                                <input id="reservationDate" type="date" class="form-control" disabled>
                         </div>
                         <div class="mb-3">
                             From:
-                                <input type="time" class="form-control">
+                                <input type="time" id="fromTime" class="form-control" min="12:00" max="22:00">
                         </div>
                         <div class="mb-3">
                             To:
-                                <input type="time" class="form-control">
+                                <input type="time" id="toTime" class="form-control" min="12:00" max="22:00">
+                                <input type="text" hidden id="reservationDuration">
                         </div>
                         <div class="mb-3">
                             <label for="size" class="form-label">Size</label>
@@ -365,9 +366,16 @@
                     .then(data => {
                         if (data.success) {
                             
+                            // Get today's date
+                            const today = new Date();
+
+                            // Format the date to YYYY-MM-DD
+                            const formattedDate = today.toISOString().split('T')[0];
+
                             // Populate modal fields with table details
                             document.getElementById("reservationTableNo").value = tableId;
                             document.getElementById("tableCapacity").value = data["capacity"]; 
+                            document.getElementById("reservationDate").value = formattedDate;
                             // Show the first modal (ReserveTableModal)
                             var modal = new bootstrap.Modal(document.getElementById("ReserveTableModal"));
                             modal.show();
@@ -380,6 +388,33 @@
                     });
                 
             }
+
+            //Function to calculate the duration for reservation (to time - from time)
+            document.addEventListener("DOMContentLoaded", function () {
+                const fromTime = document.getElementById("fromTime");
+                const toTime = document.getElementById("toTime");
+                const durationField = document.getElementById("reservationDuration");
+            
+                function calculateDuration() {
+                    if (fromTime.value && toTime.value) {
+                        // Convert time values to Date objects
+                        const from = new Date(`1970-01-01T${fromTime.value}:00`);
+                        const to = new Date(`1970-01-01T${toTime.value}:00`);
+            
+                        // Calculate the difference in minutes
+                        let diffInMinutes = (to - from) / (1000 * 60); // Convert milliseconds to minutes
+            
+                        if (diffInMinutes < 0) {
+                            durationField.value = "Invalid time range"; // Handle invalid input
+                        } else {
+                            durationField.value = diffInMinutes + " minutes";
+                        }
+                    }
+                }
+                // Add event listeners for input changes
+                fromTime.addEventListener("change", calculateDuration);
+                toTime.addEventListener("change", calculateDuration);
+            });
 
         </script>
   
