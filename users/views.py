@@ -7,7 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from .models import Manager, Waiter
-from restaurant.models import Table
+from restaurant.models import Table, Reservation
+from datetime import datetime
 import string
 import secrets
 import re
@@ -298,7 +299,6 @@ def assignWaiter(request):
     
     return render(request, "managers/assign_waiter.html", context)
 
-
 #Function which displays table reservation interface for managers
 def displayTableReservation(request):
     manager_id = request.session.get("manager_id")
@@ -329,8 +329,64 @@ def get_table_details(request, tableId):
     except Table.DoesNotExist:
         return JsonResponse({"success": False, "message": "Table not found"}, status=404)
         
+#Function to create a reservation (append to the model)
+def generateReservation(request):
+    if request.method == "POST":
+        # Retrieve form inputs
+        table_No = request.POST.get("tableNo")
+        date = request.POST.get("reservationDate")
+        start_time = request.POST.get("reservationStartTime")
+        end_time = request.POST.get("reservationEndTime")
+        duration = request.POST.get("reservationDuration")
+        size = int(request.POST.get("reservationSize", 0))
+        comments = request.POST.get("reservationComments")
+        customer_name = request.POST.get("customer-name")
+        capacity = int(request.POST.get("tableCapacity", 0))
 
+        # Verify that size is not greater than capacity
+        if size > capacity:
+            messages.error(request, "Size is bigger than table capacity!")
+            return redirect("reservation_page")  # Redirect to the reservation form page
 
+        try:
+            # Fetch the table instance
+            table = get_object_or_404(Table, tableNo=table_No)
+            table.status = "reserved"
+            table.save()
+
+            # Create reservation instance
+            reservation = Reservation(
+                size=size,
+                comments=comments,
+                tableNo=table,
+                startTime=start_time,
+                endTime=end_time,
+                duration=duration,
+                customer_name=customer_name,
+                reservation_date=date
+            )
+
+            # Generate unique reservation ID
+            reservation.reservationId = Reservation.generateReservationID()
+
+            # Save the newly created reservation
+            reservation.save()
+
+            # Display success message and redirect
+            messages.success(request, "Reservation added successfully!")
+            context = {
+                'media_url': settings.MEDIA_URL,  # Passing MEDIA_URL to template
+            }
+            return render(request, "managers/reserve_table.html", context)
+
+        except Exception as e:
+            messages.error(request, f"An error occurred: {e}")
+            
+    # If request is not POST, render the reservation form page
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing MEDIA_URL to template
+    }
+    return render(request, "managers/reserve_table.html", context)
 
 
 

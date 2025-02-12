@@ -38,7 +38,8 @@ urlpatterns = [
     path('manager-assign-waiter/', views.displayAssignWaiterForm, name="assign-waiter"),
     path('assign-waiter-table/', views.assignWaiter, name="assign-waiter-table"),
     path('manager-table-reservation/', views.displayTableReservation, name="manager-table-reservation"),
-    path('get-table-details/<str:tableId>/', views.get_table_details, name="get-table-details")
+    path('get-table-details/<str:tableId>/', views.get_table_details, name="get-table-details"),
+    path('create-reservation', views.generateReservation, name="create-reservation")
 ]
  
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

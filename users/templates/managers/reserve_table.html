@@ -112,12 +112,13 @@
         <!-- Table displays -->
         <div class="restaurant-tables">
             {% for table in tables|dictsort:"tableNo" %}
-                    <div class="table-container" onclick="openTablePortal({{ table.tableNo }})"
+                    <div class="table-container" onclick="openTablePortal({{ table.tableNo }})" data-status = "{{ table.status }}"
                         style="
                             width: 80px;
                             height: {% if table.capacity == 2 %}60px{% elif table.capacity == 5 %}120px{% else %}180px{% endif %};
                             border-radius: 30px;
-                            background-color: rgb(226, 226, 226);
+                            background-color:{% if table.status == "available" %} rgb(226, 226, 226) {% elif table.status == "reserved" %}
+                            rgb(159, 158, 158){% endif %};
                             display: flex;
                             justify-content: center;
                             align-items: center;
@@ -131,7 +132,7 @@
                             transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
                         "
                         onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.15)'; this.style.backgroundColor='#fab00f';"
-                        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'; this.style.backgroundColor='rgb(226, 226, 226)';">
+                        onmouseout="setBackgroundColor(this)">
                         
                         <span>Table {{ table.tableNo }}</span>
 
@@ -189,7 +190,7 @@
             </div>
         </div> 
 
-        <!-- Reserve Table (Booking) Modal -->
+        <!-- Reserve/Ammend Table (Booking) Modal -->
         <div class="modal fade" id="ReserveTableModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
             <div class="modal-content">
@@ -198,33 +199,37 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="" method="post">
+                    <form id="reserveTableForm" method="post" action="{% url 'create-reservation' %}">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label for="" class="form-label">Table No</label>
-                                <input id="reservationTableNo" type="text" class="form-control" disabled>
+                            <label for="customer-name" class="form-label">Customer Name</label>
+                            <input type="text" class="form-control" required name="customer-name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="tableNo" class="form-label">Table No</label>
+                                <input id="reservationTableNo" type="text" name="tableNo" class="form-control" disabled>
                         </div>
                         <div class="mb-3">
                             <label for="Date" class="form-label">Date</label>
-                                <input id="reservationDate" type="date" class="form-control" disabled>
+                                <input id="reservationDate" type="date" name="reservationDate" class="form-control" disabled>
                         </div>
                         <div class="mb-3">
                             From:
-                                <input type="time" id="fromTime" class="form-control" min="12:00" max="22:00">
+                                <input type="time" required id="fromTime" name="reservationStartTime" class="form-control" min="12:00" max="22:00">
                         </div>
                         <div class="mb-3">
                             To:
-                                <input type="time" id="toTime" class="form-control" min="12:00" max="22:00">
-                                <input type="text" hidden id="reservationDuration">
+                                <input type="time" required id="toTime" name="reservationEndTime" class="form-control" min="12:00" max="22:00">
+                                <input type="text" name="reservationDuration" hidden id="reservationDuration">
                         </div>
                         <div class="mb-3">
-                            <label for="size" class="form-label">Size</label>
-                            <input type="text" class="form-control">
-                            <input type="text" id="tableCapacity" hidden>
+                            <label for="size" name="reservationSize" class="form-label">Size</label>
+                            <input type="text" required name="reservationSize" class="form-control">
+                            <input type="text" name="tableCapacity" id="tableCapacity" hidden>
                         </div>
                         <div class="mb-3">
-                            <label for="comment" class="form-label"> Comments</label>
-                            <textarea class="form-control"></textarea>
+                            <label for="comment"class="form-label"> Comments</label>
+                            <textarea  name="reservationComments" class="form-control"></textarea>
                         </div>
                 </div>
                 <div class="modal-footer">
@@ -242,6 +247,45 @@
     <!-- Dynamic JavaScript Functionality -->
 
     {% block scripts %}
+
+        {% comment %} Checks for any messages, and displays swal pop ups{% endcomment %}
+        {% if messages %}
+            <script>
+                {% for message in messages %}
+
+                    var messageText = "{{ message|escapejs }}"
+
+                    {% comment %} If form is successfully submitted, display swal pop up {% endcomment %}
+                    if(messageText === "Reservation added successfully!"){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Table Reserved!',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                //Redirects back to page
+                                window.location.href="{% url 'manager-table-reservation' %}"
+                            }
+                        });
+                    }   
+
+                    {% comment %} If form is submitted, and size entered is bigger than table capacity, display error swal pop up {% endcomment %}
+                    if(messageText === "Size is bigger than table capacity!"){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Capacity Exceeded!',
+                            text: 'Size entered is larger than table capacity'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                //Redirects back to page
+                                window.location.href="{% url 'manager-table-reservation' %}"
+                            }
+                        });
+                    }
+
+                {% endfor %}
+            </script>
+
+        {% endif %}
 
         <script>
 
@@ -415,6 +459,26 @@
                 fromTime.addEventListener("change", calculateDuration);
                 toTime.addEventListener("change", calculateDuration);
             });
+
+            //Event listener to enable disbaled elements input values pass through, on the form submit
+            document.getElementById("reserveTableForm").addEventListener("submit", function() {
+                document.getElementById("reservationDate").disabled = false;  // Enable before submit
+                document.getElementById("reservationTableNo").disabled = false; //Enable before submit
+            });
+
+            // Function to set background color based on table status
+            function setBackgroundColor(element) {
+                const status = element.getAttribute('data-status'); // Get table status from data attribute
+                if (status === 'available') {
+                    element.style.backgroundColor = 'rgb(226, 226, 226)';
+                } else if (status === 'reserved') {
+                    element.style.backgroundColor = 'rgb(159, 158, 158)';
+                } else {
+                    element.style.backgroundColor = ''; // Default case (if no status matches)
+                }
+                element.style.transform = 'scale(1)';  // Reset scaling
+                element.style.boxShadow = 'none';      // Reset box-shadow
+            }
 
         </script>
   
