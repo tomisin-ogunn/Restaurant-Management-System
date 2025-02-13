@@ -388,8 +388,35 @@ def generateReservation(request):
     }
     return render(request, "managers/reserve_table.html", context)
 
+#Function to fetch reservation booking details for ammendment
+def fetch_reservation_details(request, tableId):
+    try:
+        # Get the table instance
+        table = get_object_or_404(Table, tableNo=tableId)
 
+        # Fetch the latest reservation for the given table
+        reservation = Reservation.objects.filter(tableNo=table).first()
+        
+        if reservation:
+            # Prepare reservation details in JSON format
+            data = {
+                "success": True,
+                "reservationId": reservation.reservationId,
+                "size": reservation.size,
+                "comments": reservation.comments,
+                "startTime": reservation.startTime,
+                "endTime": reservation.endTime,
+                "customerName": reservation.customer_name,
+                "reservationDate": reservation.reservation_date,
+                "capacity": table.capacity
+            }
+            return JsonResponse(data)
+        else:
+            return JsonResponse({"success": False, "message": "No reservation found for this table."})
 
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+        
 
 
 

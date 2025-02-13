@@ -182,15 +182,17 @@
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"0>Close</button>
-                  <button type="button" class="btn" style="background-color:#FFB000;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" id="reserveTableBtn" class="btn" style="background-color:#FFB000;" onmouseover="this.style.backgroundColor='#CC8A00';"
                     onmouseout="this.style.backgroundColor='#FFB000';" onclick="openReserveTablePortal(document.getElementById('tableID').textContent)">Reserve Table</button>
+                    <button type="button" id="viewBookingBtn" class="btn" style="background-color:#FFB000;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                    onmouseout="this.style.backgroundColor='#FFB000';" onclick="openBookingDetailsPortal(document.getElementById('tableID').textContent)">View Booking</button>
                 </div>
               </div>
             </div>
         </div> 
 
-        <!-- Reserve/Ammend Table (Booking) Modal -->
+        <!-- Reserve Table (Booking) Modal -->
         <div class="modal fade" id="ReserveTableModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
             <div class="modal-content">
@@ -242,6 +244,60 @@
             </div>
         </div>
 
+        <!-- View/Modify Booking Modal -->
+        <div class="modal fade" id="ReservationDetailsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Reservation Details</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="tableBookingForm" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="customer-name" class="form-label">Customer Name</label>
+                            <input type="text" class="form-control" id="upd-customer-name" required name="upd-customer-name">
+                            <input type="text" name="reservationID" id="reservationID" hidden>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tableNo" class="form-label">Table No</label>
+                                <input type="text" id="upd-tableNo" name="upd-tableNo" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="Date" class="form-label">Date</label>
+                                <input type="date" id="upd-reservationDate" name="upd-reservationDate" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            From:
+                                <input type="time" required id="upd-fromTime" name="upd-reservationStartTime" class="form-control" min="12:00" max="22:00">
+                        </div>
+                        <div class="mb-3">
+                            To:
+                                <input type="time" required id="upd-toTime"  name="upd-reservationEndTime" class="form-control" min="12:00" max="22:00">
+                                <input type="text" name="upd-reservationDuration" hidden id="reservationDuration">
+                        </div>
+                        <div class="mb-3">
+                            <label for="size" class="form-label">Size</label>
+                            <input type="text" id="upd-reservationSize" required name="upd-reservationSize" class="form-control">
+                            <input type="text" name="upd-tableCapacity" id="upd-tableCapacity" hidden>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comment"class="form-label"> Comments</label>
+                            <textarea id="upd-reservationComments" name="upd-reservationComments" class="form-control"></textarea>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger">Cancel Booking</button>
+                <button type="submit" class="btn" style="background-color:#FFB000;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                onmouseout="this.style.backgroundColor='#FFB000';">Ammend Booking</button>
+                </div>
+                </form>
+            </div>
+            </div>
+        </div> 
+
     {% endblock %}
 
     <!-- Dynamic JavaScript Functionality -->
@@ -288,6 +344,7 @@
         {% endif %}
 
         <script>
+
 
             //Function to display Swal Pop Up for when 'Log Out' is clicked
             function logOutConfirmation(){
@@ -356,19 +413,27 @@
                             if (data["status"] === "available") {
                                 var availableIcon = document.getElementById("status-A");
                                 var reservedIcon = document.getElementById("status-D");
+                                var reserveTableBtn = document.getElementById("reserveTableBtn");
+                                var viewBookingBtn = document.getElementById("viewBookingBtn");
                                 var status = "Available"; 
 
                                 if (availableIcon) availableIcon.style.display = "";
                                 if (reservedIcon) reservedIcon.style.display = "none";
+                                if (reserveTableBtn) reserveTableBtn.style.display = "";
+                                if (viewBookingBtn) viewBookingBtn.style.display = "none";
                             }
 
                             else{
                                 var availableIcon = document.getElementById("status-A");
                                 var reservedIcon = document.getElementById("status-D");
+                                var reserveTableBtn = document.getElementById("reserveTableBtn");
+                                var viewBookingBtn = document.getElementById("viewBookingBtn");
                                 var status = "Reserved";
 
                                 if (availableIcon) availableIcon.style.display = "none";
                                 if (reservedIcon) reservedIcon.style.display = "";
+                                if (reserveTableBtn) reserveTableBtn.style.display = "none";
+                                if (viewBookingBtn) viewBookingBtn.style.display = "";
                             }
 
                             // Populate modal fields with table details
@@ -431,6 +496,60 @@
                         console.error("Error fetching table details:", error);
                     });
                 
+            }
+
+            //Function to open reservation details (booking ammendment) portal
+            function openBookingDetailsPortal(tableId){
+                fetch(`/users/get-reservation-details/${tableId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            
+                            // Get today's date
+                            const today = new Date();
+
+                            // Format the date to YYYY-MM-DD
+                            const formattedDate = today.toISOString().split('T')[0];
+
+                            // Enable the fields before setting values
+                            let tableNoField = document.getElementById("upd-tableNo");
+                            let reservationDateField = document.getElementById("upd-reservationDate");
+
+                            console.log(reservationDateField);
+                            // Set the values
+                            tableNoField.value = tableId;
+                            reservationDateField.value = data["reservationDate"]; 
+
+                            // Disable them again after setting values
+                            tableNoField.setAttribute("disabled", "true");
+                            reservationDateField.setAttribute("disabled", "true");
+
+                            // Populate modal fields with table details
+                            document.getElementById("upd-tableCapacity").value =data["capacity"]; 
+                            document.getElementById("upd-customer-name").value = data["customerName"];
+                            document.getElementById("upd-reservationComments").value = data["comments"];
+                            document.getElementById("upd-reservationSize").value = data["size"];
+                            document.getElementById("upd-fromTime").value = data["startTime"];
+                            document.getElementById("upd-toTime").value = data["endTime"];
+                            document.getElementById("reservationID").value = data["reservationId"];
+
+                            // Show the first modal (ReserveTableModal)
+                            var modal = new bootstrap.Modal(document.getElementById("ReservationDetailsModal"));
+                            modal.show();
+                        } else {
+                            console.error("Error:", data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching table details:", error);
+                    });
+                
+
             }
 
             //Function to calculate the duration for reservation (to time - from time)

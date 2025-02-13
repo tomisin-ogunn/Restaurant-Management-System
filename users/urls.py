@@ -39,6 +39,7 @@ urlpatterns = [
     path('assign-waiter-table/', views.assignWaiter, name="assign-waiter-table"),
     path('manager-table-reservation/', views.displayTableReservation, name="manager-table-reservation"),
     path('get-table-details/<str:tableId>/', views.get_table_details, name="get-table-details"),
+    path('get-reservation-details/<str:tableId>/', views.fetch_reservation_details, name="get-reservation-details"),
     path('create-reservation', views.generateReservation, name="create-reservation")
 ]
  
