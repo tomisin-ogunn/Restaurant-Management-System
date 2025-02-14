@@ -2,6 +2,9 @@ from django.db import models
 from users.models import Waiter
 from django.db.models import Max
 from django.utils import timezone
+from django.utils.timezone import now, make_aware
+from datetime import datetime
+
 
 # Create your models here.
 
@@ -69,5 +72,37 @@ class Reservation(models.Model):
         
         return new_reservation_id
 
+    #Function which automaically updates reservation status, based on current time (time elapsed)
+    @property
+    def time_elapsed(self):
+        """Checks if the reservation has elapsed and updates table status."""
+        now_datetime = now()
+        
+        # Convert reservation_date (string) to a date object
+        reservation_date_obj = datetime.strptime(self.reservation_date, "%Y-%m-%d").date()
 
+        # Convert endTime (string) to a time object
+        end_time_obj = datetime.strptime(self.endTime, "%H:%M").time()
 
+        reservation_datetime = datetime.combine(reservation_date_obj, end_time_obj)
+     
+        # Make the datetime object timezone-aware using the same timezone as now()
+        reservation_datetime = make_aware(reservation_datetime)
+        
+        if now_datetime > reservation_datetime:  # If reservation time has passed
+            table = self.tableNo
+            if table.status == "reserved":  # Only update if still reserved
+                table.status = "available"
+                table.save()
+            return True  # Expired
+
+        return False  # Not expired
+
+        
+        
+        
+        
+        
+        
+        
+        

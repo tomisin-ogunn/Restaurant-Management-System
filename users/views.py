@@ -304,7 +304,7 @@ def displayTableReservation(request):
     manager_id = request.session.get("manager_id")
     manager = Manager.objects.get(managerId=manager_id)
     tables = Table.objects.all()
-    
+
     context = {
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
         'tables': tables,
