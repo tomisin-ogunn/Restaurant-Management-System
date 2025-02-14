@@ -253,7 +253,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="tableBookingForm" method="post">
+                    <form id="tableBookingForm" method="post" action="{% url 'update-reservation' %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="customer-name" class="form-label">Customer Name</label>
@@ -337,6 +337,19 @@
                             }
                         });
                     }
+
+                     {% comment %} If form is successfully submitted, display swal pop up {% endcomment %}
+                     if(messageText === "Reservation details have been updated successfully!"){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Reservation Updated!',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                //Redirects back to page
+                                window.location.href="{% url 'manager-table-reservation' %}"
+                            }
+                        });
+                    }   
 
                 {% endfor %}
             </script>

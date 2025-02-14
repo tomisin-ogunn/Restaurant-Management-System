@@ -305,6 +305,15 @@ def displayTableReservation(request):
     manager = Manager.objects.get(managerId=manager_id)
     tables = Table.objects.all()
 
+    reservations = Reservation.objects.all()
+    
+    for reservation in reservations:
+        if reservation.time_elapsed:
+            # Update table status if it's still marked as reserved
+           continue
+        else:
+            pass
+        
     context = {
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
         'tables': tables,
@@ -417,6 +426,62 @@ def fetch_reservation_details(request, tableId):
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)})
         
+#Function to ammend table reservation details
+def ammend_reservation(request):
+    if request.method == "POST":
+        #Retrieve form inputs
+        reservation_id = request.POST.get("reservationID")
+        customer_name = request.POST.get("upd-customer-name")
+        reservation_date = request.POST.get("upd-reservationDate")
+        fromTime = request.POST.get("upd-fromTime")
+        toTime = request.POST.get("upd-toTime")
+        duration = request.POST.get("upd-reservationDuration")
+        size = request.POST.get("upd-reservationSize")
+        comments = request.POST.get("upd-reservationComments")
+
+        #Obtain the specific reservation to be ammended
+        try:
+            reservation = Reservation.objects.get(reservationId=reservation_id)
+            reservation.size = size
+            reservation.customer_name = customer_name
+            reservation.comments = comments
+            reservation.reservation_date = reservation_date
+            reservation.startTime = fromTime
+            reservation.endTime = toTime
+            reservation.duration = duration
+            reservation.save()
+            
+            #Display success message
+            messages.success(request, "Reservation details have been updated successfully!")
+            
+        except Reservation.DoesNotExist:
+            messages.error(request, "Reservation does not exist.")
+
+    context = {
+        'media_url': settings.MEDIA_URL,
+    }
+
+    return render(request, "managers/reserve_table.html", context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

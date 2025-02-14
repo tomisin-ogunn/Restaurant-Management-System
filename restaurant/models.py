@@ -75,9 +75,8 @@ class Reservation(models.Model):
     #Function which automaically updates reservation status, based on current time (time elapsed)
     @property
     def time_elapsed(self):
-        """Checks if the reservation has elapsed and updates table status."""
         now_datetime = now()
-        
+    
         # Convert reservation_date (string) to a date object
         reservation_date_obj = datetime.strptime(self.reservation_date, "%Y-%m-%d").date()
 
@@ -85,24 +84,35 @@ class Reservation(models.Model):
         end_time_obj = datetime.strptime(self.endTime, "%H:%M").time()
 
         reservation_datetime = datetime.combine(reservation_date_obj, end_time_obj)
-     
+        
         # Make the datetime object timezone-aware using the same timezone as now()
         reservation_datetime = make_aware(reservation_datetime)
         
-        if now_datetime > reservation_datetime:  # If reservation time has passed
+        print(f"DEBUG: Now = {now_datetime}, Reservation Ends At = {reservation_datetime}")
+        
+        if now_datetime > reservation_datetime:  # Check if reservation is expired
             table = self.tableNo
-            if table.status == "reserved":  # Only update if still reserved
+            
+            future_reservations = Reservation.objects.filter(
+                tableNo=table, 
+                reservation_date__gte=self.reservation_date,  # Same or future date
+                endTime__gt=self.endTime  # Ends after this reservation
+            )
+
+            if not future_reservations.exists() and table.status == "reserved":
                 table.status = "available"
                 table.save()
-            return True  # Expired
+                print(f"✅ Table {table.tableNo} marked as available (No future reservations)")
+                return True  # Expired & status updated
+            else:
+                print(f"🛑 Table {table.tableNo} NOT updated, future reservations exist!")
 
         return False  # Not expired
-
-        
-        
-        
-        
-        
-        
-        
+            
+            
+            
+            
+            
+            
+            
         
