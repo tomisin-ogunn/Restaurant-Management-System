@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from .models import Manager, Waiter
-from restaurant.models import Table, Reservation
+from restaurant.models import Table, Reservation, Food, Drink
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 import string
@@ -405,7 +405,7 @@ def fetch_reservation_details(request, tableId):
         table = get_object_or_404(Table, tableNo=tableId)
 
         # Fetch the latest reservation for the given table
-        reservation = Reservation.objects.filter(tableNo=table).first()
+        reservation = Reservation.objects.filter(tableNo=table).order_by('-reservation_date', '-endTime').first()
         
         if reservation:
             # Prepare reservation details in JSON format
@@ -429,6 +429,9 @@ def fetch_reservation_details(request, tableId):
         
 #Function to ammend table reservation details
 def ammend_reservation(request):
+    manager_id = request.session.get("manager_id")
+    manager = Manager.objects.get(managerId=manager_id)
+    
     if request.method == "POST":
         #Retrieve form inputs
         reservation_id = request.POST.get("reservationID")
@@ -460,6 +463,7 @@ def ammend_reservation(request):
 
     context = {
         'media_url': settings.MEDIA_URL,
+        'manager': manager
     }
 
     return render(request, "managers/reserve_table.html", context)
@@ -501,6 +505,20 @@ def displayMenuManagement(request):
     }
     return render(request, 'managers/menu_management.html', context)
 
+#Function which displays the add menu item form
+def displayAddMenuItem(request):
+    manager_id = request.session.get("manager_id")
+    manager = Manager.objects.get(managerId=manager_id)
+    food = Food.objects.all()
+    drinks = Drink.objects.all()
+     
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        "manager": manager,
+        'food': food,
+        'drinks': drinks
+    }
+    return render(request, 'managers/add_menu_item.html', context)
 
 
 

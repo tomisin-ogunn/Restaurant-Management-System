@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Table, Reservation
+from .models import Table, Reservation, Food, Drink
 
 # Register your models here.
 
@@ -20,5 +20,28 @@ class ReservationAdmin(admin.ModelAdmin):
     
 #Register the Reservation model with the custom admin class
 admin.site.register(Reservation, ReservationAdmin)
+
+#Custom admin class for the Food Model
+class FoodAdmin(admin.ModelAdmin):
+    # Customize fields displayed in the admin list view
+    list_display = ('foodId', 'food_name', 'ingredients', 'category', 'duration', 'price', 'image', 'allergen')
+    search_fields = ('foodId', 'food_name', 'category')
+    
+#Register the Food Model with the custom admin class
+admin.site.register(Food, FoodAdmin)    
+
+#Custom Admin class for the Drink Model
+class DrinkAdmin(admin.ModelAdmin):
+    # Customize fields displayed in the admin list view
+    list_display = ('drinkId', 'drink_name', 'description', 'alcoholConc', 'price', 'image', 'category')
+    search_fields = ('drinkId', 'drink_name', 'description', 'price')
+
+#Register the Drink Model with the custom admin class
+admin.site.register(Drink, DrinkAdmin)    
+
+
+
+
+
 
 

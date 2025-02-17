@@ -109,9 +109,50 @@ class Reservation(models.Model):
 
         return False  # Not expired
             
-            
-            
-            
+#Model holding food information
+class Food(models.Model):
+    FOOD_CATEGORIES = [
+        ('Main Meal', 'Main Meal'),
+        ('Fast Food', 'Fast Food'),
+        ('Sides', 'Sides'),
+    ]
+    
+    foodId = models.AutoField(primary_key=True)
+    food_name = models.CharField(max_length=50)
+    ingredients = models.CharField(max_length=100, blank=True)
+    category = models.CharField(max_length=50, choices=FOOD_CATEGORIES ,default='Main Meal')       
+    duration = models.CharField(max_length=10)
+    price = models.CharField(max_length=10)        
+    allergen = models.CharField(max_length=50, blank=True, null=True)        
+    image = models.ImageField(upload_to='food_images/', blank=True, null=True)        
+    
+    #Displays the table view of the model in Django Admin
+    def __str__(self):
+        return f"Table {self.foodId} - {self.food_name}, {self.price}, {self.ingredients}"
+    
+#Model holding Drinks information
+class Drink(models.Model):
+    DRINK_CATEGORIES = [
+        ('Alcohol', 'Alcohol'),
+        ('Soft Drinks', 'Soft Drinks'),
+        ('Shakes', 'Shakes')
+    ]
+    
+    drinkId = models.AutoField(primary_key=True)
+    drink_name = models.CharField(max_length=50)
+    description = models.CharField(max_length=100)
+    alcoholConc = models.CharField(max_length=20)
+    price = models.CharField(max_length=10)
+    image = models.ImageField(upload_to='drink_images/', blank=True, null=True)        
+    category = models.CharField(max_length=50, choices=DRINK_CATEGORIES ,default='Soft Drinks')     
+    
+    #Displays the table view of the model in Django Admin
+    def __str__(self):
+        return f"Table {self.drinkId} - {self.drink_name}, {self.description}, {self.price}"
+    
+    
+    
+    
             
             
             
