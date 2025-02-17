@@ -289,7 +289,7 @@
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger">Cancel Booking</button>
+                <button type="button" onclick="cancelReservation()" class="btn btn-danger">Cancel Booking</button>
                 <button type="submit" class="btn" style="background-color:#FFB000;" onmouseover="this.style.backgroundColor='#CC8A00';"
                 onmouseout="this.style.backgroundColor='#FFB000';">Ammend Booking</button>
                 </div>
@@ -570,7 +570,11 @@
                 const fromTime = document.getElementById("fromTime");
                 const toTime = document.getElementById("toTime");
                 const durationField = document.getElementById("reservationDuration");
-            
+                const updFromTime = document.getElementById("upd-fromTime");
+                const updToTime = document.getElementById("upd-toTime");
+                const updurationField = document.getElementById("upd-reservationDuration");
+
+                //Function to calculate duration for the date & time fields
                 function calculateDuration() {
                     if (fromTime.value && toTime.value) {
                         // Convert time values to Date objects
@@ -587,15 +591,43 @@
                         }
                     }
                 }
+
+                //Function to calculate the updated duration for the new date & fields
+                function calculateUpdatedDuration(){
+                    if (fromTime.value && toTime.value) {
+                        // Convert time values to Date objects
+                        const updFrom = new Date(`1970-01-01T${updfromTime.value}:00`);
+                        const updTo = new Date(`1970-01-01T${updtoTime.value}:00`);
+            
+                        // Calculate the difference in minutes
+                        let updDiffInMinutes = (updTo - updFrom) / (1000 * 60); // Convert milliseconds to minutes
+            
+                        if (updDiffInMinutes < 0) {
+                            updurationField.value = "Invalid time range"; // Handle invalid input
+                        } else {
+                            updurationField.value = diffInMinutes + " minutes";
+                        }
+                    }
+                }
+
                 // Add event listeners for input changes
                 fromTime.addEventListener("change", calculateDuration);
                 toTime.addEventListener("change", calculateDuration);
+
+                updFromTime.addEventListener("change", calculateUpdatedDuration);
+                updToTime.addEventListener("change", calculateUpdatedDuration);
             });
 
             //Event listener to enable disbaled elements input values pass through, on the form submit
             document.getElementById("reserveTableForm").addEventListener("submit", function() {
                 document.getElementById("reservationDate").disabled = false;  // Enable before submit
                 document.getElementById("reservationTableNo").disabled = false; //Enable before submit
+            });
+
+            //Event listener to enable disabled elements input values pass through, on the updated form submit
+            document.getElementById("tableBookingForm").addEventListener("submit", function() {
+                document.getElementById("upd-reservationDate").disabled = false;  // Enable before submit
+                document.getElementById("upd-reservationTableNo").disabled = false; //Enable before submit
             });
 
             // Function to set background color based on table status
@@ -611,6 +643,61 @@
                 element.style.transform = 'scale(1)';  // Reset scaling
                 element.style.boxShadow = 'none';      // Reset box-shadow
             }
+
+            //Function to confirm and cancel reservation placed
+            function cancelReservation() {
+                document.getElementById("reservationID").hidden = false;
+                var reservationId = document.getElementById("reservationID").value;
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Do you want to cancel this booking?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/users/cancelReservation/${reservationId}/`,
+                            type: 'POST',
+                            headers: { "X-CSRFToken": getCSRFToken() },
+                            data: { id: reservationId },
+                            success: function(response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Booking Cancelled!',
+                                    text: 'Your reservation has been successfully cancelled.'
+                                }).then(() => {
+                                    location.reload(); // Refresh the page or update the UI accordingly
+                                    document.getElementById("reservationID").hidden = true;
+                                });
+                            },
+                            error: function(xhr, status, error) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Cancellation Failed',
+                                    text: 'There was an issue cancelling your booking. Please try again.'
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Function to get CSRF token from cookies
+            function getCSRFToken() {
+                let cookieValue = null;
+                let cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.startsWith('csrftoken=')) {
+                        cookieValue = cookie.substring('csrftoken='.length, cookie.length);
+                        break;
+                    }
+                }
+                return cookieValue;
+            }
+
 
         </script>
   

@@ -8,6 +8,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from .models import Manager, Waiter
 from restaurant.models import Table, Reservation
+from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 import string
 import secrets
@@ -433,8 +434,8 @@ def ammend_reservation(request):
         reservation_id = request.POST.get("reservationID")
         customer_name = request.POST.get("upd-customer-name")
         reservation_date = request.POST.get("upd-reservationDate")
-        fromTime = request.POST.get("upd-fromTime")
-        toTime = request.POST.get("upd-toTime")
+        fromTime = request.POST.get("upd-reservationStartTime")
+        toTime = request.POST.get("upd-reservationEndTime")
         duration = request.POST.get("upd-reservationDuration")
         size = request.POST.get("upd-reservationSize")
         comments = request.POST.get("upd-reservationComments")
@@ -463,8 +464,31 @@ def ammend_reservation(request):
 
     return render(request, "managers/reserve_table.html", context)
 
+#Function to cancel booking/reservation
+@csrf_exempt 
+def cancelReservation(request, reservationId):
+    if request.method == "POST":
+        try:            
+            # Retrieve the reservation by ID
+            reservation = get_object_or_404(Reservation, reservationId=reservationId)
+            
+            print(f"{reservation}")
+            # Get the associated table from the reservation
+            table = reservation.tableNo  # Assuming tableNo is a ForeignKey to Table
+            
+            # Update table status to 'available'
+            table.status = "available"
+            table.save()
 
+            # Delete the reservation
+            reservation.delete()
 
+            return JsonResponse({"success": "Reservation cancelled successfully"})
+        
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid request method"}, status=400)
 
 
 
