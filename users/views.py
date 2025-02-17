@@ -490,8 +490,16 @@ def cancelReservation(request, reservationId):
 
     return JsonResponse({"error": "Invalid request method"}, status=400)
 
-
-
+#Function which displays the manager menu management interface
+def displayMenuManagement(request):
+    manager_id = request.session.get("manager_id")
+    manager = Manager.objects.get(managerId=manager_id)
+     
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        "manager": manager,
+    }
+    return render(request, 'managers/menu_management.html', context)
 
 
 
