@@ -88,8 +88,6 @@ class Reservation(models.Model):
         # Make the datetime object timezone-aware using the same timezone as now()
         reservation_datetime = make_aware(reservation_datetime)
         
-        print(f"DEBUG: Now = {now_datetime}, Reservation Ends At = {reservation_datetime}")
-        
         if now_datetime > reservation_datetime:  # Check if reservation is expired
             table = self.tableNo
             
@@ -102,10 +100,8 @@ class Reservation(models.Model):
             if not future_reservations.exists() and table.status == "reserved":
                 table.status = "available"
                 table.save()
-                print(f"✅ Table {table.tableNo} marked as available (No future reservations)")
                 return True  # Expired & status updated
-            else:
-                print(f"🛑 Table {table.tableNo} NOT updated, future reservations exist!")
+            
 
         return False  # Not expired
             

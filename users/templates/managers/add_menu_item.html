@@ -57,7 +57,7 @@
         <!-- Add Menu Item form-->
         <div class="Add-MenuItem-container">
             <br>
-            <form method="POST">
+            <form method="POST" class="addMenuItem-form">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="food-name">Name</label><br>
@@ -65,18 +65,23 @@
                         type="text" 
                         class="form-control"  
                         name="food-name" 
-                        placeholder="Enter first name" 
+                        placeholder="Enter food name" 
                         required>
                 </div>
                 <div class="form-group">
                     <label for="ingredients">Ingredients</label>
-                    <textarea name="ingredients"></textarea>
+                    <textarea name="ingredients" class="form-control"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="category">Category</label>
-                    <select name="category">
-                        <option>Test</option>
-                    </select>
+                    <div class="dropdown-container">
+                        <select name="category" class="form-control custom-select" required>
+                            <option disabled selected style="color:gray">Please select a category</option>
+                                {% for item in categories %}
+                                    <option value="{{ item}}">{{ item }}</option>
+                                {% endfor %}
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="duration">Duration</label>
@@ -84,7 +89,27 @@
                     type="text" 
                     class="form-control"  
                     name="duration" 
-                    placeholder="Enter first name" 
+                    placeholder="Enter cooking duration" 
+                    required>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">Price</label>
+                    <input 
+                    type="text" 
+                    class="form-control"  
+                    name="duration" 
+                    placeholder="Enter the price (£)" 
+                    required>
+                </div>
+
+                <div class="form-group">
+                    <label for="allergen">Allergen</label>
+                    <input 
+                    type="text" 
+                    class="form-control"  
+                    name="allergen" 
+                    placeholder="Enter cooking duration" 
                     required>
                 </div>
 
@@ -93,7 +118,7 @@
                 <div></div>
                 <button type="submit" class="btn submit-button" style="width:100%; 
                     background-color:#FFB000" onmouseover="this.style.backgroundColor='#CC8A00';"
-                    onmouseout="this.style.backgroundColor='#FFB000';" >Add Waiter
+                    onmouseout="this.style.backgroundColor='#FFB000';" >Add Item
                 </button>
                             
                 <button type="button" onclick="resetForm()" class="btn btn-secondary">Clear </button>   

@@ -257,6 +257,30 @@ nav{
     margin: 0 auto;
 }
 
+.Add-MenuItem-container{
+    width: 35vw;
+    height:70vh;
+    display:flex;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 2px solid #eeeeee;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.addMenuItem-form{
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* Space between form fields */
+    width: 100%; /* Make form take full width */
+    margin: 0 auto; /* Center form horizontally */
+    padding: 20px; /* Add padding around the form */
+    background-color: #fbfbfb; /* Light background for contrast */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
 
 
 

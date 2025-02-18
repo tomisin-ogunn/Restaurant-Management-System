@@ -341,6 +341,9 @@ def get_table_details(request, tableId):
         
 #Function to create a reservation (append to the model)
 def generateReservation(request):
+    manager_id = request.session.get("manager_id")
+    manager = Manager.objects.get(managerId=manager_id)
+    
     if request.method == "POST":
         # Retrieve form inputs
         table_No = request.POST.get("tableNo")
@@ -386,6 +389,7 @@ def generateReservation(request):
             messages.success(request, "Reservation added successfully!")
             context = {
                 'media_url': settings.MEDIA_URL,  # Passing MEDIA_URL to template
+                'manager': manager
             }
             return render(request, "managers/reserve_table.html", context)
 
@@ -509,13 +513,13 @@ def displayMenuManagement(request):
 def displayAddMenuItem(request):
     manager_id = request.session.get("manager_id")
     manager = Manager.objects.get(managerId=manager_id)
-    food = Food.objects.all()
+    unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
     drinks = Drink.objects.all()
      
     context = {
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
         "manager": manager,
-        'food': food,
+        'categories': unique_categories,
         'drinks': drinks
     }
     return render(request, 'managers/add_menu_item.html', context)
