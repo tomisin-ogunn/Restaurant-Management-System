@@ -24,7 +24,7 @@ admin.site.register(Reservation, ReservationAdmin)
 #Custom admin class for the Food Model
 class FoodAdmin(admin.ModelAdmin):
     # Customize fields displayed in the admin list view
-    list_display = ('foodId', 'food_name', 'ingredients', 'category', 'duration', 'price', 'image', 'allergen')
+    list_display = ('foodId', 'food_name', 'ingredients', 'category', 'duration', 'price', 'image', 'allergen', 'calories')
     search_fields = ('foodId', 'food_name', 'category')
     
 #Register the Food Model with the custom admin class
@@ -33,7 +33,7 @@ admin.site.register(Food, FoodAdmin)
 #Custom Admin class for the Drink Model
 class DrinkAdmin(admin.ModelAdmin):
     # Customize fields displayed in the admin list view
-    list_display = ('drinkId', 'drink_name', 'description', 'alcoholConc', 'price', 'image', 'category')
+    list_display = ('drinkId', 'drink_name', 'description', 'alcoholConc', 'price', 'image', 'category', 'calories')
     search_fields = ('drinkId', 'drink_name', 'description', 'price')
 
 #Register the Drink Model with the custom admin class

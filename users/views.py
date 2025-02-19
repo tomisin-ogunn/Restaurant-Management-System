@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
+from django.utils import timezone
 from .models import Manager, Waiter
 from restaurant.models import Table, Reservation, Food, Drink
 from django.views.decorators.csrf import csrf_exempt
@@ -306,7 +307,7 @@ def displayTableReservation(request):
     manager = Manager.objects.get(managerId=manager_id)
     tables = Table.objects.all()
 
-    reservations = Reservation.objects.all()
+    reservations = Reservation.objects.filter(reservation_date=timezone.now().date())
     
     for reservation in reservations:
         if reservation.time_elapsed:
@@ -514,7 +515,7 @@ def displayAddMenuItem(request):
     manager_id = request.session.get("manager_id")
     manager = Manager.objects.get(managerId=manager_id)
     unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
-    drinks = Drink.objects.all()
+    drinks = [choice[0] for choice in Drink._meta.get_field('category').choices]
      
     context = {
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
@@ -524,13 +525,92 @@ def displayAddMenuItem(request):
     }
     return render(request, 'managers/add_menu_item.html', context)
 
+#Function to add menu item (Food/Drink)
+def addMenuItem(request):
+    manager_id = request.session.get("manager_id")
+    manager = Manager.objects.get(managerId=manager_id)
+    
+    if request.method == "POST":
+        itemType = request.POST.get("itemType")
+        print(f"{itemType}")
+        
+        if itemType == "Drink":
+            #Obtain form inputs
+            drink_name = request.POST.get("drink-name")
+            description = request.POST.get("description")
+            category = request.POST.get("drink-category")
+            alcohol_conc = request.POST.get("alcohol-conc")
+            price = request.POST.get("drink-price")
+            image = request.FILES.get("drink-image")
+            calories = request.POST.get("drink-calories")
+            
+            try:
+                drink = Drink(
+                    drink_name=drink_name,
+                    description=description,
+                    category=category,
+                    alcoholConc=alcohol_conc,
+                    price=price,
+                    image=image,
+                    calories=calories
+                )
+                
+                #Save the drink in the model
+                drink.save()
+                
+                #Display success message
+                messages.success(request, "Drink has been successfully added!")
+                context = {
+                    'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+                    'manager': manager
+                }
+                return render(request, "managers/add_menu_item.html", context)
 
+            
+            except Exception as e:
+                messages.error(request, f"An error occurred: {e}")
+                          
+        elif itemType == "Food":
+            #Obtain form inputs
+            food_name = request.POST.get("food-name")
+            ingredients = request.POST.get("ingredients")
+            food_category = request.POST.get("category")
+            duration = request.POST.get("duration")
+            food_price = request.POST.get("food-price")
+            food_image = request.FILES.get("food-image")
+            allergen = request.POST.get("allergen")
+            calories = request.POST.get("food-calories")
 
-
-
-
-
-
+            try:
+                food = Food(
+                    food_name=food_name,
+                    ingredients=ingredients,
+                    category=food_category,
+                    duration=duration,
+                    price=food_price,
+                    image=food_image,
+                    allergen=allergen,
+                    calories=calories
+                )
+                
+                #Save the food item in the model
+                food.save()
+                
+                #Display success message
+                messages.success(request, "Food item has been successfully added!")
+                context = {
+                    'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+                    'manager': manager
+                }
+                return render(request, "managers/add_menu_item.html", context)
+    
+            except Exception as e:
+                messages.error(request, f"An error occurred: {e}")
+        context = {
+            'media_url': settings.MEDIA_URL,    # Passing the MEDIA_URL to the template
+            'manager': manager
+        }
+        return render(request, "managers/add_menu_item.html", context)
 
 
 

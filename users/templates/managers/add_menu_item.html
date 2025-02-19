@@ -57,63 +57,158 @@
         <!-- Add Menu Item form-->
         <div class="Add-MenuItem-container">
             <br>
-            <form method="POST" class="addMenuItem-form">
+            <form method="POST" enctype="multipart/form-data" class="addMenuItem-form" action="{% url 'append-menu-item' %}">
                 {% csrf_token %}
+
                 <div class="form-group">
-                    <label for="food-name">Name</label><br>
-                    <input 
+                    <label for="itemType">Menu Item</label><br>
+                    <div class="dropdown-container">
+                        <select name="itemType" id="itemType" class="form-control custom-select" required>
+                            <option selected >Food</option>
+                            <option>Drink</option>
+                        </select>
+                    </div>    
+
+                </div>
+
+                <div class="drink-form">
+                    <div class="form-group">
+                        <label for="drink-name">Name</label><br>
+                        <input 
+                            type="text" 
+                            class="form-control"  
+                            name="drink-name" 
+                            placeholder="Enter drink name" >
+                    </div>
+                    <div class="form-group">
+                        <label for="ingredients">Description</label>
+                        <textarea name="description" placeholder="Enter the drink description" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <div class="dropdown-container">
+                            <select name="drink-category" class="form-control custom-select">
+                                <option selected style="color:gray">Please select a category</option>
+                                    {% for drink in drinks %}
+                                        <option value="{{ drink }}">{{ drink }}</option>
+                                    {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="alcohol-conc">Alcohol Concentration</label>
+                        <input 
                         type="text" 
                         class="form-control"  
-                        name="food-name" 
-                        placeholder="Enter food name" 
-                        required>
-                </div>
-                <div class="form-group">
-                    <label for="ingredients">Ingredients</label>
-                    <textarea name="ingredients" class="form-control"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <div class="dropdown-container">
-                        <select name="category" class="form-control custom-select" required>
-                            <option disabled selected style="color:gray">Please select a category</option>
-                                {% for item in categories %}
-                                    <option value="{{ item}}">{{ item }}</option>
-                                {% endfor %}
-                        </select>
+                        name="alcohol-conc" 
+                        placeholder="Enter the alcohol concentration if present" 
+                        >
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="duration">Duration</label>
-                    <input 
-                    type="text" 
-                    class="form-control"  
-                    name="duration" 
-                    placeholder="Enter cooking duration" 
-                    required>
+
+                    <div class="form-group">
+                        <label for="price">Price</label>
+                        <input 
+                        type="text" 
+                        class="form-control"  
+                        name="drink-price" 
+                        placeholder="Enter the price (£)" 
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="drink-image">Upload an Image:</label>
+                        <input 
+                            type="file" 
+                            class="form-control" 
+                            name="drink-image" 
+                            id="drink-image"
+                            accept="image/*" 
+                            >
+                    </div>  
+                    
+                    <div class="form-group">
+                        <label for="calories">Calories</label>
+                        <input 
+                        type="text" 
+                        class="form-control"  
+                        name="drink-calories" 
+                        placeholder="Enter the calories (kJ)">
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label for="duration">Price</label>
-                    <input 
-                    type="text" 
-                    class="form-control"  
-                    name="duration" 
-                    placeholder="Enter the price (£)" 
-                    required>
+                <div class="food-form">
+                    <div class="form-group">
+                        <label for="food-name">Name</label><br>
+                        <input 
+                            type="text" 
+                            class="form-control"  
+                            name="food-name" 
+                            placeholder="Enter food name">
+                    </div>
+                    <div class="form-group">
+                        <label for="ingredients">Ingredients</label>
+                        <textarea name="ingredients" placeholder="Enter the ingredients." class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <div class="dropdown-container">
+                            <select name="category" class="form-control custom-select">
+                                <option disabled selected style="color:gray">Please select a category</option>
+                                    {% for item in categories %}
+                                        <option value="{{ item}}">{{ item }}</option>
+                                    {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">Duration</label>
+                        <input 
+                        type="text" 
+                        class="form-control"  
+                        name="duration" 
+                        placeholder="Enter cooking duration">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price">Price</label>
+                        <input 
+                        type="text" 
+                        class="form-control"  
+                        name="food-price" 
+                        placeholder="Enter the price (£)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="food-image">Upload an Image:</label>
+                        <input 
+                            type="file" 
+                            class="form-control" 
+                            name="food-image" 
+                            id="food-image"
+                            accept="image/*">
+                    </div>    
+
+                    <div class="form-group">
+                        <label for="allergen">Allergen</label>
+                        <input 
+                        type="text" 
+                        class="form-control"  
+                        name="allergen" 
+                        placeholder="Enter any allergens present">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="calories">Calories</label>
+                        <input 
+                        type="text" 
+                        class="form-control"  
+                        name="food-calories" 
+                        placeholder="Enter the calories (kJ)">
+                    </div>
+
                 </div>
 
-                <div class="form-group">
-                    <label for="allergen">Allergen</label>
-                    <input 
-                    type="text" 
-                    class="form-control"  
-                    name="allergen" 
-                    placeholder="Enter cooking duration" 
-                    required>
-                </div>
-
-                <div></div>
                 <div></div>
                 <div></div>
                 <button type="submit" class="btn submit-button" style="width:100%; 
@@ -127,7 +222,145 @@
 
         </div>
         
-    {% endblock %}
+    {% endblock %}]
+
+
+    <!-- Dynamic JavaScript Functionality -->
+
+    {% block scripts %}
+
+        {% comment %} Checks for any error messages, and displays swal pop ups{% endcomment %}
+        {% if messages %}
+            <script>
+                {% for message in messages %}
+
+                    var messageText = "{{ message|escapejs }}"
+
+                    {% comment %} If form is successfully submitted, display swal pop up {% endcomment %}
+                    if(messageText === "Drink has been successfully added!"){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Drink has been successfully added!',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Displays generated password pop up
+                                window.location.href="{% url 'add-menu-item' %}";
+                            }
+                        });
+                    }   
+
+                    else if(messageText === "Food item has been successfully added!"){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Food item has been successfully added!',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Displays generated password pop up
+                                window.location.href="{% url 'add-menu-item' %}";
+                            }
+                        });
+                    }   
+               
+                {% endfor %}
+            </script>
+
+        {% endif %}
+
+        <script>
+
+            //Function to display Swal Pop Up for when 'Log Out' is clicked
+            function logOutConfirmation(){
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Do you want to log out?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Logic for logging out
+                        window.location.href = "{% url 'manager-logout' %}";
+                    } else if (result.isDismissed) {
+                        // Logic for canceling logout
+                        return false;
+                    }
+                });
+            }
+
+            //Function to reset form values, when 'clear' button is clicked
+            function resetForm(){
+                var form = document.querySelector('.addMenuItem-form');
+                form.reset();
+            }
+
+            //Toggle Funtionality on menu item form based on item selected
+            document.addEventListener("DOMContentLoaded", function () {
+                // Get the select element by ID
+                let itemTypeSelect = document.getElementById("itemType");
+                var foodItemForm = document.getElementsByClassName('food-form')[0];
+                var drinkItemForm = document.getElementsByClassName('drink-form')[0];
+           
+                // Default toggle (ensure only one form is visible at start)
+                // Common styles for visible forms
+                function applyFormStyles(form) {
+                    form.style.display = "flex";
+                    form.style.flexDirection = "column";
+                    form.style.gap = "18px";
+                    form.style.width = "100%";
+                }
+
+                // Hide drink form initially & apply styles
+                drinkItemForm.style.display = "none";  // Hide drinks form initially
+                applyFormStyles(foodItemForm);         // Apply styles to food form
+
+                // Add event listener for 'change' event
+                itemTypeSelect.addEventListener("change", function () {
+                    if (itemTypeSelect.value === "Drink") {
+                        applyFormStyles(drinkItemForm);
+                        drinkItemForm.style.display = "flex";
+                        foodItemForm.style.display = "none";
+                    } else {
+                        applyFormStyles(foodItemForm);
+                        drinkItemForm.style.display = "none";
+                        foodItemForm.style.display = "flex";
+                    }
+                });
+            });
+
+            //Event listener to enable disbaled elements input values pass through, on the form submit
+            {% comment %} document.getElementsByClassName("addMenuItem-form")[0].addEventListener("submit", function() {
+                let itemTypeSelect = document.getElementById("itemType");
+                var drinkForm = document.getElementsByClassName("drink-form")[0].elements;
+                var foodForm = document.getElementsByClassName("food-name")[0].elements;
+                
+                console.log(itemTypeSelect);
+                
+                // Remove 'required' attribute from all drinkForm elements if itemType is food
+                if (itemTypeSelect.value === "food") {
+                    for (let element of drinkForm) {
+                        element.removeAttribute("required");
+                    }
+                    // Add 'required' attribute to food form elements if itemType is food
+                    for (let element of foodForm) {
+                        element.setAttribute("required", "");
+                    }
+                } 
+                // Remove 'required' attribute from all foodForm elements if itemType is drink
+                else if (itemTypeSelect.value === "drink") {
+                    for (let element of foodForm) {
+                        element.removeAttribute("required");
+                    }
+                    // Add 'required' attribute to drink form elements if itemType is drink
+                    for (let element of drinkForm) {
+                        element.setAttribute("required", "");
+                    }
+                }
+
+            }); {% endcomment %}
+
+        </script>
+
+    {% endblock%}
 
 </body>
 

@@ -111,6 +111,7 @@ class Food(models.Model):
         ('Main Meal', 'Main Meal'),
         ('Fast Food', 'Fast Food'),
         ('Sides', 'Sides'),
+        ('Deserts', 'Deserts')
     ]
     
     foodId = models.AutoField(primary_key=True)
@@ -120,7 +121,8 @@ class Food(models.Model):
     duration = models.CharField(max_length=10)
     price = models.CharField(max_length=10)        
     allergen = models.CharField(max_length=50, blank=True, null=True)        
-    image = models.ImageField(upload_to='food_images/', blank=True, null=True)        
+    image = models.ImageField(upload_to='food_images/', blank=True, null=True)   
+    calories = models.CharField(max_length=10, null=True, blank=True)     
     
     #Displays the table view of the model in Django Admin
     def __str__(self):
@@ -136,11 +138,12 @@ class Drink(models.Model):
     
     drinkId = models.AutoField(primary_key=True)
     drink_name = models.CharField(max_length=50)
-    description = models.CharField(max_length=100)
-    alcoholConc = models.CharField(max_length=20)
+    description = models.CharField(max_length=100, blank=True, null=True)
+    alcoholConc = models.CharField(max_length=20, blank=True, null=True)
     price = models.CharField(max_length=10)
     image = models.ImageField(upload_to='drink_images/', blank=True, null=True)        
-    category = models.CharField(max_length=50, choices=DRINK_CATEGORIES ,default='Soft Drinks')     
+    category = models.CharField(max_length=50, choices=DRINK_CATEGORIES ,default='Soft Drinks')
+    calories = models.CharField(max_length=10, blank=True, null=True)     
     
     #Displays the table view of the model in Django Admin
     def __str__(self):

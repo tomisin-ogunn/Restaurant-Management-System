@@ -44,7 +44,8 @@ urlpatterns = [
     path('update-reservation', views.ammend_reservation, name="update-reservation"),
     path('cancelReservation/<str:reservationId>/', views.cancelReservation, name="cancelReservation"),
     path('manager-menu-management', views.displayMenuManagement, name="manager-menu-management"),
-    path('add-menu-item', views.displayAddMenuItem, name="add-menu-item")
+    path('add-menu-item', views.displayAddMenuItem, name="add-menu-item"),
+    path('append-menu-item', views.addMenuItem, name="append-menu-item")
 ]
  
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

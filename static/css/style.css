@@ -266,6 +266,7 @@ nav{
     border: 2px solid #eeeeee;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow-y:auto;
 }
 
 .addMenuItem-form{
@@ -279,7 +280,18 @@ nav{
     border: 1px solid #ddd; /* Subtle border */
     border-radius: 10px; /* Rounded corners */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    overflow-y:auto;
+    max-height:100%;
 }
+
+.food-form, .drink-form{
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* Space between form fields */
+    width: 100%; /* Make form take full width */
+}
+
+
 
 
 
