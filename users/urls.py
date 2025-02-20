@@ -22,13 +22,18 @@ from django.conf import settings
 import debug_toolbar
 
 urlpatterns = [
-    #Route for user views (manager)
+    #Route for user views (manager) authentication functionalities
     path('manager-login/', views.display_managerLogin, name="manager-login"),
     path('manager-home/', views.displayManagerHome, name="manager-home"),
     path('manager_verification/', views.manager_loginAuth, name="manager_ver"),
     path('manager-logout/', views.manager_logout, name="manager-logout"),
     path('manager_email_verifier', views.managerEmail_verifier, name='manager_email_verifier'),
     path('manager-update-password', views.update_ManagerPassword, name="manager-update-password"),
+   
+]
+
+#Url Patterns for waiter management functionalities for managers
+urlpatterns += [
     path('manager-waiter-management/', views.displayWaiterManagement, name="manager-waiter-management"),
     path('manager-add-waiter/', views.displayWaiterAddForm, name="add-waiter"),
     path('manager-edit-waiter/', views.displayWaiterEditForm, name="edit-waiter"),
@@ -37,15 +42,31 @@ urlpatterns = [
     path('update-waiter-details', views.updateWaiterDetails, name="update-waiter-details"),
     path('manager-assign-waiter/', views.displayAssignWaiterForm, name="assign-waiter"),
     path('assign-waiter-table/', views.assignWaiter, name="assign-waiter-table"),
+]
+
+#Url Patterns for table reservation funcionalities for managers
+urlpatterns += [
     path('manager-table-reservation/', views.displayTableReservation, name="manager-table-reservation"),
     path('get-table-details/<str:tableId>/', views.get_table_details, name="get-table-details"),
     path('get-reservation-details/<str:tableId>/', views.fetch_reservation_details, name="get-reservation-details"),
     path('create-reservation', views.generateReservation, name="create-reservation"),
     path('update-reservation', views.ammend_reservation, name="update-reservation"),
     path('cancelReservation/<str:reservationId>/', views.cancelReservation, name="cancelReservation"),
+]
+
+#Url Patterns for menu management functionality for managers
+urlpatterns += [
     path('manager-menu-management', views.displayMenuManagement, name="manager-menu-management"),
     path('add-menu-item', views.displayAddMenuItem, name="add-menu-item"),
-    path('append-menu-item', views.addMenuItem, name="append-menu-item")
+    path('append-menu-item', views.addMenuItem, name="append-menu-item"),
+    path('manager-menu-items', views.displayMenuItems, name="manager-menu-items")
 ]
  
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
+
+
+
+

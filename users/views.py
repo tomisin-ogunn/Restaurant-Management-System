@@ -612,6 +612,23 @@ def addMenuItem(request):
         }
         return render(request, "managers/add_menu_item.html", context)
 
+#Function to display the list of menu items, for managers to update
+def displayMenuItems(request):
+    manager_id = request.session.get("manager_id")
+    manager = Manager.objects.get(managerId=manager_id)
+    food = Food.objects.all()
+    drinks = Drink.objects.all()
+     
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        "manager": manager,
+        "food": food,
+        "drinks": drinks
+    }
+    return render(request, 'managers/menu_items.html', context)
+
+
+
 
 
 

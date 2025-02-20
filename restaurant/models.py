@@ -116,7 +116,7 @@ class Food(models.Model):
     
     foodId = models.AutoField(primary_key=True)
     food_name = models.CharField(max_length=50)
-    ingredients = models.CharField(max_length=100, blank=True)
+    ingredients = models.CharField(max_length=255, blank=True)
     category = models.CharField(max_length=50, choices=FOOD_CATEGORIES ,default='Main Meal')       
     duration = models.CharField(max_length=10)
     price = models.CharField(max_length=10)        
@@ -138,7 +138,7 @@ class Drink(models.Model):
     
     drinkId = models.AutoField(primary_key=True)
     drink_name = models.CharField(max_length=50)
-    description = models.CharField(max_length=100, blank=True, null=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
     alcoholConc = models.CharField(max_length=20, blank=True, null=True)
     price = models.CharField(max_length=10)
     image = models.ImageField(upload_to='drink_images/', blank=True, null=True)        
