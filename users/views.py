@@ -617,14 +617,15 @@ def displayMenuItems(request):
     food = Food.objects.all()
     drinks = Drink.objects.all()
     unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
-
+    drink_categories = [choice[0] for choice in Drink._meta.get_field('category').choices]
      
     context = {
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
         "manager": manager,
         "food": food,
         "drinks": drinks,
-        "categories": unique_categories
+        "categories": unique_categories,
+        "drinkCategories": drink_categories
     }
     return render(request, 'managers/menu_items.html', context)
 

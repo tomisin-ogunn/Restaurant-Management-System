@@ -292,7 +292,7 @@ nav{
 }
 
 /* Restaurant Menu Item Display */
-.restaurant-menu {
+.restaurant-menu, .restaurant-menu-drinks {
     display: flex;
     flex-wrap: wrap;
     gap: 35px;
@@ -302,7 +302,7 @@ nav{
     
 }
 
-.menuitem-box {
+.menuitem-box, .drink-menuitem-box {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -320,20 +320,20 @@ nav{
     max-width: 250px; /* Prevents growing too large */
 }
 
-.food-image {
+.food-image, .drink-image {
     width: 100%;
     height: 150px;
     object-fit: cover;
     border-radius: 8px;
 }
 
-.food-name {
+.food-name, .drink-name {
     font-size: 18px;
     font-weight: bold;
     margin: 10px 0;
 }
 
-.food-price, .food-calories {
+.food-price, .food-calories, .drink-price, .drink-calories, .drink-AlcoholConc {
     font-size: 14px;
     color: #555;
     display: flex;
@@ -447,7 +447,26 @@ input[type="radio"]:hover {
     background-color: #fab00f;
 }
 
+.drink-category {
+    width: 100%;
+    margin-top: 10px;
+}
 
+.category-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+    padding: 10px 0;
+    border-bottom: 2px solid #FFB000;
+    color: #444444;
+}
+
+.drink-category-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+}
 
 
 

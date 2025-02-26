@@ -64,7 +64,7 @@
 
         <br><br><br>
         
-        <!-- Restaurant menu - Items-->
+        <!-- Restaurant menu - Food Items-->
         <div class="restaurant-menu">
             {% for item in food %}
 
@@ -75,7 +75,9 @@
 
                 <!-- Food Id -->
                 <input hidden class="food-id" value="{{ item.foodId }}">
-
+                
+                <!-- Category -->
+                <input hidden class="food-category" value="{{ item.category }}">
                 <!-- Food Name -->
                 <h3 class="food-name">{{ item.food_name }}</h3>
     
@@ -124,6 +126,90 @@
             {% endfor %}
         </div>
 
+        <!-- Restaurant menu - Drink Items -->
+        <div class="restaurant-menu-drinks">
+            {% for category in drinkCategories %}
+                <div class="drink-category">
+                    <h2 class="category-title">{{ category }}</h2>
+                </div>
+                <div class="drink-category-row">
+                    {% for item in drinks %}
+                        {% if item.category == category %}
+                            <div class="drink-menuitem-box"
+                                onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.15)';"
+                                onmouseout="setBackgroundColor(this)">
+        
+                                <!-- Drink Image -->
+                                <img src="{{ media_url }}{{ item.image }}" alt="{{ item.drink_name }}" class="drink-image">
+        
+                                <!-- Drink Id -->
+                                <input hidden class="drink-id" value="{{ item.drinkId }}">
+                                <input hidden class="itemType" value="drink">
+
+                                <!-- Drink Name -->
+                                <h3 class="drink-name">{{ item.drink_name }}</h3>
+        
+                                <!-- Price -->
+                                <p class="drink-price">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-coin" viewBox="0 0 16 16">
+                                        <path d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518z"/>
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                        <path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11m0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12"/>
+                                    </svg> &nbsp;&nbsp; {{ item.price }}
+                                </p>
+        
+                                <!-- Calories -->
+                                <p class="drink-calories">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fire" viewBox="0 0 16 16">
+                                        <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15"/>
+                                    </svg> &nbsp;&nbsp; {{ item.calories }}
+                                </p>
+
+                                <!-- Alcohol Concentration -->
+                                {% if category == 'Alcohol'%}
+                                    <p class="drink-AlcoholConc">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cup-straw" viewBox="0 0 16 16">
+                                            <path d="M13.902.334a.5.5 0 0 1-.28.65l-2.254.902-.4 1.927c.376.095.715.215.972.367.228.135.56.396.56.82q0 .069-.011.132l-.962 9.068a1.28 1.28 0 0 1-.524.93c-.488.34-1.494.87-3.01.87s-2.522-.53-3.01-.87a1.28 1.28 0 0 1-.524-.93L3.51 5.132A1 1 0 0 1 3.5 5c0-.424.332-.685.56-.82.262-.154.607-.276.99-.372C5.824 3.614 6.867 3.5 8 3.5c.712 0 1.389.045 1.985.127l.464-2.215a.5.5 0 0 1 .303-.356l2.5-1a.5.5 0 0 1 .65.278M9.768 4.607A14 14 0 0 0 8 4.5c-1.076 0-2.033.11-2.707.278A3.3 3.3 0 0 0 4.645 5c.146.073.362.15.648.222C5.967 5.39 6.924 5.5 8 5.5c.571 0 1.109-.03 1.588-.085zm.292 1.756C9.445 6.45 8.742 6.5 8 6.5c-1.133 0-2.176-.114-2.95-.308a6 6 0 0 1-.435-.127l.838 8.03c.013.121.06.186.102.215.357.249 1.168.69 2.438.69s2.081-.441 2.438-.69c.042-.029.09-.094.102-.215l.852-8.03a6 6 0 0 1-.435.127 9 9 0 0 1-.89.17zM4.467 4.884s.003.002.005.006zm7.066 0-.005.006zM11.354 5a3 3 0 0 0-.604-.21l-.099.445.055-.013c.286-.072.502-.149.648-.222"/>
+                                        </svg> &nbsp;&nbsp; {{ item.alcoholConc }}
+                                    </p>
+
+                                {% endif %}
+
+                                <!-- View More Info Button -->
+                                <div class="viewBtn-Div">
+                                    <button class="btn" id="view-info-btn" style="background-color: #FFB000; width:100%;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                                    onmouseout="this.style.backgroundColor='#FFB000';">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                        </svg> View more
+                                    </button>
+                                </div>
+
+                                <br>
+
+                                <!-- Edit and Delete Buttons -->
+                                <div class="menu-actions">
+                                    <button onclick="openMenuItemDetails('{{ item.drinkId }}')" class="btn btn-secondary" id="edit-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                                        </svg> Edit
+                                    </button>
+                                    <button class="btn btn-danger" onclick="confirmDeleteSwal('{{ item.drinkId }}')" id="delete-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+                                        </svg> Delete
+                                    </button>
+                                </div>
+
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        
         <br><br>
 
         <!-- Edit Menu Item Modal -->
@@ -371,6 +457,151 @@
                 console.log(document.getElementById("upd-foodID").value)
             });
 
+            //Function which toggles display of menu items, based on category selected
+            document.addEventListener("DOMContentLoaded", function () {
+                const radioButtons = document.querySelectorAll("input[name='category']");
+                const drinkMenuDiv = document.querySelector(".restaurant-menu-drinks");
+                drinkMenuDiv.style.display = "none";
+
+                radioButtons.forEach(radio => {
+                    radio.addEventListener("change", function () {
+                        const selectedCategory = this.parentElement.textContent.trim();
+                        if(selectedCategory === "Drinks"){
+                            displayDrinkItems();
+                        }
+                        else{
+                            filterMenuItems(selectedCategory);
+                        }
+                    });
+                });
+
+                function displayDrinkItems(){
+                    const drinkMenuDiv = document.querySelector(".restaurant-menu-drinks");
+                    const foodMenuDiv = document.querySelector(".restaurant-menu");
+                    const menuItems = document.querySelectorAll(".drink-menuitem-box");
+
+                    foodMenuDiv.style.display = "none";
+
+                    //Drink Container
+                    drinkMenuDiv.style.display = "flex";
+                    drinkMenuDiv.style.flexWrap = "wrap";
+                    drinkMenuDiv.style.gap = "35px";
+                    drinkMenuDiv.style.justifyContent = "flex-start";
+                    drinkMenuDiv.style.margin = "0 auto";
+                    drinkMenuDiv.style.paddingLeft = "250px";
+
+                    // Apply styles to category title
+                    const categoryTitles = document.querySelectorAll(".category-title");
+                    categoryTitles.forEach(title => {
+                        title.style.fontSize = "24px";
+                        title.style.fontWeight = "bold";
+                        title.style.textAlign = "left";
+                        title.style.padding = "10px 0";
+                        title.style.borderBottom = "2px solid #FFB000";
+                        title.style.color = "#444444";
+                        title.offsetHeight;
+                    });
+
+                    // Apply styles to category rows
+                    const categoryRows = document.querySelectorAll(".drink-category-row");
+                    categoryRows.forEach(row => {
+                        row.style.display = "grid";
+                        row.style.gridTemplateColumns = "repeat(4, minmax(200px, 1fr))"; // 4 equal columns
+                        row.style.gap = "35px"; 
+                        row.offsetHeight;
+                    });
+
+                    //Apply styles to drink category
+                    const drinkCategories = document.querySelectorAll(".drink-category");
+                    drinkCategories.forEach(row => {
+                        row.style.width = "100%";
+                        row.style.marginTop = "10px";
+                        row.offsetHeight;
+                    });
+
+                    //Apply syles to buttons
+
+                    const menuActions = document.querySelectorAll(".menu-actions");
+                    menuActions.forEach(row => {
+                        row.style.display = "flex";
+                        row.style.gap = "10px";
+                        row.marginTop = "10px;"
+                        row.offsetHeight;
+                    });
+
+                    //Item Style Display
+                    menuItems.forEach(item => {
+                        //Item Style Display 
+                        item.style.display = "flex";
+                        item.style.flexDirection = "column";
+                        item.style.alignItems = "center";
+                        item.style.padding = "15px";
+                        item.style.borderRadius = "10px";
+                        item.style.background = "#f8f8f8";
+                        item.style.boxShadow = "2px 2px 10px rgba(0, 0, 0, 0.1)";
+                        item.style.textAlign = "center";
+                        item.style.cursor = "pointer";
+                        item.style.position = "relative";
+                        item.style.transition = "transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease";
+                        item.style.width = "100%";
+                        item.style.maxWidth = "270px";
+                        item.style.minWidth = "210px";
+                    });
+
+                    drinkMenuDiv.offsetHeight;
+
+                }
+                
+                function filterMenuItems(category) {
+                    const menuItems = document.querySelectorAll(".menuitem-box");
+                    const parentContainer = document.querySelector(".restaurant-menu");
+                    const drinkMenuDiv = document.querySelector(".restaurant-menu-drinks");
+                    drinkMenuDiv.style.display = "none";
+
+
+                    if (parentContainer) {
+                        parentContainer.style.display = "flex";
+                        parentContainer.style.flexWrap = "wrap";
+                        parentContainer.style.gap = "35px";
+                        parentContainer.style.justifyContent = "flex-start";
+                        parentContainer.style.margin = "0 auto";
+                        parentContainer.style.paddingLeft = "250px";
+                    }
+
+                    menuItems.forEach(item => {
+                        const itemCategory = item.querySelector(".food-category").value;
+                        
+                        if (itemCategory === category) {
+                            item.style.display = "flex";
+                            item.style.flexDirection = "column";
+                            item.style.alignItems = "center";
+                            item.style.padding = "15px";
+                            item.style.borderRadius = "10px";
+                            item.style.background = "#f8f8f8";
+                            item.style.boxShadow = "2px 2px 10px rgba(0, 0, 0, 0.1)";
+                            item.style.textAlign = "center";
+                            item.style.cursor = "pointer";
+                            item.style.position = "relative";
+                            item.style.transition = "transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease";
+                            item.style.width = "calc(25% - 20px)";
+                            item.style.minWidth = "200px";
+                            item.style.maxWidth = "250px";
+
+                        } else {
+                            item.style.display = "none";
+                        }
+                    });
+
+                    parentContainer.offsetHeight;
+                }
+                
+                // Initialize filter with checked category
+                const checkedRadio = document.querySelector("input[name='category']:checked");
+                if (checkedRadio) {
+                    filterMenuItems(checkedRadio.parentElement.textContent.trim());
+                }
+            });
+            
         </script>
 
     {% endblock %}
