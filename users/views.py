@@ -631,60 +631,105 @@ def displayMenuItems(request):
 
 #Function which removes a menu item on cancel
 @csrf_exempt
-def removeMenuItem(request, foodId):
+def removeMenuItem(request, itemId, itemType):
     if request.method == "POST":
-        try:
-            #Retrieve the menu item based on the ID
-            menu_item = get_object_or_404(Food, foodId=foodId)
+        if itemType == "food":
+            try:
+                #Retrieve the menu item based on the ID
+                menu_item = get_object_or_404(Food, foodId=itemId)
+                
+                #Delete the menu item
+                menu_item.delete()
+                
+                return JsonResponse({"success": "Menu Item removed successfully"})
             
-            #Delete the menu item
-            menu_item.delete()
-            
-            return JsonResponse({"success": "Menu Item removed successfully"})
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=500)
         
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
+        elif itemType == "drink":
+            try:
+                #Retrieve the menu item based on the ID
+                menu_item = get_object_or_404(Drink, drinkId=itemId)
+                
+                #Delete the menu item
+                menu_item.delete()
+                
+                return JsonResponse({"success": "Menu Item removed successfully"})
+            
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request method"}, status=400)
 
 #Function to fetch menu item details, when portal is opened
-def fetchItemDetails(request, itemID):
-    try:
-        #Get the menu item instance
-        item = get_object_or_404(Food, foodId=itemID)
-        
-        #Obtain image URL
-        image_url = request.build_absolute_uri(item.image.url) if item.image else None
-        
-        if item:
-            #Prepare item details in a JSON format
-            data = {
-                "success": True,
-                "foodId": item.foodId,
-                "name": item.food_name,
-                "ingredients": item.ingredients,
-                "category": item.category,
-                "duration": item.duration,
-                "price": item.price,
-                "image": image_url,
-                "allergen": item.allergen,
-                "calories": item.calories
-            }
+def fetchItemDetails(request, itemID, itemType):
+    
+    if itemType == 'drink':
+        try:
+            #Get the menu item instance
+            item = get_object_or_404(Drink, drinkId=itemID)
             
-            return JsonResponse(data)
+            #Obtain image URL
+            image_url = request.build_absolute_uri(item.image.url) if item.image else None
+            
+            if item:
+                #Prepare item details in a JSON format
+                data = {
+                    "success": True,
+                    "drinkId": item.drinkId,
+                    "drinkName": item.drink_name,
+                    "description": item.description,
+                    "drinkCategory": item.category,
+                    "alcoholConc": item.alcoholConc,
+                    "drinkPrice": item.price,
+                    "drinkImage": image_url,
+                    "drinkCalories": item.calories
+                }
+                
+                return JsonResponse(data)
+            
+            
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
         
-    except Exception as e:
-        return JsonResponse({"success": False, "error": str(e)})
+    elif itemType == 'food':
+        
+        try:
+            #Get the menu item instance
+            item = get_object_or_404(Food, foodId=itemID)
+            
+            #Obtain image URL
+            image_url = request.build_absolute_uri(item.image.url) if item.image else None
+            
+            if item:
+                #Prepare item details in a JSON format
+                data = {
+                    "success": True,
+                    "foodId": item.foodId,
+                    "name": item.food_name,
+                    "ingredients": item.ingredients,
+                    "category": item.category,
+                    "duration": item.duration,
+                    "price": item.price,
+                    "image": image_url,
+                    "allergen": item.allergen,
+                    "calories": item.calories
+                }
+                
+                return JsonResponse(data)
+            
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)})
 
-#Function which updates the menu item information
-def updateMenuItem(request):
+#Function which updates the menu item information for food
+def updateFoodItem(request):
     manager_id = request.session.get("manager_id")
     manager = Manager.objects.get(managerId=manager_id)
 
     if request.method == "POST":
         #Retrieve form inputs
-        itemId = request.POST.get("upd-foodID");
-        
+        itemId = request.POST.get("upd-foodID")
+
         food_name = request.POST.get("upd-food-name")        
         ingredients = request.POST.get("upd-ingredients")
         food_category = request.POST.get("upd-category")
@@ -724,7 +769,53 @@ def updateMenuItem(request):
 
     return render(request, "managers/menu_items.html", context)
 
+#Function which updates the menu item information for drinks
+def updateDrinkItem(request):
+    manager_id = request.session.get("manager_id")
+    manager = Manager.objects.get(managerId=manager_id)
 
+    if request.method == "POST":
+        #Retrieve form inputs
+        itemId = request.POST.get("upd-drinkID");
+        
+        drink_name = request.POST.get("upd-drink-name")        
+        description = request.POST.get("upd-description")
+        drink_category = request.POST.get("upd-drink-category")
+        drink_price = request.POST.get("upd-drink-price")
+        drink_image = request.FILES.get("upd-drink-image")
+        print(f"{drink_image}")
+        
+        alcoholConc = request.POST.get("upd-alcohol-conc")
+        calories = request.POST.get("upd-drink-calories")
+        
+        try:
+            #Retrieve the specific item record, and ammend accordingly
+            drinkItem = Drink.objects.get(drinkId=itemId)
+            drinkItem.drink_name = drink_name
+            drinkItem.description = description
+            drinkItem.category = drink_category
+            drinkItem.price = drink_price
+            drinkItem.alcoholConc = alcoholConc
+            drinkItem.calories = calories
+            
+            if drink_image:
+                drinkItem.image = drink_image
+                
+            drinkItem.save()
+            
+            #Display success message
+            messages.success(request, "Menu item have been updated successfully!")
+            
+            
+        except Food.DoesNotExist:
+            messages.error(request, "Drink Item does not exist.")    
+    
+    context = {
+        'media_url': settings.MEDIA_URL,
+        'manager': manager,
+    }
+
+    return render(request, "managers/menu_items.html", context)
 
 
 

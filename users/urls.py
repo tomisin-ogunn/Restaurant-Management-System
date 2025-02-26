@@ -60,9 +60,10 @@ urlpatterns += [
     path('add-menu-item', views.displayAddMenuItem, name="add-menu-item"),
     path('append-menu-item', views.addMenuItem, name="append-menu-item"),
     path('manager-menu-items', views.displayMenuItems, name="manager-menu-items"),
-    path('removeMenuItem/<str:foodId>/', views.removeMenuItem, name="removeMenuItem"),
-    path('fetch-item-details/<str:itemID>/', views.fetchItemDetails, name="fetch-item-details"),
-    path('updateMenuItem', views.updateMenuItem, name="updateMenuItem")
+    path('removeMenuItem/<str:itemId>/<str:itemType>/', views.removeMenuItem, name="removeMenuItem"),
+    path('fetch-item-details/<str:itemID>/<str:itemType>/', views.fetchItemDetails, name="fetch-item-details"),
+    path('updateFoodItem', views.updateFoodItem, name="updateFoodItem"),
+    path('updateDrinkItem', views.updateDrinkItem, name="updateDrinkItem")
 ]
  
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

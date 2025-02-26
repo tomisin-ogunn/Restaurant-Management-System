@@ -78,6 +78,8 @@
                 
                 <!-- Category -->
                 <input hidden class="food-category" value="{{ item.category }}">
+                <input hidden id="fooditemType" value="food">
+
                 <!-- Food Name -->
                 <h3 class="food-name">{{ item.food_name }}</h3>
     
@@ -109,13 +111,13 @@
 
                 <!-- Edit and Delete Buttons -->
                 <div class="menu-actions">
-                    <button onclick="openMenuItemDetails('{{ item.foodId }}')" class="btn btn-secondary" id="edit-btn">
+                    <button onclick="openMenuItemDetails('{{ item.foodId }}', document.getElementById('fooditemType').value)" class="btn btn-secondary" id="edit-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                             <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                           </svg> Edit
                     </button>
-                    <button class="btn btn-danger" onclick="confirmDeleteSwal('{{ item.foodId }}')" id="delete-btn">
+                    <button class="btn btn-danger" onclick="confirmDeleteSwal('{{ item.foodId }}', document.getElementById('fooditemType').value)" id="delete-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
                             <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
                         </svg> Delete
@@ -144,7 +146,7 @@
         
                                 <!-- Drink Id -->
                                 <input hidden class="drink-id" value="{{ item.drinkId }}">
-                                <input hidden class="itemType" value="drink">
+                                <input hidden id="drinkitemType" value="drink">
 
                                 <!-- Drink Name -->
                                 <h3 class="drink-name">{{ item.drink_name }}</h3>
@@ -190,13 +192,13 @@
 
                                 <!-- Edit and Delete Buttons -->
                                 <div class="menu-actions">
-                                    <button onclick="openMenuItemDetails('{{ item.drinkId }}')" class="btn btn-secondary" id="edit-btn">
+                                    <button onclick="openMenuItemDetails('{{ item.drinkId }}', document.getElementById('drinkitemType').value)" class="btn btn-secondary" id="edit-btn">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                             <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                         </svg> Edit
                                     </button>
-                                    <button class="btn btn-danger" onclick="confirmDeleteSwal('{{ item.drinkId }}')" id="delete-btn">
+                                    <button class="btn btn-danger" onclick="confirmDeleteSwal('{{ item.drinkId }}', document.getElementById('drinkitemType').value)" id="delete-btn">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
                                             <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
                                         </svg> Delete
@@ -212,7 +214,7 @@
         
         <br><br>
 
-        <!-- Edit Menu Item Modal -->
+        <!-- Edit Menu Item Modal ~ Food -->
         <div class="modal fade" id="MenuItemDetailsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
             <div class="modal-content">
@@ -221,7 +223,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="MenuItemDetailsForm" method="post" action="{% url 'updateMenuItem' %}">
+                    <form id="MenuItemDetailsForm" method="post" action="{% url 'updateFoodItem' %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="food-name" class="form-label">Name</label>
@@ -277,6 +279,67 @@
             </div>
         </div> 
 
+        <!-- Edit Menu Item Modal ~ Drink -->
+        <div class="modal fade" id="DrinkItemDetailsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Menu Item </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="DrinkItemDetailsForm" method="post" action="{%url 'updateDrinkItem' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="food-name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="upd-drink-name" required name="upd-drink-name">
+                            <input type="text" name="upd-drinkID" id="upd-drinkID" hidden>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                                <textarea id="upd-description" name="upd-description" class="form-control"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Categories</label>
+                            <div class="dropdown-container">
+                                <select name="upd-drink-category" id="upd-drink-category" class="form-control custom-select">
+                                    {% for item in drinkCategories %}
+                                        <option value="{{ item}}">{{ item }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+    
+                        </div>
+                        <div class="mb-3">
+                            <label for="alcoholConc" class="form-label">Alcohol Concentration</label>
+                            <input type="text" required id="upd-alcohol-conc" name="upd-alcohol-conc" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="price">Price</label>
+                            <input type="text" required id="upd-drink-price" name="upd-drink-price" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="food-image" class="form-label">Upload an image:</label>
+                            <input type="file" class="form-control" id="upd-drink-image" name="upd-drink-image" accept="image/*">
+                            <img id="upd-drink-image-preview" src="" alt="Food Image Preview" style="max-width: 100%; display: none; margin-top: 10px;">
+                        </div>
+                        <div class="mb-3">
+                            <label for="calories" class="form-label">Calories</label>
+                            <input type="text" id="upd-drink-calories" class="form-control" name="upd-drink-calories">
+                        </div>
+
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn" style="background-color:#FFB000;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                onmouseout="this.style.backgroundColor='#FFB000';">Update Item</button>
+                </div>
+                </form>
+            </div>
+            </div>
+        </div> 
+
+
     {% endblock %}
 
     <!-- Dynamic JavaScript Functionality -->
@@ -318,7 +381,7 @@
             }
 
             //Function to open item delete confirmation swal pop up
-            function confirmDeleteSwal(foodId){
+            function confirmDeleteSwal(itemId, itemType){
                 Swal.fire({
                     icon: 'warning',
                     title: 'Do you want to delete this item?',
@@ -328,12 +391,16 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         document.getElementsByClassName("food-id")[0].hidden = false;
+                        document.getElementsByClassName("drink-id")[0].hidden = false;
                         // Logic for 'yes' button is clicked
                         $.ajax({
-                            url: `/users/removeMenuItem/${foodId}/`,
+                            url: `/users/removeMenuItem/${itemId}/${itemType}/`,
                             type: 'POST',
                             headers: { "X-CSRFToken": getCSRFToken() },
-                            data: { id: foodId },
+                            data: { 
+                                id: itemId,
+                                itemType: itemType
+                             },
                             success: function(response) {
                                 Swal.fire({
                                     icon: 'success',
@@ -342,6 +409,7 @@
                                 }).then(() => {
                                     location.reload(); // Refresh the page or update the UI accordingly
                                     document.getElementsByClassName("food-id")[0].hidden = true;
+                                    document.getElementsByClassName("drink-id")[0].hidden = true;
                                 });
                             },
                             error: function(xhr, status, error) {
@@ -394,8 +462,10 @@
             }
 
             //Function which opens the Menu Item Update Portal, and fetches the menu item details
-            function openMenuItemDetails(itemID){
-                fetch(`/users/fetch-item-details/${itemID}`)
+            function openMenuItemDetails(itemID, itemType){
+                document.getElementById("fooditemType").hidden = false;
+                document.getElementById("drinkitemType").hidden = false;
+                fetch(`/users/fetch-item-details/${itemID}/${itemType}/`)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -405,41 +475,84 @@
                     })
                     .then(data => {
                         if(data.success){
-                            //Fill in the form with the fetched data
-                            document.getElementById("upd-food-name").value = data['name'];
-                            document.getElementById("upd-ingredients").value = data['ingredients'];
+                            document.getElementById("fooditemType").hidden = true;
+                            document.getElementById("drinkitemType").hidden = true;
 
-                            var categorySelect = document.getElementById("upd-category");
-                            for (let option of categorySelect.options) {
-                                if (option.value === data['category']) {
-                                    option.selected = true;
-                                    break; // Stop looping once the match is found
+                            if(itemType == "food"){
+                                //Fill in the form with the fetched data
+                                document.getElementById("upd-food-name").value = data['name'];
+                                document.getElementById("upd-ingredients").value = data['ingredients'];
+
+                                var categorySelect = document.getElementById("upd-category");
+                                for (let option of categorySelect.options) {
+                                    if (option.value === data['category']) {
+                                        option.selected = true;
+                                        break; // Stop looping once the match is found
+                                    }
                                 }
+                                document.getElementById("upd-foodID").value = itemID;
+                                document.getElementById("upd-duration").value = data['duration'];
+                                document.getElementById("upd-price").value = data['price'];
+                                document.getElementById("upd-allergen").value = data['allergen'];
+                                document.getElementById("upd-calories").value = data['calories'];
+                                document.getElementById("upd-image").src = data['image'];
+                                document.getElementById("upd-image-preview").src = data['image'];
+                                document.getElementById("upd-image-preview").style.display = "block"; 
+
+                                // Handle image preview when a new file is selected
+                                document.getElementById("upd-image").addEventListener("change", function(event) {
+                                    let file = event.target.files[0]; // Get the selected file
+                                    if (file) {
+                                        let reader = new FileReader();
+                                        reader.onload = function(e) {
+                                            document.getElementById("upd-image-preview").src = e.target.result;
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                });
+
+                                //Display the modal
+                                var modal = new bootstrap.Modal(document.getElementById("MenuItemDetailsModal"));
+                                modal.show();
                             }
-                            document.getElementById("upd-foodID").value = itemID;
-                            document.getElementById("upd-duration").value = data['duration'];
-                            document.getElementById("upd-price").value = data['price'];
-                            document.getElementById("upd-allergen").value = data['allergen'];
-                            document.getElementById("upd-calories").value = data['calories'];
-                            document.getElementById("upd-image").src = data['image'];
-                            //document.getElementById("upd-image").style.display = "block";
-                            document.getElementById("upd-image-preview").src = data['image'];
-                            document.getElementById("upd-image-preview").style.display = "block"; // Ensure it's visible
-                            // Handle image preview when a new file is selected
-                            document.getElementById("upd-image").addEventListener("change", function(event) {
-                                let file = event.target.files[0]; // Get the selected file
-                                if (file) {
-                                    let reader = new FileReader();
-                                    reader.onload = function(e) {
-                                        document.getElementById("upd-image-preview").src = e.target.result;
-                                    };
-                                    reader.readAsDataURL(file);
-                                }
-                            });
 
-                            //Display the modal
-                            var modal = new bootstrap.Modal(document.getElementById("MenuItemDetailsModal"));
-                            modal.show();
+                            else if(itemType == "drink"){
+                                //Fill in the form elements 
+                                document.getElementById("upd-drink-name").value = data['drinkName'];
+                                document.getElementById("upd-description").value = data['description'];
+                                var drinkCategorySelect = document.getElementById("upd-drink-category");
+                                for (let option of drinkCategorySelect.options) {
+                                    if (option.value === data['drinkCategory']) {
+                                        option.selected = true;
+                                        break; // Stop looping once the match is found
+                                    }
+                                }
+
+                                document.getElementById("upd-drinkID").value = itemID;
+                                document.getElementById("upd-alcohol-conc").value = data['alcoholConc'];
+                                document.getElementById("upd-drink-price").value = data['drinkPrice'];
+                                document.getElementById("upd-drink-image").src = data['drinkImage'];
+                                document.getElementById("upd-drink-image-preview").src = data['drinkImage'];
+                                document.getElementById("upd-drink-image-preview").style.display = "block";
+                                document.getElementById("upd-drink-calories").value = data['drinkCalories'];
+
+                                // Handle image preview when a new file is selected
+                                document.getElementById("upd-drink-image").addEventListener("change", function(event) {
+                                    let file = event.target.files[0]; // Get the selected file
+                                    if (file) {
+                                        let reader = new FileReader();
+                                        reader.onload = function(e) {
+                                            document.getElementById("upd-drink-image-preview").src = e.target.result;
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                });
+
+                                //Display the modal
+                                var drinksModal = new bootstrap.Modal(document.getElementById("DrinkItemDetailsModal"));
+                                drinksModal.show();
+                            }
+                           
                         } else{
                             console.error("Error:", data.message);
                         }
@@ -454,7 +567,11 @@
             //Event listener to enable disbaled elements input values pass through, on the form submit
             document.getElementById("MenuItemDetailsForm").addEventListener("submit", function() {
                 document.getElementById("upd-foodID").hidden = false;  // Enable before submit
-                console.log(document.getElementById("upd-foodID").value)
+            });
+
+            //Event listener to enable disbaled elements input values pass through, on the form submit
+            document.getElementById("DrinkItemDetailsForm").addEventListener("submit", function() {
+                document.getElementById("upd-drinkID").hidden = false;  // Enable before submit
             });
 
             //Function which toggles display of menu items, based on category selected
