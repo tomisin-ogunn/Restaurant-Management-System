@@ -132,7 +132,11 @@
         <div class="restaurant-menu-drinks">
             {% for category in drinkCategories %}
                 <div class="drink-category">
-                    <h2 class="category-title">{{ category }}</h2>
+                    {% if category == "Alcohol" %}
+                        <h2 class="category-title">Alcoholic Drinks</h2>
+                    {% else %}
+                        <h2 class="category-title">{{ category }}</h2>
+                    {% endif %}
                 </div>
                 <div class="drink-category-row">
                     {% for item in drinks %}
