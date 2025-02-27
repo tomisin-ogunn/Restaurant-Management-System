@@ -783,8 +783,6 @@ def updateDrinkItem(request):
         drink_category = request.POST.get("upd-drink-category")
         drink_price = request.POST.get("upd-drink-price")
         drink_image = request.FILES.get("upd-drink-image")
-        print(f"{drink_image}")
-        
         alcoholConc = request.POST.get("upd-alcohol-conc")
         calories = request.POST.get("upd-drink-calories")
         

@@ -223,7 +223,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="MenuItemDetailsForm" method="post" action="{% url 'updateFoodItem' %}">
+                    <form id="MenuItemDetailsForm" enctype="multipart/form-data" method="post" action="{% url 'updateFoodItem' %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="food-name" class="form-label">Name</label>
@@ -288,7 +288,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="DrinkItemDetailsForm" method="post" action="{%url 'updateDrinkItem' %}">
+                    <form id="DrinkItemDetailsForm" method="post" enctype="multipart/form-data" action="{%url 'updateDrinkItem' %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="food-name" class="form-label">Name</label>
@@ -312,14 +312,14 @@
                         </div>
                         <div class="mb-3">
                             <label for="alcoholConc" class="form-label">Alcohol Concentration</label>
-                            <input type="text" required id="upd-alcohol-conc" name="upd-alcohol-conc" class="form-control">
+                            <input type="text" id="upd-alcohol-conc" name="upd-alcohol-conc" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label for="price">Price</label>
                             <input type="text" required id="upd-drink-price" name="upd-drink-price" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label for="food-image" class="form-label">Upload an image:</label>
+                            <label for="drink-image" class="form-label">Upload an image:</label>
                             <input type="file" class="form-control" id="upd-drink-image" name="upd-drink-image" accept="image/*">
                             <img id="upd-drink-image-preview" src="" alt="Food Image Preview" style="max-width: 100%; display: none; margin-top: 10px;">
                         </div>
