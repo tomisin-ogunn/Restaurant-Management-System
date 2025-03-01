@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-from users.views import manager_views, waiter_views
+from users.views import manager_views, waiter_views, customer_views
 from django.conf.urls.static import static
 from django.conf import settings
 import debug_toolbar
@@ -69,7 +69,9 @@ urlpatterns += [
 
 #Url Patterns for Waiter Authentication Functionalities
 urlpatterns += [
-    path('waiter-login/', waiter_views.displayWaiterLogin, name="waiter-login" )
+    path('waiter-login/', waiter_views.displayWaiterLogin, name="waiter-login" ),
+    path('waiter-authentication', waiter_views.waiter_loginAuth, name="waiter-auth"),
+    path('waiter-home/', waiter_views.displayWaiterHome, name="waiter-home")
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

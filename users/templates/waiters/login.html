@@ -22,7 +22,7 @@
             </div>
             <br>
             <!-- Form -->
-            <form method="post">
+            <form method="post" action="{% url 'waiter-auth' %}">
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="username" class="form-label">Employee Id</label>
@@ -44,7 +44,7 @@
         </div>
 
         <!-- Forgot Password Modal ~ Enter Email Address-->
-        <div class="modal fade" id="FPModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="WFPModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -123,13 +123,91 @@
 
     <!-- Dynamic JavaScript Functionality -->
     {% block scripts %}
-    
+
+        
+        {% comment %} Checks for any error messages, and displays swal pop ups{% endcomment %}
+        {% if messages %}
+            <script>
+                {% for message in messages %}
+
+                    var messageText = "{{ message|escapejs }}"
+                    
+                    {% comment %} Invalid login Swal Pop up  {% endcomment %}
+                    if(messageText == "Invalid Employee ID / Password"){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid Login!',
+                            text: 'Incorrect Employee ID or Password',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirecting after the alert is dismissed
+                                window.location.href = "{% url 'waiter-login' %}";
+                            }
+                        });
+                    }
+
+                    {% comment %} Email Unsuccessfully verified Swal pop up {% endcomment %}
+                    if(messageText == "Email does not exist."){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Email not found!',
+                            text: 'Please check your details for verification',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirecting after the alert is dismissed
+                                window.location.href = "{% url 'waiter-login' %}";
+                            }
+                        });
+                    }
+
+                    {% comment %} Email Successfully verified Swal Pop up {% endcomment %}
+                    if(messageText == "Email exists!"){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Email verified!',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirects user to update password
+                                var updatePassModal = new bootstrap.Modal(document.getElementById("UPModal"));
+                                updatePassModal.show();
+                                // Set the email in the hidden field inside the modal
+                                //document.getElementById("hiddenEmail").value = "{{ email }}"
+                            }
+                        });
+                    }
+
+                    {% comment %} Successful password update Swal Pop Up{% endcomment %}
+                    if(messageText == "Your password has been updated successfully!"){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Password Updated Successfully!',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirects user to manager login page
+                                window.location.href = "{% url 'waiter-login' %}"
+                            }
+                        });
+                    }
+                    
+
+                {% endfor %}
+            </script>
+
+        {% endif %}
+
         <script>
 
             //Displays webpage title
             document.addEventListener("DOMContentLoaded", function () {
                 //Set the title for the webpage
                 document.title = "RMS Waiter Login";
+            });
+
+            //Displays modal when button 'forgot password' is clicked
+            var button = document.getElementById("forgotpass-btn");
+            button.addEventListener("click", function() {
+                var myModal = new bootstrap.Modal(document.getElementById("WFPModal"));
+                myModal.show();
             });
 
         </script>

@@ -27,3 +27,56 @@ def displayWaiterLogin(request):
     }
     return render(request, 'waiters/login.html', context)    
 
+#Function to authenticate waiter login credentials
+def waiter_loginAuth(request):
+    if request.method == "POST":
+        waiter_id = request.POST.get("waiter-username")  # Get waiterId from the form
+        password = request.POST.get("waiter-password")  # Get password from the form
+        
+        try:
+            # Fetch the manager with the given managerId
+            waiter = Waiter.objects.get(waiterId=waiter_id)
+
+            # Verify the password
+            if not check_password(password, waiter.password):
+                raise ValueError("Invalid credentials")  # Raise an error for incorrect password
+
+            # Authentication successful, store manager in session
+            request.session["waiter_id"] = waiter.waiterId
+            request.session["waiter_name"] = waiter.first_name
+            messages.success(request, "Login successful!")
+            return redirect("waiter-home")  # Redirect to home page
+
+        except (Waiter.DoesNotExist, ValueError):
+            # Either the manager does not exist or the password is incorrect
+            messages.error(request, "Invalid Employee ID / Password")
+
+            context = {
+                "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
+            }
+            return render(request, "waiters/login.html", context)  # Render login form on failure
+
+#Function to display Restaurant Waiter home interface after authentication
+def displayWaiterHome(request):
+    waiter_id = request.session.get("waiter_id")  # Get manager_id from session
+    if waiter_id:
+        # Retrieve manager details if authenticated
+        try:
+            waiter = Waiter.objects.get(waiterId=waiter_id)
+            context = {
+                "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
+                "waiter": waiter,
+            }
+            return render(request, "waiters/home.html", context)
+        except Manager.DoesNotExist:
+            # If manager not found in the database, clear the session and redirect to login
+            messages.error(request, "Waiter not found. Please log in again.")
+            return redirect("waiter-login")
+    else:
+        # If no session exists, redirect to login page
+        messages.error(request, "You must be logged in to view this page.")
+        return redirect("waiter-login")
+
+
+
+
