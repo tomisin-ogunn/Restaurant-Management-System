@@ -202,20 +202,9 @@
                 myModal.show();
             });
 
-            {% comment %} No input Swal Pop Up {% endcomment %}
+            {% comment %}Sets Webpage title {% endcomment %}
             document.addEventListener("DOMContentLoaded", function() {
-                document.getElementById("EmailAddForm").addEventListener("submit", function(event) {
-                    var email = document.getElementById("email").value.trim();
-        
-                    // Check if the email field is empty
-                    if (!email) {
-                        // Show the alert if the email is empty
-                        alert("Email is required.");
-        
-                        // Prevent form submission
-                        event.preventDefault();
-                    }
-                });
+                document.title = "RMS Manager Login";
             });
 
             //Checks that all values are filled in the form

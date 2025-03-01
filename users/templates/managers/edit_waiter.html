@@ -167,6 +167,9 @@
 
             {% comment %} No input Swal Pop Up {% endcomment %}
             document.addEventListener("DOMContentLoaded", function() {
+                //Sets Title of webpage
+                document.title = "RMS Jolly Jollofs - Manager";
+                
                 document.getElementsByClassName("edit-waiter-form")[0].addEventListener("submit", function(event) {
                     var email = document.getElementById("waiter-email").value.trim();
                     var fname = document.getElementById("first-name").value;

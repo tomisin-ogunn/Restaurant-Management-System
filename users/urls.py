@@ -17,55 +17,61 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from users.views import manager_views, waiter_views
 from django.conf.urls.static import static
 from django.conf import settings
 import debug_toolbar
 
 urlpatterns = [
     #Route for user views (manager) authentication functionalities
-    path('manager-login/', views.display_managerLogin, name="manager-login"),
-    path('manager-home/', views.displayManagerHome, name="manager-home"),
-    path('manager_verification/', views.manager_loginAuth, name="manager_ver"),
-    path('manager-logout/', views.manager_logout, name="manager-logout"),
-    path('manager_email_verifier', views.managerEmail_verifier, name='manager_email_verifier'),
-    path('manager-update-password', views.update_ManagerPassword, name="manager-update-password"),
+    path('manager-login/', manager_views.display_managerLogin, name="manager-login"),
+    path('manager-home/', manager_views.displayManagerHome, name="manager-home"),
+    path('manager_verification/', manager_views.manager_loginAuth, name="manager_ver"),
+    path('manager-logout/', manager_views.manager_logout, name="manager-logout"),
+    path('manager_email_verifier', manager_views.managerEmail_verifier, name='manager_email_verifier'),
+    path('manager-update-password', manager_views.update_ManagerPassword, name="manager-update-password"),
    
 ]
 
 #Url Patterns for waiter management functionalities for managers
 urlpatterns += [
-    path('manager-waiter-management/', views.displayWaiterManagement, name="manager-waiter-management"),
-    path('manager-add-waiter/', views.displayWaiterAddForm, name="add-waiter"),
-    path('manager-edit-waiter/', views.displayWaiterEditForm, name="edit-waiter"),
-    path('append-waiter/', views.addWaiter, name="append-waiter"),
-    path('get-waiter-details/<str:waiter_id>/', views.get_waiter_details, name='get_waiter_details'),
-    path('update-waiter-details', views.updateWaiterDetails, name="update-waiter-details"),
-    path('manager-assign-waiter/', views.displayAssignWaiterForm, name="assign-waiter"),
-    path('assign-waiter-table/', views.assignWaiter, name="assign-waiter-table"),
+    path('manager-waiter-management/', manager_views.displayWaiterManagement, name="manager-waiter-management"),
+    path('manager-add-waiter/', manager_views.displayWaiterAddForm, name="add-waiter"),
+    path('manager-edit-waiter/', manager_views.displayWaiterEditForm, name="edit-waiter"),
+    path('append-waiter/', manager_views.addWaiter, name="append-waiter"),
+    path('get-waiter-details/<str:waiter_id>/', manager_views.get_waiter_details, name='get_waiter_details'),
+    path('update-waiter-details', manager_views.updateWaiterDetails, name="update-waiter-details"),
+    path('manager-assign-waiter/', manager_views.displayAssignWaiterForm, name="assign-waiter"),
+    path('assign-waiter-table/', manager_views.assignWaiter, name="assign-waiter-table"),
 ]
 
 #Url Patterns for table reservation funcionalities for managers
 urlpatterns += [
-    path('manager-table-reservation/', views.displayTableReservation, name="manager-table-reservation"),
-    path('get-table-details/<str:tableId>/', views.get_table_details, name="get-table-details"),
-    path('get-reservation-details/<str:tableId>/', views.fetch_reservation_details, name="get-reservation-details"),
-    path('create-reservation', views.generateReservation, name="create-reservation"),
-    path('update-reservation', views.ammend_reservation, name="update-reservation"),
-    path('cancelReservation/<str:reservationId>/', views.cancelReservation, name="cancelReservation"),
+    path('manager-table-reservation/', manager_views.displayTableReservation, name="manager-table-reservation"),
+    path('get-table-details/<str:tableId>/', manager_views.get_table_details, name="get-table-details"),
+    path('get-reservation-details/<str:tableId>/', manager_views.fetch_reservation_details, name="get-reservation-details"),
+    path('create-reservation', manager_views.generateReservation, name="create-reservation"),
+    path('update-reservation', manager_views.ammend_reservation, name="update-reservation"),
+    path('cancelReservation/<str:reservationId>/', manager_views.cancelReservation, name="cancelReservation"),
 ]
 
 #Url Patterns for menu management functionality for managers
 urlpatterns += [
-    path('manager-menu-management', views.displayMenuManagement, name="manager-menu-management"),
-    path('add-menu-item', views.displayAddMenuItem, name="add-menu-item"),
-    path('append-menu-item', views.addMenuItem, name="append-menu-item"),
-    path('manager-menu-items', views.displayMenuItems, name="manager-menu-items"),
-    path('removeMenuItem/<str:itemId>/<str:itemType>/', views.removeMenuItem, name="removeMenuItem"),
-    path('fetch-item-details/<str:itemID>/<str:itemType>/', views.fetchItemDetails, name="fetch-item-details"),
-    path('updateFoodItem', views.updateFoodItem, name="updateFoodItem"),
-    path('updateDrinkItem', views.updateDrinkItem, name="updateDrinkItem")
+    path('manager-menu-management', manager_views.displayMenuManagement, name="manager-menu-management"),
+    path('add-menu-item', manager_views.displayAddMenuItem, name="add-menu-item"),
+    path('append-menu-item', manager_views.addMenuItem, name="append-menu-item"),
+    path('manager-menu-items', manager_views.displayMenuItems, name="manager-menu-items"),
+    path('removeMenuItem/<str:itemId>/<str:itemType>/', manager_views.removeMenuItem, name="removeMenuItem"),
+    path('fetch-item-details/<str:itemID>/<str:itemType>/', manager_views.fetchItemDetails, name="fetch-item-details"),
+    path('updateFoodItem', manager_views.updateFoodItem, name="updateFoodItem"),
+    path('updateDrinkItem', manager_views.updateDrinkItem, name="updateDrinkItem")
 ]
- 
+
+#Url Patterns for Waiter Authentication Functionalities
+urlpatterns += [
+    path('waiter-login/', waiter_views.displayWaiterLogin, name="waiter-login" )
+]
+
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
