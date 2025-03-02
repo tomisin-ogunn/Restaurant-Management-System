@@ -80,7 +80,7 @@ class Waiter(models.Model):
         if self.password and not self.password.startswith('pbkdf2_'):  # Avoid rehashing
             self.password = self.hashPassword()
 
-        # Generate a managerId if not already set
+        # Generate a waiterId if not already set
         if not self.waiterId:
             self.waiterId = self.generateWaiterID()
 
@@ -118,5 +118,60 @@ class Waiter(models.Model):
     def __str__(self):
         return f"{self.waiterId}: {self.first_name} {self.last_name}"
                 
-                
+#Model holding customer information
+class Customer(models.Model):
+    customerId = models.CharField(max_length=10, unique=True, blank=True, primary_key=True)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.CharField(max_length=50)
+    password = models.CharField(max_length=128)
+    
+    #Function to hash password 
+    def hashPassword(self):
+        # Hash the password using Django's built-in utility
+        return make_password(self.password)
+    
+    #Function to hash password and increment waiter Id after record has been added to Waiters table
+    def save(self, *args, **kwargs):
+        # Hash the password before saving
+        if self.password and not self.password.startswith('pbkdf2_'):  # Avoid rehashing
+            self.password = self.hashPassword()
+
+        # Generate a customerId if not already set
+        if not self.customerId:
+            self.customerId = self.generateCustomerID()
+
+        # Save the model instance
+        super().save(*args, **kwargs)
+            
+    # Function to provide 7 characters including 5 digits(starting 00001 incremented) with prefix 'JJC' to the customer ID        
+    @classmethod
+    def generateCustomerID(cls):
+        # Prefix of customer id
+        
+        prefix = 'JJC'
+        
+        #Obtains maximum current ID no from model
+        last_customer = Customer.objects.all().aggregate(Max('customerId'))
+
+         # Extract the current max number, or default to 0 if no records exist
+        last_customer_id = last_customer.get('customerId__max', None)
+        
+        #Start from 0001
+        if last_customer_id is None:
+            new_customer_number = 1
+        else:
+            #Extract number from last waiter id (0000x)
+            last_number = int(last_customer_id[4:])
+            new_customer_number = last_number + 1
+            
+        #Format the new customer ID with prefix and 5 digit number
+        new_customer_id = f"{prefix}{new_customer_number:05d}"
+        
+        return new_customer_id
+    
+    
+    #Provides display of object in Django Admin/Shell
+    def __str__(self):
+        return f"{self.customerId}: {self.first_name} {self.last_name}"   
                 

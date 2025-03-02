@@ -76,6 +76,16 @@ urlpatterns += [
     path('waiter-id-ver', waiter_views.waiterID_verifier, name="waiter-id-ver")
 ]
 
+
+#Url patterns for Customer Authentication Functionalities
+urlpatterns += [
+    path('customer-login/', customer_views.displayCustomerLogin, name="customer-login"),
+    path('customer-auth', customer_views.customer_loginAuth, name="customer-auth"),
+    path('customer-home/', customer_views.displayCustomerHome, name="customer-home"),
+    path('customer-email-ver', customer_views.customerEmail_verifier, name="customer-email-ver"),
+    path('update-customer-password', customer_views.update_CustomerPassword, name="update-customer-password")
+]
+
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

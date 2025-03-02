@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Manager, Waiter
+from .models import Manager, Waiter, Customer
 
 # Register your models here.
 
@@ -21,3 +21,15 @@ class WaiterAdmin(admin.ModelAdmin):
     
 # Register the Waiter model (default registration)
 admin.site.register(Waiter, WaiterAdmin)
+
+
+#Custom admin class for Customer
+class CustomerAdmin(admin.ModelAdmin):
+    # Customize fields displayed in the admin list view
+    list_display = ('customerId', 'first_name', 'last_name', 'email', 'password')
+    search_fields = ('customerId', 'first_name', 'last_name', 'email')
+
+# Register the Customer model (default registration)
+admin.site.register(Customer, CustomerAdmin)
+
+

@@ -34,14 +34,14 @@ def waiter_loginAuth(request):
         password = request.POST.get("waiter-password")  # Get password from the form
         
         try:
-            # Fetch the manager with the given managerId
+            # Fetch the waiter with the given waiterId
             waiter = Waiter.objects.get(waiterId=waiter_id)
 
             # Verify the password
             if not check_password(password, waiter.password):
                 raise ValueError("Invalid credentials")  # Raise an error for incorrect password
 
-            # Authentication successful, store manager in session
+            # Authentication successful, store waiter in session
             request.session["waiter_id"] = waiter.waiterId
             request.session["waiter_name"] = waiter.first_name
             
