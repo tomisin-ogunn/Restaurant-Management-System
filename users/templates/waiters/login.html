@@ -26,7 +26,7 @@
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="username" class="form-label">Employee Id</label>
-                    <input type="text" class="form-control" id="username" name="waiter-username" required>
+                    <input type="text" class="form-control" id="waiter-username" name="waiter-username" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
@@ -43,7 +43,7 @@
             </form>
         </div>
 
-        <!-- Forgot Password Modal ~ Enter Email Address-->
+        <!-- Forgot Password Modal ~ Enter employee ID-->
         <div class="modal fade" id="WFPModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
             <div class="modal-content">
@@ -52,11 +52,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="EmailAddForm" method="post">
+                    <form id="EmployeeIDAddForm" method="post" action="{% url 'waiter-id-ver' %}">
                         {% csrf_token %}
                         <div class="mb-3">
-                            <label for="email" class="form-label">Enter your email</label>
-                            <input type="email" class="form-control" name="email" id="email" placeholder="example@example.com">
+                            <label for="waiterID" class="form-label">Enter your Employee ID</label>
+                            <input type="text" class="form-control" name="waiter-id" id="waiterId" placeholder="JJWXXXX">
                         </div>
                     
                 </div>
@@ -70,7 +70,7 @@
         </div>
 
         <!-- Update Password Modal -->
-        <div class="modal fade" id="UPModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="WUPModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -78,13 +78,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="updatePasswordForm" method="post">
+                    <form id="updateWaiterPasswordForm" method="post" action="{% url 'update-waiter-password' %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="new password" class="form-label">Enter new password</label>
-                            <input type="email" id="hiddenEmail" name="hiddenEmail" hidden/> 
+                            <input type="text" id="waiterID" name="waiterId" hidden/> 
                             <div class="position-relative">
-                                <input type="password" class="form-control" name="manpassword" id="manpassword" placeholder="Enter at least 7 characters (a-z, A-Z, 0-9, *#$)">
+                                <input type="password" class="form-control" name="waiter-password" id="manpassword" placeholder="Enter at least 7 characters (a-z, A-Z, 0-9, *#$)">
                                 <!-- Eye icon-->
                                 <span 
                                     class="position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer" 
@@ -96,7 +96,7 @@
                         <div class="mb-3">
                             <label for="new password2" class="form-label">Confirm new password</label>
                             <div class="position-relative">
-                                <input type="password" class="form-control" name="manpassword2" id="manpassword2">
+                                <input type="password" class="form-control" name="waiter-password2" id="manpassword2">
                                 <!-- Eye icon-->
                                 <span 
                                     class="position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer" 
@@ -146,11 +146,29 @@
                         });
                     }
 
-                    {% comment %} Email Unsuccessfully verified Swal pop up {% endcomment %}
-                    if(messageText == "Email does not exist."){
+                    //Waiter login first attempt, proceeding to change password
+                    if(messageText == "Change password!"){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful!',
+                            text: 'Please proceed to change your password',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                //Fill in the waiter ID value
+                                document.getElementById("waiterID").value = "{{ waiterId }}"
+                                
+                                //Display modal
+                                var modal = new bootstrap.Modal(document.getElementById("WUPModal"));
+                                modal.show();
+                            }
+                        });
+                    }
+
+                    {% comment %} Employee ID Unsuccessfully verified Swal pop up {% endcomment %}
+                    if(messageText == "ID does not exist."){
                         Swal.fire({
                             icon: 'error',
-                            title: 'Email not found!',
+                            title: 'Employee ID not found!',
                             text: 'Please check your details for verification',
                         }).then((result) => {
                             if (result.isConfirmed) {
@@ -160,18 +178,19 @@
                         });
                     }
 
-                    {% comment %} Email Successfully verified Swal Pop up {% endcomment %}
-                    if(messageText == "Email exists!"){
+                    {% comment %} Employee ID Successfully verified Swal Pop up {% endcomment %}
+                    if(messageText == "ID exists!"){
                         Swal.fire({
                             icon: 'success',
-                            title: 'Email verified!',
+                            title: 'Employee ID verified!',
                         }).then((result) => {
                             if (result.isConfirmed) {
+                                //Fill in the waiter ID value
+                                document.getElementById("waiterID").value = "{{ waiterId }}"
+                                
                                 // Redirects user to update password
-                                var updatePassModal = new bootstrap.Modal(document.getElementById("UPModal"));
+                                var updatePassModal = new bootstrap.Modal(document.getElementById("WUPModal"));
                                 updatePassModal.show();
-                                // Set the email in the hidden field inside the modal
-                                //document.getElementById("hiddenEmail").value = "{{ email }}"
                             }
                         });
                     }
@@ -209,6 +228,58 @@
                 var myModal = new bootstrap.Modal(document.getElementById("WFPModal"));
                 myModal.show();
             });
+
+            //Checks that all values are filled in the form
+            document.getElementById("updateWaiterPasswordForm").addEventListener("submit", function(event) {
+                var newPassword = document.getElementById("waiter-password").value;
+                var confirmPassword = document.getElementById("waiter-password2").value;
+                
+                // Regular expression for password validation
+                var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{7,}$/;
+
+                // Check if the password fields are empty
+                if (!newPassword || !confirmPassword) {
+                    // Show the alert
+                    alert("Please fill in the new password fields!");
+        
+                    // Prevent the form submission from redirecting or reloading the page
+                    event.preventDefault();
+                }
+
+                //Password Validation Checks
+                else{
+                    // Check if password meets the strength requirements
+                    if (!passwordPattern.test(newPassword)) {
+                        alert("Password must be at least 7 characters long and contain uppercase, lowercase letters, and special characters.");
+                        event.preventDefault();  // Prevent form submission
+                        return;
+                    }
+
+                    // Check if passwords match
+                    if (newPassword !== confirmPassword) {
+                        alert("Passwords do not match.");
+                        event.preventDefault();  // Prevent form submission
+                        return;
+                    }
+                }
+            });
+          
+            //Function to toggle password toggle Password Visibility
+            function togglePasswordVisibility(password, iconId){
+                const passwordField = document.getElementById(password);
+                const icon = document.getElementById(iconId);
+
+                if(passwordField.type === "password"){
+                    passwordField.type = "text";
+                    icon.classList.remove("fa-eye");
+                    icon.classList.add("fa-eye-slash");
+                } else{
+                    passwordField.type = "password";
+                    icon.classList.remove("fa-eye-slash");
+                    icon.classList.add("fa-eye");
+                }
+            }
+
 
         </script>
 

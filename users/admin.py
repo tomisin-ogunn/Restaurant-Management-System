@@ -16,7 +16,7 @@ admin.site.register(Manager, ManagerAdmin)
 #Custom admin class for Waiter
 class WaiterAdmin(admin.ModelAdmin):
     # Customize fields displayed in the admin list view
-    list_display = ('waiterId', 'first_name', 'last_name', 'email', 'password')
+    list_display = ('waiterId', 'first_name', 'last_name', 'email', 'password', 'first_login')
     search_fields = ('waiterId', 'first_name', 'last_name', 'email')
     
 # Register the Waiter model (default registration)

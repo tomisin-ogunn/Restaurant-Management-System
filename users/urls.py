@@ -71,7 +71,9 @@ urlpatterns += [
 urlpatterns += [
     path('waiter-login/', waiter_views.displayWaiterLogin, name="waiter-login" ),
     path('waiter-authentication', waiter_views.waiter_loginAuth, name="waiter-auth"),
-    path('waiter-home/', waiter_views.displayWaiterHome, name="waiter-home")
+    path('waiter-home/', waiter_views.displayWaiterHome, name="waiter-home"),
+    path('update-waiter-password', waiter_views.updateWaiterPassword, name="update-waiter-password"),
+    path('waiter-id-ver', waiter_views.waiterID_verifier, name="waiter-id-ver")
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

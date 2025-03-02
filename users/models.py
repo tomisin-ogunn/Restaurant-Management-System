@@ -67,6 +67,7 @@ class Waiter(models.Model):
     last_name = models.CharField(max_length=50)
     email = models.CharField(max_length=50)
     password = models.CharField(max_length=128)
+    first_login = models.BooleanField(default=True)
     
     #Function to hash password 
     def hashPassword(self):
