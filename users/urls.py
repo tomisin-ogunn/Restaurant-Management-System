@@ -81,9 +81,12 @@ urlpatterns += [
 urlpatterns += [
     path('customer-login/', customer_views.displayCustomerLogin, name="customer-login"),
     path('customer-auth', customer_views.customer_loginAuth, name="customer-auth"),
-    path('customer-home/', customer_views.displayCustomerHome, name="customer-home"),
+    path('customer-loggedIn-home/', customer_views.displayCustomerLoggedInHome, name="customer-loggedIn-home"),
     path('customer-email-ver', customer_views.customerEmail_verifier, name="customer-email-ver"),
-    path('update-customer-password', customer_views.update_CustomerPassword, name="update-customer-password")
+    path('update-customer-password', customer_views.update_CustomerPassword, name="update-customer-password"),
+    path('customer-register/', customer_views.displayCustomerRegister, name="customer-register"),
+    path('customer-registration', customer_views.appendCustomer, name="customer-registration"),
+    path('customer-logout', customer_views.customerLogOut, name="customer-logout")
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -13,6 +13,7 @@ from django.utils import timezone
 from users.models import Manager, Waiter
 from restaurant.models import Table, Reservation, Food, Drink
 from django.views.decorators.csrf import csrf_exempt
+from django.middleware.csrf import get_token
 from datetime import datetime
 import string
 import secrets
@@ -26,6 +27,9 @@ def display_managerLogin(request):
     context = {
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
     }
+    
+    get_token(request)
+    
     return render(request, 'managers/login.html', context)
 
 #Function to authenticate manager login credentials
@@ -46,6 +50,8 @@ def manager_loginAuth(request):
             request.session["manager_id"] = manager.managerId
             request.session["manager_name"] = manager.first_name
             messages.success(request, "Login successful!")
+            
+            get_token(request)
             return redirect("manager-home")  # Redirect to home page
 
         except (Manager.DoesNotExist, ValueError):
@@ -55,6 +61,8 @@ def manager_loginAuth(request):
             context = {
                 "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
             }
+            
+            get_token(request)
             return render(request, "managers/login.html", context)  # Render login form on failure
 
 #Function to display Restaurant Manager home interface after authentication
@@ -85,6 +93,9 @@ def manager_logout(request):
     # Add a success message
     messages.success(request, "You have been logged out successfully.")
     # Redirect to the login page
+    
+    get_token(request)
+     
     return redirect("manager-login")
 
 #Function to verify if email address exists in the managers model

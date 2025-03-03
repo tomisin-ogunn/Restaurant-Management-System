@@ -84,7 +84,7 @@
                                 <label for="new password" class="form-label">Enter new password</label>
                                 <input type="text" id="customer-email-add" name="customer-email-add" hidden/> 
                                 <div class="position-relative">
-                                    <input type="password" class="form-control" name="customer-password" id="manpassword" placeholder="Enter at least 7 characters (a-z, A-Z, 0-9, *#$)">
+                                    <input type="password" class="form-control" name="customer-password" id="customer-password" placeholder="Enter at least 7 characters (a-z, A-Z, 0-9, *#$)">
                                     <!-- Eye icon-->
                                     <span 
                                         class="position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer" 
@@ -96,7 +96,7 @@
                             <div class="mb-3">
                                 <label for="new password2" class="form-label">Confirm new password</label>
                                 <div class="position-relative">
-                                    <input type="password" class="form-control" name="customer-password2" id="manpassword2">
+                                    <input type="password" class="form-control" name="customer-password2" id="customer-password2">
                                     <!-- Eye icon-->
                                     <span 
                                         class="position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer" 
@@ -226,6 +226,42 @@
                     icon.classList.add("fa-eye");
                 }
             }
+
+            //Checks that all values are filled in the form
+            document.getElementById("updateCustomerPasswordForm").addEventListener("submit", function(event) {
+                var newPassword = document.getElementById("customer-password").value;
+                var confirmPassword = document.getElementById("customer-password2").value;
+                
+                // Regular expression for password validation
+                var passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{7,}$/;
+
+                // Check if the password fields are empty
+                if (!newPassword || !confirmPassword) {
+                    // Show the alert
+                    alert("Please fill in the new password fields!");
+        
+                    // Prevent the form submission from redirecting or reloading the page
+                    event.preventDefault();
+                }
+
+                //Password Validation Checks
+                else{
+                    // Check if password meets the strength requirements
+                    if (!passwordPattern.test(newPassword)) {
+                        alert("Password must be at least 7 characters long and contain uppercase, lowercase letters, and special characters.");
+                        event.preventDefault();  // Prevent form submission
+                        return;
+                    }
+
+                    // Check if passwords match
+                    if (newPassword !== confirmPassword) {
+                        alert("Passwords do not match.");
+                        event.preventDefault();  // Prevent form submission
+                        return;
+                    }
+                }
+            });
+          
 
         </script>
 

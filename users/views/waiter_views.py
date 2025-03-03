@@ -14,6 +14,7 @@ from restaurant.models import Table, Reservation, Food, Drink
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 import string
+from django.middleware.csrf import get_token
 import secrets
 import re
 
@@ -25,6 +26,9 @@ def displayWaiterLogin(request):
     context = {
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
     }
+    
+    get_token(request)
+    
     return render(request, 'waiters/login.html', context)    
 
 #Function to authenticate waiter login credentials

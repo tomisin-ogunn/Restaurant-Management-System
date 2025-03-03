@@ -13,6 +13,7 @@ from users.models import Manager, Waiter, Customer
 from restaurant.models import Table, Reservation, Food, Drink
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
+from django.middleware.csrf import get_token
 import string
 import secrets
 import re
@@ -24,6 +25,8 @@ def displayCustomerLogin(request):
     context = {
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
     }
+    get_token(request)
+    
     return render(request, 'customers/login.html', context)    
 
 #Function to authenticate customer login credentials
@@ -44,7 +47,9 @@ def customer_loginAuth(request):
             request.session["customer_email"] = customer.email
             request.session["customer_name"] = customer.first_name
             messages.success(request, "Login successful!")
-            return redirect("customer-home")  # Redirect to home page
+            
+            get_token(request)
+            return redirect("customer-loggedIn-home")  # Redirect to home page
 
         except (Customer.DoesNotExist, ValueError):
             # Either the customer does not exist or the password is incorrect
@@ -53,10 +58,13 @@ def customer_loginAuth(request):
             context = {
                 "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
             }
+            
+            get_token(request)
+            
             return render(request, "customers/login.html", context)  # Render login form on failure
 
 #Function to display Customer home interface after authentication
-def displayCustomerHome(request):
+def displayCustomerLoggedInHome(request):
     customer_email = request.session.get("customer_email")  # Get customer_email from session
     if customer_email:
         # Retrieve customer details if authenticated
@@ -66,7 +74,7 @@ def displayCustomerHome(request):
                 "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
                 "customer": customer,
             }
-            return render(request, "customers/home.html", context)
+            return render(request, "customers/logged_in_home.html", context)
         except Customer.DoesNotExist:
             # If customer not found in the database, clear the session and redirect to login
             messages.error(request, "Customer not found. Please log in again.")
@@ -124,14 +132,66 @@ def update_CustomerPassword(request):
     }
     return render(request, "customers/login.html", context)
 
+#Function which displays the customer Register Form
+def displayCustomerRegister(request):
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+    }
+    return render(request, 'customers/register.html', context)    
 
+#Function which appends a customer to the Django Model after registration
+def appendCustomer(request):
+    if request.method == "POST":
+        #Retrieve form inputs
+        first_name = request.POST.get("customer-FirstName")
+        last_name = request.POST.get("customer-LastName")
+        email = request.POST.get("customer-Email")
+        password = request.POST.get("customer-Password")
+        
+        try:
+            #Create new customer
+            new_customer = Customer(
+                first_name = first_name,
+                last_name = last_name,
+                email = email,
+                password = make_password(password)
+            )
+            
+            #Generate customer Id
+            new_customer.customerId = Customer.generateCustomerID()
+            
+            #Save the new customer to the Django Model
+            new_customer.save()
+            
+            # Display success message
+            messages.success(request, "Registration Completed!")
+            context = {
+                'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+            }
+            
+            return render(request, "customers/register.html", context)
 
+            
+        except Exception as e:
+            messages.error(request, f"An error occurred: {e}")
+    
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+    }
+    
+    return render(request, "customers/register.html", context)
 
-
-
-
-
-
+#Function to log customer out
+def customerLogOut(request):
+    # Clear the session
+    request.session.flush()  # This clears all session data
+    # Add a success message
+    messages.success(request, "You have been logged out successfully.")
+    # Redirect to the login page
+    
+    get_token(request)
+     
+    return redirect("customer-login")
 
 
 
