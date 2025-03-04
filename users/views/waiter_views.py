@@ -58,8 +58,11 @@ def waiter_loginAuth(request):
                     "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
                     "waiterId": waiter_id
                 }
+                
+                get_token(request)
                 return render(request, "waiters/login.html", context)
             else:
+                get_token(request)
                 messages.success(request, "Login successful!")  # Normal login message
                 
             return redirect("waiter-home")  # Redirect to home page
@@ -76,7 +79,12 @@ def waiter_loginAuth(request):
 
 #Function to display Restaurant Waiter home interface after authentication
 def displayWaiterHome(request):
-    waiter_id = request.session.get("waiter_id")  # Get manager_id from session
+    waiter_id = request.session.get("waiter_id")  # Get waiter_id from session
+    food = Food.objects.all()
+    drinks = Drink.objects.all()
+    unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
+    drink_categories = [choice[0] for choice in Drink._meta.get_field('category').choices]
+    
     if waiter_id:
         # Retrieve manager details if authenticated
         try:
@@ -84,6 +92,10 @@ def displayWaiterHome(request):
             context = {
                 "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
                 "waiter": waiter,
+                "food": food,
+                "drinks": drinks,
+                "categories": unique_categories,
+                "drinkCategories": drink_categories
             }
             return render(request, "waiters/home.html", context)
         except Manager.DoesNotExist:

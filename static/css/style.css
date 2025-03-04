@@ -472,14 +472,14 @@ input[type="radio"]:hover {
 /* Customer Interface Style */
 .Cus-sidebar{
     height: 100%;
-    width: 230px;
+    width: 200px;
     position: fixed;
     top: 0;
     left: 0;
     background-color: #F5E9DC;
     padding-top: 92px;
     color: #444444;
-    z-index: 1;
+    z-index: 1000;
 }
 
 .Cus-sidebar a {
@@ -501,7 +501,16 @@ input[type="radio"]:hover {
 }
 
 
+/* Waiter Interface Styling */
+.waiter-menu-actions {
+    display: flex;
+    margin-top: 10px;
+}
 
+
+.test{
+    background:#ee3b71
+}
 
 
 

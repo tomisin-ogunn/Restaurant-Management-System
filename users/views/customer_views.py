@@ -66,6 +66,11 @@ def customer_loginAuth(request):
 #Function to display Customer home interface after authentication
 def displayCustomerLoggedInHome(request):
     customer_email = request.session.get("customer_email")  # Get customer_email from session
+    food = Food.objects.all()
+    drinks = Drink.objects.all()
+    unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
+    drink_categories = [choice[0] for choice in Drink._meta.get_field('category').choices]
+     
     if customer_email:
         # Retrieve customer details if authenticated
         try:
@@ -73,6 +78,10 @@ def displayCustomerLoggedInHome(request):
             context = {
                 "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
                 "customer": customer,
+                "food": food,
+                "drinks": drinks,
+                "categories": unique_categories,
+                "drinkCategories": drink_categories
             }
             return render(request, "customers/logged_in_home.html", context)
         except Customer.DoesNotExist:
