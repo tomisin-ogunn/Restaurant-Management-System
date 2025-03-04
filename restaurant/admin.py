@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Table, Reservation, Food, Drink
+from .models import Table, Reservation, Food, Drink, Favourite
 
 # Register your models here.
 
@@ -40,8 +40,13 @@ class DrinkAdmin(admin.ModelAdmin):
 admin.site.register(Drink, DrinkAdmin)    
 
 
+#Custom Admin class for the Customer Favourites Model
+class FavouriteAdmin(admin.ModelAdmin):
+    # Customize fields displayed in the admin list view
+    list_display = ('favourite_id', 'customer_id', 'food_id', 'drink_id')
+    search_fields = ('favourite_id', 'customer_id', 'food_id', 'drink_id')
 
-
-
+#Register the Favourites Model with the custom admin class
+admin.site.register(Favourite, FavouriteAdmin)  
 
 

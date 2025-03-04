@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import Waiter
 from django.db.models import Max
+from users.models import Customer
 from django.utils import timezone
 from django.utils.timezone import now, make_aware
 from datetime import datetime
@@ -149,10 +150,15 @@ class Drink(models.Model):
     def __str__(self):
         return f"Table {self.drinkId} - {self.drink_name}, {self.description}, {self.price}"
     
-    
-    
-    
+#model holding Customers Favourites
+class Favourite(models.Model):
+    favourite_id = models.AutoField(primary_key=True)
+    customer_id = models.ForeignKey(Customer, blank=True, null=True, on_delete=models.SET_NULL)
+    food_id = models.ForeignKey(Food, blank=True, null=True, on_delete=models.SET_NULL)
+    drink_id = models.ForeignKey(Drink, blank=True, null=True, on_delete=models.SET_NULL)
             
-            
-            
+    #Displays table view of model in Django Admin
+    def __str__(self):
+        return f"Table {self.favourite_id} - {self.customer_id}, {self.food_id}, {self.drink_id}"
+    
         
