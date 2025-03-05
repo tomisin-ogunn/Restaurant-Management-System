@@ -127,7 +127,7 @@ class Food(models.Model):
     
     #Displays the table view of the model in Django Admin
     def __str__(self):
-        return f"Table {self.foodId} - {self.food_name}, {self.price}, {self.ingredients}"
+        return f"Table {self.foodId} - {self.food_name}, {self.price}"
     
 #Model holding Drinks information
 class Drink(models.Model):
@@ -148,7 +148,7 @@ class Drink(models.Model):
     
     #Displays the table view of the model in Django Admin
     def __str__(self):
-        return f"Table {self.drinkId} - {self.drink_name}, {self.description}, {self.price}"
+        return f"Table {self.drinkId} - {self.drink_name},{self.price}"
     
 #model holding Customers Favourites
 class Favourite(models.Model):
@@ -160,5 +160,5 @@ class Favourite(models.Model):
     #Displays table view of model in Django Admin
     def __str__(self):
         return f"Table {self.favourite_id} - {self.customer_id}, {self.food_id}, {self.drink_id}"
-    
+        
         

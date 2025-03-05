@@ -89,6 +89,11 @@ urlpatterns += [
     path('customer-logout', customer_views.customerLogOut, name="customer-logout")
 ]
 
+#Url patterns for customer actions 
+urlpatterns += [
+    path('addItemToFavourites/<str:itemID>/<str:itemType>/', customer_views.addItemToFavourites, name="addItemToFavourites"),
+]
+
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

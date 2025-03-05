@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.utils import timezone
 from users.models import Manager, Waiter, Customer
-from restaurant.models import Table, Reservation, Food, Drink
+from restaurant.models import Table, Reservation, Food, Drink, Favourite
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.middleware.csrf import get_token
@@ -202,5 +202,33 @@ def customerLogOut(request):
      
     return redirect("customer-login")
 
-
-
+#Function which appends an item to customers favourites
+@csrf_exempt 
+def addItemToFavourites(request, itemID, itemType):
+    if request.method == "POST":
+        customer_id = request.POST.get("customerId")
+        customer = get_object_or_404(Customer, customerId=customer_id)
+        
+        
+        if itemType == "food":
+            food = get_object_or_404(Food, foodId=itemID)
+            #Create the favourited item
+            favourited_item = Favourite(
+                customer_id = customer,
+                food_id = food
+            )
+            
+        elif itemType == "drink":
+            drink = get_object_or_404(Drink, drinkId=itemID)
+            #Create the favourited item
+            favourited_item = Favourite(
+                customer_id = customer,
+                drink_id = drink
+            )
+            
+        if favourited_item:
+            favourited_item.save()
+            return JsonResponse({"message": "Item added to favourites successfully!"})
+            
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=405)
