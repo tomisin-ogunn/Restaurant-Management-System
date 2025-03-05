@@ -19,7 +19,7 @@ class Table(models.Model):
     
     #Displays table view of model in Django Admin
     def __str__(self):
-        return f"Table {self.tableNo} - {self.status}, {self.capacity}"
+        return f"Table: {self.tableNo} - {self.status}, {self.capacity}"
     
 #Model holding reservation information
 class Reservation(models.Model):
@@ -45,7 +45,7 @@ class Reservation(models.Model):
     
     #Displays table view of model in Django Admin
     def __str__(self):
-        return f"Reservation {self.reservationId} - {self.size}, {self.tableNo}, {self.duration}, {self.time_booked}"
+        return f"Reservation: {self.reservationId} - {self.size}, {self.tableNo}, {self.duration}, {self.time_booked}"
 
     #Function to generate a reservation id after appending
     @classmethod
@@ -127,7 +127,7 @@ class Food(models.Model):
     
     #Displays the table view of the model in Django Admin
     def __str__(self):
-        return f"Table {self.foodId} - {self.food_name}, {self.price}"
+        return f"FoodId: {self.foodId} - {self.food_name}, {self.price}"
     
 #Model holding Drinks information
 class Drink(models.Model):
@@ -148,7 +148,7 @@ class Drink(models.Model):
     
     #Displays the table view of the model in Django Admin
     def __str__(self):
-        return f"Table {self.drinkId} - {self.drink_name},{self.price}"
+        return f" DrinkId: {self.drinkId} - {self.drink_name}, {self.price}"
     
 #model holding Customers Favourites
 class Favourite(models.Model):
@@ -159,6 +159,6 @@ class Favourite(models.Model):
             
     #Displays table view of model in Django Admin
     def __str__(self):
-        return f"Table {self.favourite_id} - {self.customer_id}, {self.food_id}, {self.drink_id}"
+        return f"FavouriteId: {self.favourite_id} - {self.customer_id}, {self.food_id}, {self.drink_id}"
         
         
