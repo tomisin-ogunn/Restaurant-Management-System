@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Table, Reservation, Food, Drink, Favourite
+from .models import Table, Reservation, Food, Drink, Favourite, Basket, OrderItem
 
 # Register your models here.
 
@@ -48,5 +48,28 @@ class FavouriteAdmin(admin.ModelAdmin):
 
 #Register the Favourites Model with the custom admin class
 admin.site.register(Favourite, FavouriteAdmin)  
+
+
+#Custom Admin class for the user's basket model
+class BasketAdmin(admin.ModelAdmin):
+    #Customize fields displayed in the admin list view
+    list_display = ('id', 'user', 'session_id', 'created_at', 'updated_at')
+    search_fields = ('user', 'session_id', 'created_at', 'updated_at')
+
+#Register the Basket Model with the custom admin class
+admin.site.register(Basket, BasketAdmin)
+
+
+#Custom Admin class for the order items model
+class OrderItemAdmin(admin.ModelAdmin):
+    #Customize fields displayed in the admin list view
+    list_display = ('basket', 'food_item', 'drink_item', 'price', 'spice_level', 'food_sauce', 'protein',
+                    'has_ice', 'drink_size', 'desert_sauce', 'notes')
+    search_fields = ('basket', 'food_item', 'drink_item', 'price')
+#Register the Basket Model with the custom admin class
+admin.site.register(OrderItem, OrderItemAdmin)
+
+
+
 
 

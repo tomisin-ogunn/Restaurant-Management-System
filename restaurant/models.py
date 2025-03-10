@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from users.models import Waiter
 from django.db.models import Max
@@ -163,4 +164,56 @@ class Favourite(models.Model):
     def __str__(self):
         return f"FavouriteId: {self.favourite_id} - {self.customer_id}, {self.food_id}, {self.drink_id}"
         
+#Model holding basket information for users
+class Basket(models.Model):
+    user = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
+    session_id = models.CharField(max_length=100, unique=True, null=True, blank=True, default=uuid.uuid4)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
         
+    def get_items(self):
+        """Returns all order items in this basket."""
+        return self.orderitem_set.all()
+
+    def get_total_price(self):
+        """Calculates the total price of the basket."""
+        return sum(item.total_price for item in self.get_items())
+    
+    def __str__(self):
+        return f"Basket {'for ' + str(self.user) if self.user else 'session ' + str(self.session_id)}"
+
+#Model holding order items for users
+class OrderItem(models.Model):
+    basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
+    food_item = models.ForeignKey(Food, null=True, blank=True, on_delete=models.SET_NULL)
+    drink_item = models.ForeignKey(Drink, null=True, blank=True, on_delete=models.SET_NULL)
+    price = models.CharField(max_length=10)
+    spice_level = models.CharField(max_length=50, choices=[('Not Spicy', 'Not Spicy'), ('Spicy', 'Spicy'), ('Very Spicy', 'Very Spicy')],
+            default='Not Spicy', null=True, blank=True)
+    food_sauce = models.CharField(max_length=50, choices=[('Ketchup', 'Ketchup'), ('Mayo', 'Mayo'), ('Sweet Chilli', 'Sweet Chilli')],
+            default='Ketchup', null=True, blank=True)
+    protein = models.CharField(max_length=50, choices=[('Chicken', 'Chicken'), ('Beef', 'Beef'), ('Fish', 'Fish')],
+            default='Chicken', null=True, blank=True)
+    desert_sauce = models.CharField(max_length=50, choices=[('Toffee', 'Toffee'), ('Caramel', 'Caramel'), ('Strawberry', 'Strawberry')],
+            default='Toffee', null=True, blank=True)
+    drink_size = models.CharField(max_length=50, choices=[('Small', 'Small'), ('Medium', 'Medium'), ('Large', 'Large')],
+            default='Small', null=True, blank=True)
+    has_ice = models.BooleanField(default=False)
+    notes = models.CharField(max_length=100, null=True, blank=True)
+
+    def __str__(self):
+        item_name = self.food_item.name if self.food_item else self.drink_item.name if self.drink_item else "Unknown Item"
+        return f"{item_name} x {self.price}"
+
+
+
+
+
+
+
+
+
+
+
+
+
