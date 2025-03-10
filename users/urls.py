@@ -91,6 +91,7 @@ urlpatterns += [
 
 #Url patterns for customer actions 
 urlpatterns += [
+    path('customer-home/', customer_views.displayCustomerHome, name="customer-home"),
     path('addItemToFavourites/<str:itemID>/<str:itemType>/', customer_views.addItemToFavourites, name="addItemToFavourites"),
     path('customer-favourites/', customer_views.displayCustomerFavourites, name="customer-favourites"),
     path('removeItemFromFavourites/<str:itemID>/<str:itemType>/',  customer_views.removeItemFromFavourites, name="removeItemFromFavourites")

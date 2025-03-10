@@ -20,6 +20,23 @@ import re
 
 # Create your views here.
 
+#Function to display Customer home interface
+def displayCustomerHome(request):
+    food = Food.objects.all()
+    drinks = Drink.objects.all()
+    unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
+    drink_categories = [choice[0] for choice in Drink._meta.get_field('category').choices]
+            
+    context = {
+        "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
+        "food": food,
+        "drinks": drinks,
+        "categories": unique_categories,
+        "drinkCategories": drink_categories
+    }
+    return render(request, "customers/home.html", context)
+
+
 #Function to display customer log in page
 def displayCustomerLogin(request):
     context = {

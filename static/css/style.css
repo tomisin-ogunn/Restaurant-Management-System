@@ -500,6 +500,10 @@ input[type="radio"]:hover {
     color: #444444;
 }
 
+.customer-auth-buttons{
+    display: flex;
+    gap:10px;
+}
 
 /* Waiter Interface Styling */
 .waiter-menu-actions {
