@@ -75,6 +75,18 @@ def displayCustomerLoggedInHome(request):
         # Retrieve customer details if authenticated
         try:
             customer = Customer.objects.get(email=customer_email)
+            
+            # Retrieve favourites for the customer
+            favourites = Favourite.objects.filter(customer_id=customer).select_related("food_id", "drink_id")
+            food_favourites = [fav.food_id.foodId for fav in favourites if fav.food_id]
+            drink_favourites = [fav.drink_id.drinkId for fav in favourites if fav.drink_id]
+            
+            for item in food:
+                item.fav_status = "favourited" if item.foodId in food_favourites else "unfavourited"
+
+            for item in drinks:
+                item.fav_status = "favourited" if item.drinkId in drink_favourites else "unfavourited"
+            
             context = {
                 "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
                 "customer": customer,
@@ -230,5 +242,57 @@ def addItemToFavourites(request, itemID, itemType):
             favourited_item.save()
             return JsonResponse({"message": "Item added to favourites successfully!"})
             
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=405)
+
+#Function which returns/dislays the customer favourites page
+def displayCustomerFavourites(request):
+    customer_email = request.session.get("customer_email")  # Get customer_email from session
+    
+    if customer_email:
+        customer = Customer.objects.get(email=customer_email)
+       
+        #Fetch the favourites for the customer
+        favourites = Favourite.objects.filter(customer_id=customer).select_related("food_id", "drink_id")
+
+        # Separate food and drink objects
+        food_favourites = [fav.food_id for fav in favourites if fav.food_id]
+        drink_favourites = [fav.drink_id for fav in favourites if fav.drink_id]
+        unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
+        drink_categories = [choice[0] for choice in Drink._meta.get_field('category').choices]
+    
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        'customer': customer,
+        'food': food_favourites,
+        'drinks': drink_favourites,
+        "categories": unique_categories,
+        "drinkCategories": drink_categories
+    }
+    return render(request, 'customers/favourites.html', context) 
+
+#Function which removes an item from customers favourites
+@csrf_exempt
+def removeItemFromFavourites(request, itemID, itemType):
+    if request.method == "POST":
+        customer_id = request.POST.get("customerId")
+        customer = get_object_or_404(Customer, customerId=customer_id)
+        
+        
+        if itemType == "food":
+            food = get_object_or_404(Food, foodId=itemID)
+            
+            # Get the favourited item and delete it
+            favourite = get_object_or_404(Favourite, customer_id=customer, food_id=food)
+            favourite.delete()
+
+        elif itemType == "drink":
+            drink = get_object_or_404(Drink, drinkId=itemID)
+            
+            # Get the favourited item and delete it
+            favourite = get_object_or_404(Favourite, customer_id=customer, drink_id=drink)
+            favourite.delete()
+        return JsonResponse({"message": "Item removed from favourites successfully!"})
+
     else:
         return JsonResponse({"error": "Invalid request method"}, status=405)

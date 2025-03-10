@@ -92,6 +92,8 @@ urlpatterns += [
 #Url patterns for customer actions 
 urlpatterns += [
     path('addItemToFavourites/<str:itemID>/<str:itemType>/', customer_views.addItemToFavourites, name="addItemToFavourites"),
+    path('customer-favourites/', customer_views.displayCustomerFavourites, name="customer-favourites"),
+    path('removeItemFromFavourites/<str:itemID>/<str:itemType>/',  customer_views.removeItemFromFavourites, name="removeItemFromFavourites")
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

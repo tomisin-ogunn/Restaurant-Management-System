@@ -1,9 +1,7 @@
-<!-- Restaurant Customer Home Page Interface, when logged in -->
-
 {% extends 'layout.html' %}
 
 {% block title %}
-    Restaurant Customer Home Page
+    Restaurant Customer Favourites Page
 {% endblock %}
 
 <body>
@@ -41,7 +39,7 @@
 
         <!-- Customer Interface Sidebar -->
         <div class="Cus-sidebar shadow-lg">
-            <a id="CustomerHomeBtn">
+            <a onclick="window.location.href='{% url 'customer-loggedIn-home' %}'">
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
                         <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
@@ -49,7 +47,7 @@
                 </span> &nbsp; Home
             </a>
             <div class="sidebar-btn" style="border">
-                <a onclick="window.location.href='{% url 'customer-favourites' %}'">
+                <a id="CustomerFavBtn">
                     <span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
                             <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
@@ -98,76 +96,54 @@
         <!-- Restaurant menu - Food Items-->
         <div class="restaurant-menu">
             {% for item in food %}
+                    <div class="menuitem-box" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.15)';"
+                    onmouseout="setBackgroundColor(this)">
+                        <!-- Food Image -->
+                        <img src="{{ media_url }}{{ item.image }}" alt="{{ item.food_name }}" class="food-image">
 
-            <div class="menuitem-box" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.15)';"
-            onmouseout="setBackgroundColor(this)">
-                <!-- Food Image -->
-                <img src="{{ media_url }}{{ item.image }}" alt="{{ item.food_name }}" class="food-image">
+                        <!-- Food Id -->
+                        <input hidden class="food-id" value="{{ item.foodId }}">
+                        
+                        <!-- Category -->
+                        <input hidden class="food-category" value="{{ item.category }}">
+                        <input hidden id="fooditemType" value="food">
 
-                <!-- Food Id -->
-                <input hidden class="food-id" value="{{ item.foodId }}">
-                
-                <!-- Category -->
-                <input hidden class="food-category" value="{{ item.category }}">
-                <input hidden id="fooditemType" value="food">
-
-                <!-- Food Name -->
-                <h3 class="food-name">{{ item.food_name }}</h3>
-    
-                <!-- Price -->
-                <p class="food-price">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-coin" viewBox="0 0 16 16">
-                        <path d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518z"/>
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                        <path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11m0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12"/>
-                      </svg> &nbsp;&nbsp; {{ item.price }}</p>
-    
-                <!-- Calories -->
-                <p class="food-calories">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fire" viewBox="0 0 16 16">
-                        <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15"/>
-                    </svg> &nbsp;&nbsp; {{ item.calories }} </p>
+                        <!-- Food Name -->
+                        <h3 class="food-name">{{ item.food_name }}</h3>
             
-                <!-- View More Info Button -->
-                <div class="viewBtn-Div" onclick="openMenuItemInfoModal('{{ item.foodId }}', document.getElementById('fooditemType').value)">
-                    <button class="btn" id="view-info-btn" style="background-color: #FFB000; width:100%;" onmouseover="this.style.backgroundColor='#CC8A00';"
-                    onmouseout="this.style.backgroundColor='#FFB000';">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                          </svg> View more
-                    </button>
-                </div>
-
-                <br>
-
-                <!-- Add to Basket and Favourite Buttons -->
-                <div class="menu-actions">
-                    <button class="btn btn-success">
-                        <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                          </svg> Basket
-                    </button>
-
-                    {% if item.fav_status == "unfavourited"%}
-                        <button id="favouriteBtn" onclick="addToCustomerFavourites('{{ item.foodId }}', document.getElementById('fooditemType').value)" class="btn btn-secondary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                            </svg> <span id="favText">Favourite </span>
+                        <!-- Price -->
+                        <p class="food-price">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-coin" viewBox="0 0 16 16">
+                                <path d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518z"/>
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11m0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12"/>
+                            </svg> &nbsp;&nbsp; {{ item.price }}</p>
+            
+                        <!-- Calories -->
+                        <p class="food-calories">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fire" viewBox="0 0 16 16">
+                                <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16m0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15"/>
+                            </svg> &nbsp;&nbsp; {{ item.calories }} </p>
+                    
+                        <!-- View More Info Button -->
+                        <button onclick="openMenuItemInfoModal('{{ item.foodId }}', document.getElementById('fooditemType').value)" class="btn" style="font-weight:bold; background-color: #FFB000; width:100%;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                        onmouseout="this.style.backgroundColor='#FFB000';">
+                            <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                            </svg> View more
                         </button>
 
-                    {% else %}
-                        <!-- Remove Favourites Button -->
-                        <button id="removeFavBtn" onclick="removeFromCustomerFavourites('{{ item.foodId }}', document.getElementById('fooditemType').value)" style="background:#ee3b71; color:white;" class="btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                            </svg> <span id="favText">Remove </span>
-                        </button>
+                        <br>
 
-                    {% endif %}
-                </div>
-            </div>
+                        <!-- Add to Basket Button -->
+                        <button class="btn btn-success" style="width:100%;">
+                            <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                            </svg> Add to Basket
+                        </button>
+                    </div>
 
             {% endfor %}
         </div>
@@ -226,44 +202,23 @@
                                 {% endif %}
 
                                 <!-- View More Info Button -->
-                                <div class="viewBtn-Div" onclick="openMenuItemInfoModal('{{ item.drinkId }}', document.getElementById('drinkitemType').value)">
-                                    <button class="btn" id="view-info-btn" style="background-color: #FFB000; width:100%;" onmouseover="this.style.backgroundColor='#CC8A00';"
-                                    onmouseout="this.style.backgroundColor='#FFB000';">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                                        </svg> View more
-                                    </button>
-                                </div>
+                                <button onclick="openMenuItemInfoModal('{{ item.drinkId }}', document.getElementById('drinkitemType').value)" class="btn" style="font-weight:bold; background-color: #FFB000; width:100%;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                                onmouseout="this.style.backgroundColor='#FFB000';">
+                                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                    </svg> View more
+                                </button>
 
                                 <br>
 
                                 <!-- Add to basket and Favourite Buttons -->
-                                <div class="menu-actions">
-                                    <button class="btn btn-success">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                                          </svg> Basket
-                                    </button>
-
-                                    {% if item.fav_status == "unfavourited" %}
-                                        <button id="favouriteBtn" onclick = "addToCustomerFavourites('{{ item.drinkId }}', document.getElementById('drinkitemType').value)" class="btn btn-secondary">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                            </svg> <span id="favText">Favourite </span>
-                                        </button>
-
-                                    {% else %}
-                                        <!-- Remove Favourites Button -->
-                                        <button id="removeFavBtn" onclick = "removeFromCustomerFavourites('{{ item.drinkId }}', document.getElementById('drinkitemType').value)" style="background:#ee3b71; color:white;" class="btn">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                            </svg> <span id="favText">Remove </span>
-                                        </button>
-
-                                    {% endif %}
-                                </div>
+                                <button class="btn btn-success" style="width:100%;">
+                                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                                        </svg> Add to Basket
+                                </button>
 
                             </div>
                         {% endif %}
@@ -425,11 +380,12 @@
 
     {% endblock %}
 
-    
+
     <!-- Dynamic JavaScript Functionality -->
     {% block scripts %}
 
         <script>
+
             //Function to display Swal Pop Up for when 'Log Out' is clicked
             function logOutConfirmation(){
                 Swal.fire({
@@ -557,8 +513,8 @@
                         item.style.position = "relative";
                         item.style.transition = "transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease";
                         item.style.width = "100%";
-                        item.style.maxWidth = "270px";
-                        item.style.minWidth = "210px";
+                        item.style.maxWidth = "290px";
+                        item.style.minWidth = "250px";
                     });
 
                     drinkMenuDiv.offsetHeight;
@@ -571,14 +527,15 @@
                     const drinkMenuDiv = document.querySelector(".restaurant-menu-drinks");
                     drinkMenuDiv.style.display = "none";
 
-
+                    
                     if (parentContainer) {
                         parentContainer.style.display = "flex";
                         parentContainer.style.flexWrap = "wrap";
                         parentContainer.style.gap = "35px";
                         parentContainer.style.justifyContent = "flex-start";
-                        parentContainer.style.margin = "0 auto";
+                        parentContainer.style.margin = "0";
                         parentContainer.style.paddingLeft = "250px";
+                        parentContainer.style.alignItems = "flex-start"; 
                     }
 
                     menuItems.forEach(item => {
@@ -596,15 +553,15 @@
                             item.style.cursor = "pointer";
                             item.style.position = "relative";
                             item.style.transition = "transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease";
-                            item.style.width = "calc(25% - 20px)";
-                            item.style.minWidth = "200px";
-                            item.style.maxWidth = "250px";
+                            item.style.width = "calc(25% - 35px)";
+                            item.style.minWidth = "220px";
+                            item.style.maxWidth = "260px";
 
                         } else {
                             item.style.display = "none";
                         }
                     });
-
+            
                     parentContainer.offsetHeight;
                 }
                 
@@ -667,7 +624,7 @@
                                 var drinksModal = new bootstrap.Modal(document.getElementById("DrinkInfoModal"));
                                 drinksModal.show();
                             }
-                           
+                            
                         } else{
                             console.error("Error:", data.message);
                         }
@@ -689,7 +646,7 @@
             document.addEventListener("DOMContentLoaded", function () {
 
                 let links = document.querySelectorAll(".Cus-sidebar a");
-                let cusHomeButton = document.getElementById("CustomerHomeBtn");
+                let cusFavButton = document.getElementById("CustomerFavBtn");
             
                 // Function to set the active button
                 function setActive(link) {
@@ -713,80 +670,14 @@
             
                 if (activeLink) {
                     setActive(activeLink); // Restore last active button
-                } else if (cusHomeButton) {
-                    setActive(cusHomeButton); // Default to MetricsButton
+                } else if (cusFavButton) {
+                    setActive(cusFavButton); // Default to Customer Favourites Button
                 }
             });
-
-            //Favourite Button Functionality ~ Add
-            function addToCustomerFavourites(itemID, itemType){
-                var customerId = "{{ customer.customerId }}";
-
-                $.ajax({
-                    url: `/users/addItemToFavourites/${itemID}/${itemType}/`,
-                    type: 'POST',
-                    headers: { "X-CSRFToken": getCSRFToken() },
-                    data: { 
-                        id: itemID,
-                        itemType: itemType,
-                        customerId: customerId
-                    },
-                    success: function(response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Item added to favourites!',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.reload();
-                            }
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Item not added!',
-                            text: 'There was an issue favouriting the item.'
-                        });
-                    }
-                });
-                
-            }
-
-            //Favourite Button Functionality ~ Remove
-            function removeFromCustomerFavourites(itemID, itemType){
-                var customerId = "{{ customer.customerId }}";
-
-                $.ajax({
-                    url: `/users/removeItemFromFavourites/${itemID}/${itemType}/`,
-                    type: 'POST',
-                    headers: { "X-CSRFToken": getCSRFToken() },
-                    data: { 
-                        id: itemID,
-                        itemType: itemType,
-                        customerId: customerId
-                    },
-                    success: function(response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Item removed from favourites!',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.reload();
-                            }
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Item not removed!',
-                            text: 'There was an issue unfavouriting the item.'
-                        });
-                    }
-                });
-            }
 
         </script>
 
     {% endblock %}
 
 </body>
+

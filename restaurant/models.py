@@ -123,7 +123,8 @@ class Food(models.Model):
     price = models.CharField(max_length=10)        
     allergen = models.CharField(max_length=50, blank=True, null=True)        
     image = models.ImageField(upload_to='food_images/', blank=True, null=True)   
-    calories = models.CharField(max_length=10, null=True, blank=True)     
+    calories = models.CharField(max_length=10, null=True, blank=True)
+    fav_status = models.CharField(max_length=50, blank=True, null=True)
     
     #Displays the table view of the model in Django Admin
     def __str__(self):
@@ -145,6 +146,7 @@ class Drink(models.Model):
     image = models.ImageField(upload_to='drink_images/', blank=True, null=True)        
     category = models.CharField(max_length=50, choices=DRINK_CATEGORIES ,default='Soft Drinks')
     calories = models.CharField(max_length=10, blank=True, null=True)     
+    fav_status = models.CharField(max_length=50, blank=True, null=True)
     
     #Displays the table view of the model in Django Admin
     def __str__(self):
