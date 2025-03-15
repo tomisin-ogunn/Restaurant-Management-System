@@ -202,7 +202,7 @@ class OrderItem(models.Model):
     notes = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        item_name = self.food_item.name if self.food_item else self.drink_item.name if self.drink_item else "Unknown Item"
+        item_name = self.food_item.food_name if self.food_item else self.drink_item.name if self.drink_item else "Unknown Item"
         return f"{item_name} x {self.price}"
 
 

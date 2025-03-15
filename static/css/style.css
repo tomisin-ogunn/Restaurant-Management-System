@@ -512,14 +512,80 @@ input[type="radio"]:hover {
 }
 
 
+/* Baket Interface Styling */
+.basket-container{
+    width: 50vw;
+    height:70vh;
+    display:flex;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 2px solid #eeeeee;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    flex-direction: column; /* Ensures each item appears in a new row */
+    gap: 20px; /* Adds space between each item */
+    overflow-y:auto;
+}
+
+.basket-item {
+    display: flex;
+    align-items: center; /* Vertically aligns the content in the middle */
+    justify-content: space-between; /* Distributes space evenly between columns */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    cursor:pointer;
+}
+
+.basket-item .item-name,
+.basket-item .item-image,
+.basket-item .item-price,
+.basket-item .delete-basket-btn {
+    flex: 1;
+    padding: 5px;
+}
 
 
+.basket-item .item-image {
+    flex: 0 0 auto; 
+    margin-right: 30px; 
+}
 
+.basket-item img {
+    width: 50px; /* Adjust the image size */
+    height: 50px;
+    object-fit: cover; /* Ensures the image is scaled correctly */
+}
 
+.total-item-price, .delete-basket-btn {
+    text-align: right; /* Aligns the price to the right side */
+}
 
+.basket-button {
+    position: relative;
+    display: inline-block;
+}
 
+.icon-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
 
-
-
+.badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 3px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    min-width: 20px;
+    text-align: center;
+}
 
 

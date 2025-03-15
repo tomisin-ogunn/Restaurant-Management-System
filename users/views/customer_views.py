@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.utils import timezone
 from users.models import Manager, Waiter, Customer
-from restaurant.models import Table, Reservation, Food, Drink, Favourite
+from restaurant.models import Table, Reservation, Food, Drink, Favourite, Basket, OrderItem
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.middleware.csrf import get_token
@@ -22,20 +22,25 @@ import re
 
 #Function to display Customer home interface
 def displayCustomerHome(request):
+    session_id = request.session.session_key
     food = Food.objects.all()
     drinks = Drink.objects.all()
     unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
     drink_categories = [choice[0] for choice in Drink._meta.get_field('category').choices]
-            
+    
+    basket = Basket.objects.get(session_id=session_id)
+    order_items = OrderItem.objects.filter(basket=basket)
+    order_item_count = order_items.count()
+    
     context = {
         "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
         "food": food,
         "drinks": drinks,
         "categories": unique_categories,
-        "drinkCategories": drink_categories
+        "drinkCategories": drink_categories,
+        'order_item_count': order_item_count
     }
     return render(request, "customers/home.html", context)
-
 
 #Function to display customer log in page
 def displayCustomerLogin(request):
@@ -313,3 +318,110 @@ def removeItemFromFavourites(request, itemID, itemType):
 
     else:
         return JsonResponse({"error": "Invalid request method"}, status=405)
+
+#Function to add menu item to the basket
+@login_required
+def addToBasket(request, itemID, itemType):
+    customer_email = request.session.get("customer_email")  # Get customer_email from session
+        
+    #if request.method == "POST":
+    #Obtain the session ID
+    session_id = request.session.session_key
+    if not session_id:
+        request.session.create()
+        session_id = request.session.session_key
+        
+    #Get or create the basket using the session ID
+    if customer_email:
+        customer = Customer.objects.get(email=customer_email)
+        basket, created = Basket.objects.get_or_create(user=customer)
+        
+    else:
+       basket, created = Basket.objects.get_or_create(session_id=session_id)
+
+    basket.save()
+    
+    if itemType == "food":
+        #Get the selected food or drink item
+        food = get_object_or_404(Food, foodId=itemID)
+        
+        price = request.POST.get("foodPrice")
+        
+        order_item = OrderItem.objects.create(
+            food_item=food,
+            basket=basket,
+            price=price
+        )
+        
+        order_item.save()
+        
+        messages.success(request, "Item added to basket!")
+        context = {
+            'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        }
+        
+        return render(request, "customers/home.html", context)
+        
+    # elif itemType == "drink":
+    #     drink = get_object_or_404(Drink, drinkId=itemID)
+
+    context = {
+            'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        }
+        
+    return render(request, "customers/home.html", context)
+
+#Function which displays the basket items for users to view
+def displayBasket(request):
+    # Get the session ID or customer email from the session
+    customer_email = request.session.get("customer_email")
+    session_id = request.session.session_key
+    
+     # Initialize basket based on session ID or customer email
+    if customer_email:
+        customer = get_object_or_404(Customer, email=customer_email)
+        basket = Basket.objects.filter(user=customer).first() 
+    else:
+        basket = Basket.objects.filter(session_id=session_id).first()
+
+    # Get the basket items (order items) for the basket
+    order_items = OrderItem.objects.filter(basket=basket)
+    order_item_count = order_items.count()
+    
+    # Calculate the total price, ensuring that prices are treated as floats
+    total_price = sum(float(item.price.replace('£', '').strip()) for item in order_items)
+
+    # Round the total to 2 decimal places
+    total_price = round(total_price, 2)
+    formatted_price = "{:.2f}".format(total_price)
+    
+    # Prepare the context for the template
+    context = {
+        'basket': basket,
+        'order_items': order_items,
+        'total_price': formatted_price,
+        'order_item_count': order_item_count,
+        'media_url': settings.MEDIA_URL,  # Pass MEDIA_URL to the template
+    }
+    
+    return render(request, "customers/basket.html", context)
+
+#Function to delete/remove basket item
+def removeBasketItem(request, itemID):
+    if request.method == "POST":
+        basket_item = get_object_or_404(OrderItem, id=itemID)
+        basket_item.delete()
+    
+    return JsonResponse({"success": True, "message": "Item removed from basket."})
+
+
+
+
+
+
+
+
+
+
+
+

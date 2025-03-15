@@ -7,8 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.utils import timezone
-from .models import Manager, Waiter
-from restaurant.models import Table, Reservation, Food, Drink
+from .models import Manager, Waiter, Customer
+from restaurant.models import Table, Reservation, Food, Drink, Basket, OrderItem
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 import string
@@ -17,6 +17,7 @@ import re
 
 
 # # Create your views here.
+
 
 
 
