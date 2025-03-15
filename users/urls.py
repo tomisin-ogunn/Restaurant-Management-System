@@ -96,8 +96,10 @@ urlpatterns += [
     path('customer-favourites/', customer_views.displayCustomerFavourites, name="customer-favourites"),
     path('removeItemFromFavourites/<str:itemID>/<str:itemType>/',  customer_views.removeItemFromFavourites, name="removeItemFromFavourites"),
     path('addItemToBasket/<str:itemID>/<str:itemType>/', customer_views.addToBasket, name="addItemToBasket"),
-    path('customer-basket/', customer_views.displayBasket, name="customer-basket"),
-    path('removeItemFromBasket/<str:itemID>/', customer_views.removeBasketItem, name="removeItemFromBasket")
+    path('user-basket/', customer_views.displayBasket, name="user-basket"),
+    path('removeItemFromBasket/<str:itemID>/', customer_views.removeBasketItem, name="removeItemFromBasket"),
+    path('customer-rating/', customer_views.displayCustomerRatingForm, name="customer-rating"),
+    path('createCustomerRating', customer_views.createCustomerRating, name="createCustomerRating")
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

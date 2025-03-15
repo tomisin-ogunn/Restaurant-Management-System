@@ -1,16 +1,15 @@
-<!-- Restaurant Customer Basket Interface -->
+<!-- Restaurant Customer Ratings Interface -->
 
 {% extends 'layout.html' %}
 
 {% block title %}
-    Restaurant Customer Basket Interface
+    Restaurant Customer Ratings Interface
 {% endblock %}
 
 
 <body>
 
     {% block content %}
-
         <!-- Webpage Navbar -->
         <div id="navbar-menuItems">
             <nav style="background-color:#300909" class="navbar navbar-expand-lg">
@@ -32,7 +31,6 @@
                                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                               </svg>
                         </button>
-                    {% comment %} </div> {% endcomment %}
                 </div>
             </nav>
         </div>
@@ -47,7 +45,7 @@
                 </span> &nbsp; Home
             </a>
 
-            <a id="BasketBtn" class="basket-button">
+            <a onclick="window.location.href='{% url 'user-basket' %}'" class="basket-button">
                 <span class="icon-container">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
                         <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
@@ -61,7 +59,7 @@
                 &nbsp; Basket
             </a>
 
-            <a onclick="window.location.href='{% url 'customer-rating' %}'">
+            <a id="reviewBtn">
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-chat-left-text" viewBox="0 0 16 16">
                         <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
@@ -74,58 +72,101 @@
 
         <br><br><br>
 
-        <!-- Basket Container -->
-        <div class="basket-container">
-            {% for item in order_items %}
-            <div class="basket-item">
-                <div class="item-name">
-                    <p>{{ item.food_item.food_name }}</p>
-                </div>
-                <div class="item-image">
-                    <img style="width:60px; border-radius:5px; height:50px;" src="{{ item.food_item.image.url }}" alt="{{ item.food_item.food_name }}" />
-                </div>
-                <div class="item-price">
-                    <p>{{ item.price }}</p>
-                </div>
-
-                <div class="delete-basket-btn">
-                    <button onclick="deleteBasketItem({{ item.id }});" type="button" class="btn btn-danger">
-                        <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-                        </svg>
-                        Delete
-                    </button>
-                </div>
-            </div>
-
-            {% endfor %}
-
-            
-            <div class="basket-item">
-                <div class="item-name">
-                    <p>Total</p>
-                </div>
-                <div class="total-item-price">
-                    <p>£{{ total_price }}</p>
-                </div>
-            </div>
-
+        <div class="Customer-Rating-Container">
             <br>
-            <button type="submit" class="btn submit-button" style="width:50%; 
-            background-color:#FFB000; font-weight:bold; margin:0 auto;" onmouseover="this.style.backgroundColor='#CC8A00';"
-            onmouseout="this.style.backgroundColor='#FFB000';">
-                Pay and Place Order £{{ total_price }}
-            </button>
+            <form class="add-rating-form" method="POST" action="{% url 'createCustomerRating' %}">
+                <form class="add-rating-form" method="POST">
+                {% csrf_token %}
 
-            <button type="button" style="margin:0 auto; width:50%;" class="btn btn-secondary">Delete All Items </button>   
-            <br>
+                <!-- Name -->
+                <div class="form-group">
+                    <label for="cus-name">Name</label><br>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        name="cus-name" 
+                        placeholder="Enter your name" 
+                        required>
+                </div>
 
+                <!-- Tables -->
+                <div class="form-group">
+                    <label for="table-select">Select your table</label><br>
+                    <div class="dropdown-container">
+                        <select class="form-control custom-select" id="tables" name="cus-tables" required>
+                            <option value="" disabled selected style="color:gray;">Please select a table</option>
+                            {% for table in tables %}
+                                <option>{{ table.tableNo }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Score -->
+                <div class="form-group">
+                    <label for="score">Select a score (out of 10) </label>
+                    <input 
+                        type="number" 
+                        class="form-control"  
+                        name="rating-score"  
+                        min="1" 
+                        max="10" 
+                        value="1" 
+                        step="1" 
+                        required>
+                </div>
+                
+                <!-- Comments -->
+                <div class="form-group">
+                    <label for="cus-comments">Comments</label><br>
+                    <textarea class="form-control" name="cus-comments" placeholder="Please enter any comments you may have."></textarea>
+                </div>
+
+                <div></div>
+                <div></div>
+                <div></div>
+                <button type="submit" class="btn submit-button" style="width:100%; 
+                    background-color:#FFB000" onmouseover="this.style.backgroundColor='#CC8A00';"
+                    onmouseout="this.style.backgroundColor='#FFB000';" >Send Feedback
+                </button>
+                            
+                <button type="button" onclick="resetForm()" class="btn btn-secondary">Clear </button>   
+            </form>
         </div>
 
     {% endblock %}
 
+
     <!-- Dynamic JavaScript Functionality -->
     {% block scripts %}
+
+        {% comment %} Checks for any error messages, and displays swal pop ups{% endcomment %}
+        {% if messages %}
+            <script>
+                {% for message in messages %}
+                        var messageText = "{{ message|escapejs }}"
+                            
+                        {% comment %} If form is successfully submitted, display swal pop up {% endcomment %}
+                        if(messageText === "Feedback sent!"){
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Rating created!',
+                                text: 'Thank you for your feedback, we will review and improve our service!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Redirects back to page
+                                    window.location.href="{% url 'customer-rating' %}"
+                                }
+                            });
+                        }    
+            
+                    {% endfor %}
+
+            </script>
+
+            
+        {% endif %}
+
 
         <script>
 
@@ -153,7 +194,7 @@
             document.addEventListener("DOMContentLoaded", function () {
 
                 let links = document.querySelectorAll(".Cus-sidebar a");
-                let BasketButton = document.getElementById("BasketBtn");
+                let reviewButton = document.getElementById("reviewBtn");
             
                 // Function to set the active button
                 function setActive(link) {
@@ -177,8 +218,8 @@
             
                 if (activeLink) {
                     setActive(activeLink); // Restore last active button
-                } else if (BasketButton) {
-                    setActive(BasketButton); // Default to Customer Home Button
+                } else if (reviewButton) {
+                    setActive(reviewButton); // Default to Customer Review Button
                 }
             });
 
@@ -189,48 +230,18 @@
                 element.style.backgroundColor = '#f8f8f8';
             }
 
-            //Function to delete an item from the users basket
-            function deleteBasketItem(itemID){
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Do you want to remove this item?',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes',
-                    cancelButtonText: 'No',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                                url: `/users/removeItemFromBasket/${itemID}/`,
-                                type: 'POST',
-                                headers: { "X-CSRFToken": getCSRFToken() },
-                                data: { 
-                                    id: itemID,
-                                },
-                                success: function(response) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Item removed from basket!',
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            window.location.reload();
-                                        }
-                                    });
-                                },
-                                error: function(xhr, status, error) {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Item not removed!',
-                                        text: 'There was an issue removing the basket item.'
-                                    });
-                                }
-                        });
-                    }
-                });
-                
+            //Function to reset form values, when 'clear' button is clicked
+            function resetForm(){
+                var form = document.querySelector('.add-rating-form');
+
+                form.reset();
             }
+
+
 
         </script>
 
     {% endblock %}
 
 </body>
+

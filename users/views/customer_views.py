@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.utils import timezone
 from users.models import Manager, Waiter, Customer
-from restaurant.models import Table, Reservation, Food, Drink, Favourite, Basket, OrderItem
+from restaurant.models import Table, Reservation, Food, Drink, Favourite, Basket, OrderItem, Rating
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.middleware.csrf import get_token
@@ -414,7 +414,62 @@ def removeBasketItem(request, itemID):
     
     return JsonResponse({"success": True, "message": "Item removed from basket."})
 
+#Function which displays customer rating/feedback form
+def displayCustomerRatingForm(request):
+    session_id = request.session.session_key
 
+    basket = Basket.objects.get(session_id=session_id)
+    order_items = OrderItem.objects.filter(basket=basket)
+    order_item_count = order_items.count()
+    tables = Table.objects.all()
+    
+    context = {
+        "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
+        'order_item_count': order_item_count,
+        'tables': tables
+    }
+    return render(request, "customers/rating.html", context)
+    
+#Function which creates a customer rating
+@login_required
+def createCustomerRating(request):
+    customer_email = request.session.get("customer_email")  # Get customer_email from session
+    
+    if request.method == "POST":
+        name = request.POST.get("cus-name")
+        score = request.POST.get("rating-score")
+        comments = request.POST.get("cus-comments")
+        tableNo = request.POST.get("cus-tables")
+        table = Table.objects.get(tableNo=tableNo)
+        
+        if customer_email:
+            customer = Customer.objects.get(email=customer_email)
+            rating = Rating(
+                customer=customer,
+                customer_name=name,
+                score=score,
+                comments=comments,
+                table=table
+            )
+                
+        else:
+            rating = Rating(
+                customer_name=name,
+                score=score,
+                comments=comments,
+                table=table
+            )
+            
+    if rating:
+        rating.save()
+    
+    messages.success(request, "Feedback sent!")
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+    }
+    
+    return render(request, "customers/rating.html", context)
+        
 
 
 

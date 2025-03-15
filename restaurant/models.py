@@ -205,6 +205,19 @@ class OrderItem(models.Model):
         item_name = self.food_item.food_name if self.food_item else self.drink_item.name if self.drink_item else "Unknown Item"
         return f"{item_name} x {self.price}"
 
+#Model holding Customer Ratings information
+class Rating(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
+    customer_name = models.CharField(max_length=50, null=True)
+    table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True, blank=True)
+    score = models.CharField(max_length=10)
+    comments = models.CharField(max_length=255, null=True, blank=True)
+    submission_date = models.DateTimeField(auto_now_add=True)
+
+
+
+
+
 
 
 
