@@ -377,7 +377,7 @@ def displayBasket(request):
     customer_email = request.session.get("customer_email")
     session_id = request.session.session_key
     
-     # Initialize basket based on session ID or customer email
+    # Initialize basket based on session ID or customer email
     if customer_email:
         customer = get_object_or_404(Customer, email=customer_email)
         basket = Basket.objects.filter(user=customer).first() 
@@ -470,8 +470,26 @@ def createCustomerRating(request):
     
     return render(request, "customers/rating.html", context)
         
+#Function to delete all basket items
+def deleteBasketItems(request):
+   # Get the session ID or customer email from the session
+    customer_email = request.session.get("customer_email")
+    session_id = request.session.session_key
 
+    # Initialize basket based on session ID or customer email
+    if customer_email:
+        customer = get_object_or_404(Customer, email=customer_email)
+        basket = Basket.objects.filter(user=customer).first()
+    else:
+        basket = Basket.objects.filter(session_id=session_id).first()
 
+    # Get the basket items (order items) for the basket
+    order_items = OrderItem.objects.filter(basket=basket)
+
+    # Delete all the order items in the basket
+    order_items.delete()
+    
+    return JsonResponse({"success": True, "message": "Items removed from basket."})
 
 
 

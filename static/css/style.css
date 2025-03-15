@@ -538,6 +538,17 @@ input[type="radio"]:hover {
     cursor:pointer;
 }
 
+.no-basket-item{
+    display: flex;
+    align-items: center; /* Vertically aligns the content in the middle */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #ffffff;
+    cursor:pointer;
+    color:gray;
+}
+
 .basket-item .item-name,
 .basket-item .item-image,
 .basket-item .item-price,
