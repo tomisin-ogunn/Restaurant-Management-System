@@ -22,7 +22,12 @@ import re
 
 #Function to display Customer home interface
 def displayCustomerHome(request):
+    
+    if not request.session.session_key:
+        request.session.create()  # Create a new session
+    
     session_id = request.session.session_key
+
     food = Food.objects.all()
     drinks = Drink.objects.all()
     unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
@@ -30,6 +35,7 @@ def displayCustomerHome(request):
     
     basket = Basket.objects.get(session_id=session_id)
     order_items = OrderItem.objects.filter(basket=basket)
+   
     order_item_count = order_items.count()
     
     context = {
@@ -341,16 +347,62 @@ def addToBasket(request, itemID, itemType):
 
     basket.save()
     
-    if itemType == "food":
+    if itemType == "mainMealFood":
         #Get the selected food or drink item
         food = get_object_or_404(Food, foodId=itemID)
         
         price = request.POST.get("foodPrice")
+        soupChoice = request.POST.get("soupChoice")
+        proteinChoice = request.POST.get("proteinChoice")
+        spiceLevel = request.POST.get("spiceLevel")
+        notes = request.POST.get("notes")
+        
+        if food.food_name == 'Pounded Yam' or food.food_name == 'Amala':
+            order_item = OrderItem.objects.create(
+                food_item=food,
+                basket=basket,
+                price=price,
+                spice_level=spiceLevel,
+                protein=proteinChoice,
+                soup_choice=soupChoice,
+                notes=notes
+            )
+            
+        else:
+            order_item = OrderItem.objects.create(
+                food_item=food,
+                basket=basket,
+                price=price,
+                spice_level=spiceLevel,
+                protein=proteinChoice,
+                notes=notes
+            )
+        
+        order_item.save()
+        
+        messages.success(request, "Item added to basket!")
+        context = {
+            'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        }
+        
+        return render(request, "customers/home.html", context)
+    
+    elif itemType == "fastFood":
+        #Get the selected food or drink item
+        food = get_object_or_404(Food, foodId=itemID)
+        
+        price = request.POST.get("foodPrice2")
+        sauce_choice = request.POST.get("sauceChoice")
+        spiceLevel = request.POST.get("spiceLevel2")
+        notes = request.POST.get("notes2")
         
         order_item = OrderItem.objects.create(
             food_item=food,
             basket=basket,
-            price=price
+            price=price,
+            food_sauce=sauce_choice,
+            notes=notes,
+            spice_level=spiceLevel
         )
         
         order_item.save()
@@ -361,13 +413,65 @@ def addToBasket(request, itemID, itemType):
         }
         
         return render(request, "customers/home.html", context)
+    
+    elif itemType == "deserts":
+        #Get the selected food or drink item
+        food = get_object_or_404(Food, foodId=itemID)
         
-    # elif itemType == "drink":
-    #     drink = get_object_or_404(Drink, drinkId=itemID)
-
-    context = {
+        price = request.POST.get("foodPrice3")
+        sauce_choice = request.POST.get("sauceChoice3")
+        notes = request.POST.get("notes3")
+        
+        order_item = OrderItem.objects.create(
+            food_item=food,
+            basket=basket,
+            price=price,
+            desert_sauce=sauce_choice,
+            notes=notes
+        )
+        
+        order_item.save()
+        
+        messages.success(request, "Item added to basket!")
+        context = {
             'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
         }
+        
+        return render(request, "customers/home.html", context)
+    
+    elif itemType == "drink":
+        drink = get_object_or_404(Drink, drinkId=itemID)
+        price = request.POST.get("drinkPrice")
+        size = request.POST.get("drinkSize")
+        notes = request.POST.get("drinkNotes")
+        iceChoice = request.POST.get("iceChoice")
+        
+        order_item = OrderItem.objects.create(
+            drink_item=drink,
+            basket=basket,
+            price=price,
+            notes=notes,
+            drink_size=size,
+        )
+        
+        if iceChoice == "Ice":
+            order_item.has_ice = True
+        
+        else:
+            order_item.has_ice = False
+                    
+        order_item.save()
+        
+        messages.success(request, "Item added to basket!")
+        context = {
+            'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        }
+        
+        return render(request, "customers/home.html", context)
+
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+    }
         
     return render(request, "customers/home.html", context)
 

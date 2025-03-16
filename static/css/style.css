@@ -540,13 +540,16 @@ input[type="radio"]:hover {
 
 .no-basket-item{
     display: flex;
-    align-items: center; /* Vertically aligns the content in the middle */
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */ 
     padding: 10px;
-    border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #ffffff;
-    cursor:pointer;
-    color:gray;
+}
+
+.centered-text {
+    color: gray;
+    text-align: center;
 }
 
 .basket-item .item-name,

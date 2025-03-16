@@ -63,7 +63,7 @@ admin.site.register(Basket, BasketAdmin)
 #Custom Admin class for the order items model
 class OrderItemAdmin(admin.ModelAdmin):
     #Customize fields displayed in the admin list view
-    list_display = ('basket', 'food_item', 'drink_item', 'price', 'spice_level', 'food_sauce', 'protein',
+    list_display = ('basket', 'food_item', 'drink_item', 'price', 'soup_choice', 'spice_level', 'food_sauce', 'protein',
                     'has_ice', 'drink_size', 'desert_sauce', 'notes')
     search_fields = ('basket', 'food_item', 'drink_item', 'price')
 

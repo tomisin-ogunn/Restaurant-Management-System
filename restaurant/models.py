@@ -189,20 +189,22 @@ class OrderItem(models.Model):
     drink_item = models.ForeignKey(Drink, null=True, blank=True, on_delete=models.SET_NULL)
     price = models.CharField(max_length=10)
     spice_level = models.CharField(max_length=50, choices=[('Not Spicy', 'Not Spicy'), ('Spicy', 'Spicy'), ('Very Spicy', 'Very Spicy')],
-            default='Not Spicy', null=True, blank=True)
+            null=True, blank=True)
+    soup_choice = models.CharField(max_length=50, choices=[('Egusi', 'Egusi'), ('Ogbono', 'Ogbono'), ('Abula', 'Abula')],
+            null=True, blank=True)
     food_sauce = models.CharField(max_length=50, choices=[('Ketchup', 'Ketchup'), ('Mayo', 'Mayo'), ('Sweet Chilli', 'Sweet Chilli')],
-            default='Ketchup', null=True, blank=True)
+            null=True, blank=True)
     protein = models.CharField(max_length=50, choices=[('Chicken', 'Chicken'), ('Beef', 'Beef'), ('Fish', 'Fish')],
-            default='Chicken', null=True, blank=True)
+            null=True, blank=True)
     desert_sauce = models.CharField(max_length=50, choices=[('Toffee', 'Toffee'), ('Caramel', 'Caramel'), ('Strawberry', 'Strawberry')],
-            default='Toffee', null=True, blank=True)
+            null=True, blank=True)
     drink_size = models.CharField(max_length=50, choices=[('Small', 'Small'), ('Medium', 'Medium'), ('Large', 'Large')],
-            default='Small', null=True, blank=True)
+            null=True, blank=True)
     has_ice = models.BooleanField(default=False)
     notes = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        item_name = self.food_item.food_name if self.food_item else self.drink_item.name if self.drink_item else "Unknown Item"
+        item_name = self.food_item.food_name if self.food_item else self.drink_item.drink_name if self.drink_item else "Unknown Item"
         return f"{item_name} x {self.price}"
 
 #Model holding Customer Ratings information

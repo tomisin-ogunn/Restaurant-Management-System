@@ -78,26 +78,51 @@
         <div class="basket-container">
             {% if order_items %}
                 {% for item in order_items %}
-                    <div class="basket-item">
-                        <div class="item-name">
-                            <p>{{ item.food_item.food_name }}</p>
-                        </div>
-                        <div class="item-image">
-                            <img style="width:60px; border-radius:5px; height:50px;" src="{{ item.food_item.image.url }}" alt="{{ item.food_item.food_name }}" />
-                        </div>
-                        <div class="item-price">
-                            <p>{{ item.price }}</p>
-                        </div>
+                    {% if item.food_item %}
+                        <div class="basket-item">
+                            <div class="item-name">
+                                <p>{{ item.food_item.food_name }}</p>
+                            </div>
+                            <div class="item-image">
+                                <img style="width:60px; border-radius:5px; height:50px;" src="{{ item.food_item.image.url }}" alt="{{ item.food_item.food_name }}" />
+                            </div>
+                            <div class="item-price">
+                                <p>{{ item.price }}</p>
+                            </div>
 
-                        <div class="delete-basket-btn">
-                            <button onclick="deleteBasketItem({{ item.id }});" type="button" class="btn btn-danger">
-                                <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-                                </svg>
-                                Delete
-                            </button>
+                            <div class="delete-basket-btn">
+                                <button onclick="deleteBasketItem({{ item.id }});" type="button" class="btn btn-danger">
+                                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                    </svg>
+                                    Delete
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    {% else %}
+                        <div class="basket-item">
+                            <div class="item-name">
+                                <p>{{ item.drink_item.drink_name }}</p>
+                            </div>
+                            <div class="item-image">
+                                <img style="width:60px; border-radius:5px; height:50px;" src="{{ item.drink_item.image.url }}" alt="{{ item.drink_item.drink_name }}" />
+                            </div>
+                            <div class="item-price">
+                                <p>{{ item.price }}</p>
+                            </div>
+
+                            <div class="delete-basket-btn">
+                                <button onclick="deleteBasketItem({{ item.id }});" type="button" class="btn btn-danger">
+                                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                    </svg>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    
+                    {% endif %}
+
 
                 {% endfor %}
 
@@ -132,7 +157,7 @@
                 
                 <br>
                 <div class="no-basket-item">
-                    <center><em><p>No items in the basket.</p></em></center>
+                    <center><em><p style="color:gray;">No items in the basket.</p></em></center>
                 </div>
             {% endif %}
            
@@ -267,7 +292,7 @@
                                         title: 'Items removed from basket!',
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            window.location.href = "{% url 'customer-home' %}";
+                                            window.location.reload();
                                         }
                                     });
                                 },

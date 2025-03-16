@@ -55,7 +55,6 @@
                     {% if order_item_count != 0 %}
                         <span class="badge">{{ order_item_count }}</span>
                     {% endif %}
-                    
                 </span>
                 &nbsp; Basket
             </a>
@@ -401,7 +400,7 @@
 
                     <!-- Item ID and type -->
                     <span hidden id="foodItemID"></span>
-                    <span hidden id="foodItemType">food</span>
+                    <span hidden id="foodItemType">mainMealFood</span>
 
                     <!-- Spice Level-->
                     <div class="mb-3 d-flex align-items-center gap-3">
@@ -411,13 +410,13 @@
                         <span>Level of Spice:</span>
                     
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="spice-level" checked> Not Spicy
+                            <input type="radio" class="form-check-input" name="spice-level" value="Not Spicy" checked> Not Spicy
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="spice-level"> Spicy
+                            <input type="radio" class="form-check-input" name="spice-level" value="Spicy"> Spicy
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="spice-level"> Very Spicy
+                            <input type="radio" class="form-check-input" name="spice-level" value="Very Spicy"> Very Spicy
                         </label>
                     </div>
 
@@ -430,13 +429,13 @@
                         <span>Select your protein:</span>
                     
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="protein-choice" checked> Chicken
+                            <input type="radio" class="form-check-input" name="protein-choice" value="Chicken" checked> Chicken
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="protein-choice"> Beef
+                            <input type="radio" class="form-check-input" name="protein-choice" value="Beef" > Beef
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="protein-choice"> Fish
+                            <input type="radio" class="form-check-input" name="protein-choice" value="Fish"> Fish
                         </label>
                     </div>
 
@@ -449,13 +448,13 @@
                         <span>Select your soup:</span>
                     
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="soup-choice" checked> Egusi
+                            <input type="radio" class="form-check-input" name="soup-choice" value="Egusi" checked> Egusi
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="soup-choice"> Ogbono
+                            <input type="radio" class="form-check-input" name="soup-choice" value="Ogbono"> Ogbono
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="soup-choice"> Abula
+                            <input type="radio" class="form-check-input" name="soup-choice" value="Abula"> Abula
                         </label>
                     </div>
 
@@ -469,7 +468,7 @@
                             </svg>
                             <span class="ms-1">Notes:</span>
                         </div>
-                        <textarea class="form-control"  style="font-style: italic;" rows="4" placeholder="Please enter any preferences you may have"></textarea>
+                        <textarea class="form-control" id="itemNotes" style="font-style: italic;" rows="4" placeholder="Please enter any preferences you may have"></textarea>
                     </div>
 
                   </div>
@@ -514,6 +513,11 @@
                       <span>&nbsp;&nbsp;  <span id="food-cus-name2" class="ms-1"></span>
                     </div>
 
+                    <!-- Item ID and type -->
+                    <span hidden id="foodItemID2"></span>
+                    <span hidden id="foodItemType2">fastFood</span>
+
+
                     <!-- Spice Level-->
                     <div class="mb-3 d-flex align-items-center gap-3">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="25" fill="currentColor" class="bi bi-fire" viewBox="0 0 16 16">
@@ -522,13 +526,13 @@
                         <span>Level of Spice:</span>
                     
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="spice-level2" checked> Not Spicy
+                            <input type="radio" class="form-check-input" name="spice-level2" value="Not Spicy" checked> Not Spicy
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="spice-level2"> Spicy
+                            <input type="radio" class="form-check-input" name="spice-level2" value="Spicy"> Spicy
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="spice-level2"> Very Spicy
+                            <input type="radio" class="form-check-input" name="spice-level2" value="Very Spicy"> Very Spicy
                         </label>
                     </div>
 
@@ -541,13 +545,13 @@
                         <span>Select your sauce:</span>
                     
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="sauce-choice" checked> Ketchup
+                            <input type="radio" class="form-check-input" name="sauce-choice" value="Ketchup" checked> Ketchup
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="sauce-choice"> Mayo
+                            <input type="radio" class="form-check-input" name="sauce-choice" value="Mayo"> Mayo
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="sauce-choice"> Sweet Chilli
+                            <input type="radio" class="form-check-input" name="sauce-choice" value="Sweet Chilli"> Sweet Chilli
                         </label>
                     </div>
 
@@ -561,12 +565,12 @@
                             </svg>
                             <span class="ms-1">Notes:</span>
                         </div>
-                        <textarea class="form-control"  style="font-style: italic;" rows="4" placeholder="Please enter any preferences you may have"></textarea>
+                        <textarea class="form-control"  id="itemNotes2" style="font-style: italic;" rows="4" placeholder="Please enter any preferences you may have"></textarea>
                     </div>
 
                   </div>
                   <div class="modal-footer">
-                    <button class="btn btn-success"><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+                    <button onclick="addItemToBasket(document.getElementById('foodItemID2').textContent, document.getElementById('foodItemType2').textContent)" class="btn btn-success"><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0z"/>
                         <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
                       </svg> Send to Basket<span id="food-cus-price2" class="ms-2"></span></button>
@@ -603,6 +607,10 @@
                       <span>&nbsp;&nbsp;  <span id="food-cus-name3" class="ms-1"></span>
                     </div>
 
+                    <!-- Item ID and type -->
+                    <span hidden id="foodItemID3"></span>
+                    <span hidden id="foodItemType3">deserts</span>
+
                     <!-- Sauce Choices-->
                     <div class="mb-3 d-flex align-items-center gap-3">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="25" fill="currentColor" class="bi bi-droplet" viewBox="0 0 16 16">
@@ -612,13 +620,13 @@
                         <span>Select your sauce:</span>
                     
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="sauce-choice3" checked> Toffee
+                            <input type="radio" class="form-check-input" name="sauce-choice3" value="Toffee" checked> Toffee
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="sauce-choice3"> Caramel
+                            <input type="radio" class="form-check-input" name="sauce-choice3" value="Caramel"> Caramel
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="sauce-choice3"> Strawberry 
+                            <input type="radio" class="form-check-input" name="sauce-choice3" value="Strawberry"> Strawberry 
                         </label>
                     </div>
 
@@ -632,12 +640,12 @@
                             </svg>
                             <span class="ms-1">Notes:</span>
                         </div>
-                        <textarea class="form-control"  style="font-style: italic;" rows="4" placeholder="Please enter any preferences you may have"></textarea>
+                        <textarea class="form-control"  id="itemNotes3" style="font-style: italic;" rows="4" placeholder="Please enter any preferences you may have"></textarea>
                     </div>
 
                   </div>
                   <div class="modal-footer">
-                    <button class="btn btn-success"><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+                    <button onclick="addItemToBasket(document.getElementById('foodItemID3').textContent, document.getElementById('foodItemType3').textContent)" class="btn btn-success"><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0z"/>
                         <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
                       </svg> Send to Basket<span id="food-cus-price3" class="ms-2"></span></button>
@@ -674,6 +682,10 @@
                       <span>&nbsp;&nbsp;  <span id="drink-cus-name" class="ms-1"></span>
                     </div>
 
+                    <!-- Item ID and type -->
+                    <span hidden id="drinkItemID"></span>
+                    <span hidden id="drinkItemType">drink</span>
+
                     <!-- Drink with ice Choices-->
                     <div class="mb-3 d-flex align-items-center gap-3">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="25" fill="currentColor" class="bi bi-snow3" viewBox="0 0 16 16">
@@ -683,10 +695,10 @@
                         <span>Select an option</span>
                     
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="drink-option" checked> Ice
+                            <input type="radio" class="form-check-input" name="drink-option" value="Ice" checked> Ice
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="drink-option"> No Ice
+                            <input type="radio" class="form-check-input" name="drink-option" value="No Ice"> No Ice
                         </label>
                     </div>
 
@@ -698,13 +710,13 @@
                         <span>Select a size</span>
                     
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="drink-size" checked> Small
+                            <input type="radio" class="form-check-input" name="drink-size" value="Small" checked> Small
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="drink-size"> Medium +1.50
+                            <input type="radio" class="form-check-input" name="drink-size" value="Medium" > Medium <span id="medPrice">+1.50</span>
                         </label>
                         <label class="d-flex align-items-center gap-1">
-                            <input type="radio" class="form-check-input" name="drink-size"> Large +2.50
+                            <input type="radio" class="form-check-input" name="drink-size" value="Large" > Large <span id="largePrice">+2.50</span>
                         </label>
                     </div>
 
@@ -718,12 +730,12 @@
                             </svg>
                             <span class="ms-1">Notes:</span>
                         </div>
-                        <textarea class="form-control"  style="font-style: italic;" rows="4" placeholder="Please enter any preferences you may have"></textarea>
+                        <textarea class="form-control" id="drinkNotes" style="font-style: italic;" rows="4" placeholder="Please enter any preferences you may have"></textarea>
                     </div>
 
                   </div>
                   <div class="modal-footer">
-                    <button class="btn btn-success"><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+                    <button onclick="addItemToBasket(document.getElementById('drinkItemID').textContent, document.getElementById('drinkItemType').textContent)" class="btn btn-success"><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0z"/>
                         <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
                       </svg> Send to Basket<span id="drink-cus-price" class="ms-2"></span></button>
@@ -1047,12 +1059,14 @@
                                 document.getElementById("food-cus-price2").textContent = data['price'];
                                 document.getElementById("food-cus-image2").src = data['image'];
                                 document.getElementById("food-cus-image2").style.display = "block";
+                                document.getElementById("foodItemID2").textContent = data['foodId'];
 
                                 //Deserts
                                 document.getElementById("food-cus-name3").textContent = data['name'];
                                 document.getElementById("food-cus-price3").textContent = data['price'];
                                 document.getElementById("food-cus-image3").src = data['image'];
                                 document.getElementById("food-cus-image3").style.display = "block";
+                                document.getElementById("foodItemID3").textContent = data['foodId'];
 
                                 //Display the modal
 
@@ -1079,7 +1093,10 @@
                                 document.getElementById("drink-cus-price").textContent = data['drinkPrice'];
                                 document.getElementById("drink-cus-image").src = data['drinkImage'];
                                 document.getElementById("drink-cus-image").style.display = "block";
-        
+                                document.getElementById("drinkItemID").textContent = data['drinkId'];
+
+                                toggleDrinkPrice();
+
                                 //Display the modal
                                 var drinksModal = new bootstrap.Modal(document.getElementById("DrinksOrderModal"));
                                 drinksModal.show();
@@ -1097,11 +1114,34 @@
             //Function which appends a menu item to the customer's Basket
             function addItemToBasket(itemID, itemType){
                 //Item Customization Field Values
+
+                //Main Meal Form Values
                 var name = document.getElementById("food-cus-name").value;
                 var foodPrice = document.getElementById("food-cus-price").textContent;
+                var soupChoice = $('input[name="soup-choice"]:checked').val();
+                var proteinChoice = $('input[name="protein-choice"]:checked').val();
+                var spiceLevel = $('input[name="spice-level"]:checked').val();
+                var notes = document.getElementById("itemNotes").value;
 
-                document.getElementById("foodItemID").hidden = false;
-                document.getElementById("foodItemType").hidden = false;
+                //Fast Food and Sides Form Values
+                var name2 = document.getElementById("food-cus-name2").value;
+                var foodPrice2 = document.getElementById("food-cus-price2").textContent;
+                var spiceLevel2 = $('input[name="spice-level2"]:checked').val();
+                var sauceChoice = $('input[name="sauce-choice"]:checked').val();
+                var notes2 = document.getElementById("itemNotes2").value;
+
+                //Deserts Form Values
+                var name3 = document.getElementById("food-cus-name3").value;
+                var foodPrice3 = document.getElementById("food-cus-price3").textContent;
+                var sauceChoice3 = $('input[name="sauce-choice3"]:checked').val();
+                var notes3 = document.getElementById("itemNotes3").value;
+
+                //Drink Form Values
+                var drinkName = document.getElementById("drink-cus-name").value;
+                var iceChoice = $('input[name="drink-option"]:checked').val();
+                var drinkSize = $('input[name="drink-size"]:checked').val();
+                var drinkNotes = document.getElementById("drinkNotes").value;
+                var drinkPrice = document.getElementById("drink-cus-price").textContent;
 
                 $.ajax({
                     url: `/users/addItemToBasket/${itemID}/${itemType}/`,
@@ -1111,7 +1151,33 @@
                         id: itemID,
                         itemType: itemType,
                         name: name,
-                        foodPrice: foodPrice
+                        foodPrice: foodPrice,
+                        spiceLevel: spiceLevel,
+                        soupChoice: soupChoice,
+                        proteinChoice: proteinChoice,
+                        notes: notes,
+
+                        // Fast Food and Sides Data
+                        name2: name2,
+                        spiceLevel2: spiceLevel2,
+                        sauceChoice: sauceChoice,
+                        notes2: notes2,
+                        foodPrice2: foodPrice2,
+
+                        // Deserts Data
+                        name3: name3,
+                        sauceChoice3: sauceChoice3,
+                        notes3: notes3,
+                        foodPrice3: foodPrice3,
+
+                        // Drink Data
+                        drinkName: drinkName,
+                        iceChoice: iceChoice,
+                        drinkSize: drinkSize,
+                        drinkNotes: drinkNotes,
+                        drinkPrice: drinkPrice,
+
+                        csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val()
                     },
                     success: function(response) {
                         Swal.fire({
@@ -1136,6 +1202,38 @@
                 });
             }
 
+            //Function which dynamically updates drinks price, depending on size selected
+            function toggleDrinkPrice(){
+                let basePrice = parseFloat(document.getElementById("drink-cus-price").textContent.replace("£", ""));
+
+                // Get the price display element
+                const priceDisplay = document.getElementById("drink-cus-price");
+
+                // Get the price from a span element (or return 0 if not found)
+                function getPriceFromSpan(spanId) {
+                    const span = document.getElementById(spanId);
+                    return span ? parseFloat(span.textContent.replace("+", "")) : 0;
+                }
+
+                // Attach the event listener directly to the radio inputs
+                document.querySelectorAll('input[name="drink-size"]').forEach(function (radio) {
+                    radio.addEventListener("change", function () {
+                        let extraPrice = 0;
+
+                        // Check the selected size and get the corresponding span price
+                        if (this.value === "Medium") {
+                            extraPrice = getPriceFromSpan("medPrice");
+                        } else if (this.value === "Large") {
+                            extraPrice = getPriceFromSpan("largePrice");
+                        }
+
+                        // Calculate the new price
+                        const newPrice = basePrice + extraPrice;
+                        priceDisplay.innerText = "£" + newPrice.toFixed(2);
+                    });
+                });
+
+            }
 
         </script>
 
