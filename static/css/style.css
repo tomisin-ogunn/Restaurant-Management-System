@@ -554,20 +554,28 @@ input[type="radio"]:hover {
 
 .basket-item .item-name,
 .basket-item .item-image,
-.basket-item .item-price,
-.basket-item .delete-basket-btn {
+.basket-item .item-price {
     flex: 1;
-    padding: 5px;
+    padding: 2px;
+    display: flex;
+    align-items: center;
 }
 
+.basket-item .delete-basket-btn{
+    padding: 2px;
+}
 
 .basket-item .item-image {
     flex: 0 0 auto; 
-    margin-right: 30px; 
+    margin-right: 60px; 
+}
+
+.basket-item .item-price{
+    margin-right:10px;
 }
 
 .basket-item img {
-    width: 50px; /* Adjust the image size */
+    width: 60px; /* Adjust the image size */
     height: 50px;
     object-fit: cover; /* Ensures the image is scaled correctly */
 }

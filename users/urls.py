@@ -100,7 +100,8 @@ urlpatterns += [
     path('removeItemFromBasket/<str:itemID>/', customer_views.removeBasketItem, name="removeItemFromBasket"),
     path('customer-rating/', customer_views.displayCustomerRatingForm, name="customer-rating"),
     path('createCustomerRating', customer_views.createCustomerRating, name="createCustomerRating"),
-    path('deleteBasketItems/', customer_views.deleteBasketItems, name="deleteBasketItems")
+    path('deleteBasketItems/', customer_views.deleteBasketItems, name="deleteBasketItems"),
+    path('fetch-order-item-details/<str:itemID>/', customer_views.fetchOrderItemDetails, name="fetch-order-item-details")
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

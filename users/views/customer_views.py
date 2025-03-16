@@ -596,9 +596,27 @@ def deleteBasketItems(request):
     return JsonResponse({"success": True, "message": "Items removed from basket."})
 
 
+#Function to fetch order item details
+def fetchOrderItemDetails(request, itemID):
+    try:
+        order_item = get_object_or_404(OrderItem, id=itemID)
+        print(f"{order_item}")
+    
+        if order_item.food_item:
+            data = {
+                "success": True,
+                "spice": order_item.spice_level,
+                "soup": order_item.soup_choice,
+                "food_sauce": order_item.food_sauce,
+                "protein": order_item.protein,
+                "desert_sauce": order_item.desert_sauce,
+                "notes": order_item.notes
+            }
+            
+            return JsonResponse(data)
 
-
-
-
+    except Exception as e:
+        return JsonResponse({"success": False, "error": str(e)})
+        
 
 
