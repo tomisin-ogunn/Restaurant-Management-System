@@ -595,25 +595,69 @@ def deleteBasketItems(request):
     
     return JsonResponse({"success": True, "message": "Items removed from basket."})
 
-
 #Function to fetch order item details
 def fetchOrderItemDetails(request, itemID):
     try:
         order_item = get_object_or_404(OrderItem, id=itemID)
-        print(f"{order_item}")
-    
+        
+        #Food Items
         if order_item.food_item:
-            data = {
-                "success": True,
-                "spice": order_item.spice_level,
-                "soup": order_item.soup_choice,
-                "food_sauce": order_item.food_sauce,
-                "protein": order_item.protein,
-                "desert_sauce": order_item.desert_sauce,
-                "notes": order_item.notes
-            }
+            category = order_item.food_item.category 
             
-            return JsonResponse(data)
+            #Accounts for and toggles items that do not have a soup option
+            if order_item.soup_choice:
+                soupOption = order_item.soup_choice
+            else:
+                soupOption = "N/A"
+                
+                
+            if order_item.notes:
+                data = {
+                    "success": True,
+                    "spice": order_item.spice_level,
+                    "soup": soupOption,
+                    "food_sauce": order_item.food_sauce,
+                    "protein": order_item.protein,
+                    "desert_sauce": order_item.desert_sauce,
+                    "notes": order_item.notes,
+                    "itemType": "food",
+                    "category": category
+                }
+            
+            else:
+               data = {
+                    "success": True,
+                    "spice": order_item.spice_level,
+                    "soup": soupOption,
+                    "food_sauce": order_item.food_sauce,
+                    "protein": order_item.protein,
+                    "desert_sauce": order_item.desert_sauce,
+                    "notes": "N/A",
+                    "itemType": "food",
+                    "category": category
+                }
+        
+        #Drink Items
+        else:
+            if order_item.notes:
+                data = {
+                    "success": True,
+                    "size": order_item.drink_size,
+                    "has_ice": order_item.has_ice,
+                    "drink_notes": order_item.notes,
+                    "itemType": "drink"
+                }
+            
+            else:
+                data = {
+                    "success": True,
+                    "size": order_item.drink_size,
+                    "has_ice": order_item.has_ice,
+                    "drink_notes": "N/A",
+                    "itemType": "drink"
+                }
+                
+        return JsonResponse(data)
 
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)})
