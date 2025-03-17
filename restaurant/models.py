@@ -184,7 +184,7 @@ class Basket(models.Model):
 
 #Model holding order items for users
 class OrderItem(models.Model):
-    basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
+    basket = models.ForeignKey(Basket,  on_delete=models.SET_NULL, null=True, blank=True)
     food_item = models.ForeignKey(Food, null=True, blank=True, on_delete=models.SET_NULL)
     drink_item = models.ForeignKey(Drink, null=True, blank=True, on_delete=models.SET_NULL)
     price = models.CharField(max_length=10)
@@ -227,6 +227,7 @@ class Order(models.Model):
     customer_name = models.CharField(max_length=60)
     status = models.CharField(max_length=50, choices=[('Pending', 'Pending'), ('Delayed', 'Delayed'), ('Ready', 'Ready'), ('Delivered', 'Delivered')],
             default='Pending')
+    order_items = models.ManyToManyField(OrderItem, related_name='orders')
     
     #Function to increment reservation id after record has been added manually to the Orders.
     def save(self, *args, **kwargs):

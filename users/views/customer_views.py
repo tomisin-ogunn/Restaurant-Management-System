@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.utils import timezone
 from users.models import Manager, Waiter, Customer
-from restaurant.models import Table, Reservation, Food, Drink, Favourite, Basket, OrderItem, Rating
+from restaurant.models import Table, Reservation, Food, Drink, Favourite, Basket, OrderItem, Rating, Order
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.middleware.csrf import get_token
@@ -666,5 +666,100 @@ def fetchOrderItemDetails(request, itemID):
     except Exception as e:
         return JsonResponse({"success": False, "error": str(e)})
         
+#Function to generate order:
+def generateOrder(request):
+    # Get the session ID or customer email from the session
+    customer_email = request.session.get("customer_email")
+    session_id = request.session.session_key
+    
+    # Retrieve the basket based on session ID or customer email
+    if customer_email:
+        customer = get_object_or_404(Customer, email=customer_email)
+        basket = Basket.objects.filter(user=customer).first()
+        
+        tableNo = request.POST.get("order-table")
+        name = request.POST.get("order-cus-name")
+        
+        table = Table.objects.get(tableNo=tableNo)
+        
+        # Get the basket items (order items) for the basket
+        order_items = OrderItem.objects.filter(basket=basket)
+        
+        # Get the max duration from all the order items
+        max_duration = max(
+            int(order_item.food_item.duration.replace("mins", "").strip())  # Remove 'mins' and convert to integer
+            for order_item in order_items if order_item.food_item is not None
+        )
+        
+        order = Order(
+            customer_name=name,
+            table=table,
+            customer=customer,
+            basket=basket,
+            total_expected_duration=max_duration
+        )
+        
+        order.orderId = Order.generateOrderID()
+        
+        order.save()
+        
+        order.order_items.set(order_items) 
+        
+        # Clear the basket by disassociating the order items
+        order_items.update(basket=None)
+        
+        
+        # Display success message and redirect
+        messages.success(request, "Order created successfully!")
+        
+        context = {
+            'media_url': settings.MEDIA_URL,  # Passing MEDIA_URL to template
+            'order_id': order.orderId,
+            'total_duration': max_duration 
+        }
+        return render(request, "customers/basket.html", context)
+
+    else:
+        basket = Basket.objects.filter(session_id=session_id).first()
+        tableNo = request.POST.get("order-table")
+        name = request.POST.get("order-cus-name")
+        
+        table = Table.objects.get(tableNo=tableNo)
+        
+        # Get the basket items (order items) for the basket
+        order_items = OrderItem.objects.filter(basket=basket)
+
+        # # Get the max duration from all the order items
+        max_duration = max(
+            int(order_item.food_item.duration.replace("mins", "").strip())  # Remove 'mins' and convert to integer
+            for order_item in order_items if order_item.food_item is not None 
+        )
+        
+        order = Order(
+            customer_name=name,
+            table=table,
+            basket=basket,
+            total_expected_duration=max_duration
+        )
+    
+        order.orderId = Order.generateOrderID()
+        
+        order.save()
+        
+        order.order_items.set(order_items)
+        
+        # Clear the basket by disassociating the order items
+        order_items.update(basket=None)
+        
+        # Display success message and redirect
+        messages.success(request, "Order created successfully!")
+        
+        context = {
+            'media_url': settings.MEDIA_URL,  # Passing MEDIA_URL to template
+            'order_id': order.orderId,
+            'total_duration': max_duration 
+        }
+        return render(request, "customers/basket.html", context)
+
 
 

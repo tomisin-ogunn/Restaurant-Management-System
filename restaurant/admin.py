@@ -80,13 +80,32 @@ class RatingAdmin(admin.ModelAdmin):
 #Register the Ratings Model with the custom admin class
 admin.site.register(Rating, RatingAdmin)
 
-
+# Inline display of OrderItems
+class OrderItemInline(admin.TabularInline):  # Or use StackedInline for a different layout
+    model = OrderItem
+    extra = 0  # Adjust to how many empty forms you want to display by default
+    
+    
 #Custom Admin class for the order items model
 class OrderAdmin(admin.ModelAdmin):
     #Customize fields displayed in the admin list view
-    list_display = ('orderId', 'table', 'total_expected_duration', 'placed_at', 'basket', 'customer', 'customer_name', 'status')
+    list_display = ('orderId', 'table', 'total_expected_duration', 'placed_at', 'basket', 'customer', 'customer_name', 'status', 'get_order_items')
     search_fields = ('orderId', 'table', 'total_expected_duration', 'placed_at', 'basket', 'customer', 'customer_name', 'status')
 
+    # Custom method to display order items in the list view
+    def get_order_items(self, obj):
+        items = []
+    
+        for item in obj.order_items.all():
+            if item.food_item:  # If there is a food_item
+                items.append(str(item.food_item))
+            elif item.drink_item:  # If there is a drink_item
+                items.append(str(item.drink_item))
+        
+        return ", ".join(items)  # Join the items into a comma-separated string
+    
+    get_order_items.short_description = 'Order Items'
+    
 #Register the Basket Model with the custom admin class
 admin.site.register(Order, OrderAdmin)
 

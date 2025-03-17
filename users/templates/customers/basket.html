@@ -32,7 +32,6 @@
                                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                               </svg>
                         </button>
-                    {% comment %} </div> {% endcomment %}
                 </div>
             </nav>
         </div>
@@ -146,14 +145,29 @@
 
                 {% endfor %}
 
-                <div class="basket-item">
-                    <div class="item-name">
-                        <p>Total</p>
+
+                {% if total_price %}
+                    <div class="basket-item">
+                        <div class="item-name">
+                            <p>Total</p>
+                        </div>
+                        <div class="total-item-price">
+                            <p>£{{ total_price }}</p>
+                        </div>
                     </div>
-                    <div class="total-item-price">
-                        <p>£{{ total_price }}</p>
+
+
+                {% else %}
+                    <div class="basket-item">
+                        <div class="item-name">
+                            <p>Total</p>
+                        </div>
+                        <div class="total-item-price">
+                            <p>£0.00</p>
+                        </div>
                     </div>
-                </div>
+
+                {% endif %}
 
                 <button onclick="openPaymentDetails();" class="btn submit-button" style="width:50%; 
                 background-color:#FFB000; font-weight:bold; margin:0 auto;" onmouseover="this.style.backgroundColor='#CC8A00';"
@@ -448,36 +462,40 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="payment-details" class="form-label"> Card Details</label>
-                            <input type="text" class="form-control" required placeholder="XXXX XXXX XXXX XXXX">
+                    <form method="POST" action="{% url 'generateOrder' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="payment-details" class="form-label"> Card Details</label>
+                        <input type="text" class="form-control" required placeholder="XXXX XXXX XXXX XXXX">
+                    </div>
+                    <div class="mb-3">
+                        <label for="payment-details" class="form-label">CVC</label>
+                            <input type="text" class="form-control" placeholder="DDD">
+                    </div>
+                    <div class="mb-3">
+                        <label for="Date" class="form-label">Expiry Date</label>
+                            <input type="date" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="customer-name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="order-cus-name" name="order-cus-name" placeholder="Enter your name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tableNo" class="form-label">Select Your Table</label>
+                        <div class="dropdown-container">
+                            <select class="form-control custom-select" id="order-tables" name="order-table" required>
+                                <option value="" disabled selected style="color:gray;">Please select a table</option>
+                                {% for table in tables %}
+                                    <option>{{ table.tableNo }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="payment-details" class="form-label">CVC</label>
-                                <input type="text" class="form-control" placeholder="DDD">
-                        </div>
-                        <div class="mb-3">
-                            <label for="Date" class="form-label">Expiry Date</label>
-                                <input type="date" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label for="tableNo" class="form-label">Select Your Table</label>
-                            <div class="dropdown-container">
-                                <select class="form-control custom-select" id="tables" name="cus-tables" required>
-                                    <option value="" disabled selected style="color:gray;">Please select a table</option>
-                                    {% for table in tables %}
-                                        <option>{{ table.tableNo }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" class="btn" style="background-color:#FFB000;" onmouseover="this.style.backgroundColor='#CC8A00';"
-                onmouseout="this.style.backgroundColor='#FFB000';">Send to Kitchen</button>
+                onmouseout="this.style.backgroundColor='#FFB000';">Send to Kitchen £{{ total_price }}</button>
                 </div>
                 </form>
             </div>
@@ -488,6 +506,41 @@
 
     <!-- Dynamic JavaScript Functionality -->
     {% block scripts %}
+
+        {% comment %} Checks for any error messages, and displays swal pop ups{% endcomment %}
+        {% if messages %}
+            <script>
+                {% for message in messages %}
+                        var messageText = "{{ message|escapejs }}"
+                            
+                        {% comment %} If form is successfully submitted, display swal pop up {% endcomment %}
+                        if(messageText === "Order created successfully!"){
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Order placed!',
+                                html: `
+                                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="18" fill="currentColor" class="bi bi-tag" viewBox="0 0 16 16">
+                                    <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0"/>
+                                    <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1m0 5.586 7 7L13.586 9l-7-7H2z"/>
+                                    </svg> Order ID: {{ order_id }}<br>
+                                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="18" fill="currentColor" class="bi bi-clock-history" viewBox="0 0 16 16">
+                                    <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/>
+                                    <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/>
+                                    <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/>
+                                    </svg> Estimated Waiting time: {{ total_duration }} mins
+                                `,
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Redirects back to page
+                                    window.location.href="{% url 'customer-home' %}";
+                                }
+                            });
+                        }    
+            
+                    {% endfor %}
+
+            </script>
+        {% endif %}
 
         <script>
 
@@ -708,6 +761,39 @@
             function openPaymentDetails(){
                 var modal = new bootstrap.Modal(document.getElementById("PaymentDetailsModal"));
                 modal.show();
+            }
+
+            //Function to generate Order
+            function generateOrder(){
+                var table = document.getElementById("order-table").value;
+                var name = document.getElementById("order-cus-name").value;
+
+                $.ajax({
+                    url: `/users/generateOrder/`,
+                    type: 'POST',
+                    headers: { "X-CSRFToken": getCSRFToken() },
+                    data: {
+                        table: table,
+                        name: name
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Generated!',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Order not generated!',
+                            text: 'There was an issue creating the order.'
+                        });
+                    }
+                });
             }
 
         </script>
