@@ -155,7 +155,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn submit-button" style="width:50%; 
+                <button onclick="openPaymentDetails();" class="btn submit-button" style="width:50%; 
                 background-color:#FFB000; font-weight:bold; margin:0 auto;" onmouseover="this.style.backgroundColor='#CC8A00';"
                 onmouseout="this.style.backgroundColor='#FFB000';">
                     Pay and Place Order £{{ total_price }}
@@ -439,6 +439,50 @@
             </div>
         </div> 
 
+        <!-- Pre Order Modal -->
+        <div class="modal fade" id="PaymentDetailsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Place Order</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="payment-details" class="form-label"> Card Details</label>
+                            <input type="text" class="form-control" required placeholder="XXXX XXXX XXXX XXXX">
+                        </div>
+                        <div class="mb-3">
+                            <label for="payment-details" class="form-label">CVC</label>
+                                <input type="text" class="form-control" placeholder="DDD">
+                        </div>
+                        <div class="mb-3">
+                            <label for="Date" class="form-label">Expiry Date</label>
+                                <input type="date" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="tableNo" class="form-label">Select Your Table</label>
+                            <div class="dropdown-container">
+                                <select class="form-control custom-select" id="tables" name="cus-tables" required>
+                                    <option value="" disabled selected style="color:gray;">Please select a table</option>
+                                    {% for table in tables %}
+                                        <option>{{ table.tableNo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn" style="background-color:#FFB000;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                onmouseout="this.style.backgroundColor='#FFB000';">Send to Kitchen</button>
+                </div>
+                </form>
+            </div>
+            </div>
+        </div>
 
     {% endblock %}
 
@@ -658,6 +702,12 @@
                 .catch(error => {
                     console.error("Error fetching ORDER item details:", error);
                 });
+            }
+
+            //Function to open payment dretails modal, as pre-order step
+            function openPaymentDetails(){
+                var modal = new bootstrap.Modal(document.getElementById("PaymentDetailsModal"));
+                modal.show();
             }
 
         </script>

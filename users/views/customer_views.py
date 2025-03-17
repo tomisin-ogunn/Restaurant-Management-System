@@ -499,12 +499,16 @@ def displayBasket(request):
     total_price = round(total_price, 2)
     formatted_price = "{:.2f}".format(total_price)
     
+    #Retrieve all the tables
+    tables = Table.objects.all()
+    
     # Prepare the context for the template
     context = {
         'basket': basket,
         'order_items': order_items,
         'total_price': formatted_price,
         'order_item_count': order_item_count,
+        'tables': tables,
         'media_url': settings.MEDIA_URL,  # Pass MEDIA_URL to the template
     }
     

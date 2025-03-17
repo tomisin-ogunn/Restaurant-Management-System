@@ -216,12 +216,56 @@ class Rating(models.Model):
     comments = models.CharField(max_length=255, null=True, blank=True)
     submission_date = models.DateTimeField(auto_now_add=True)
 
+#Model holding Orders information
+class Order(models.Model):
+    orderId = models.CharField(max_length=100, primary_key=True, blank=True, unique=True)
+    table = models.ForeignKey(Table, on_delete=models.SET_NULL, null=True, blank=True)
+    placed_at = models.DateTimeField(auto_now_add=True)
+    total_expected_duration = models.CharField(max_length=50) 
+    basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
+    customer_name = models.CharField(max_length=60)
+    status = models.CharField(max_length=50, choices=[('Pending', 'Pending'), ('Delayed', 'Delayed'), ('Ready', 'Ready'), ('Delivered', 'Delivered')],
+            default='Pending')
+    
+    #Function to increment reservation id after record has been added manually to the Orders.
+    def save(self, *args, **kwargs):
+        # Generate a reservationId if not already set
+        if not self.orderId:
+            self.orderId = self.generateOrderID()
 
+        # Save the model instance
+        super().save(*args, **kwargs)
+    
+    #Displays table view of model in Django Admin
+    def __str__(self):
+        return f"Order {self.orderId} - {self.table}, {self.customer_name}, {self.status}"
 
+    #Function to generate a reservation id after appending
+    @classmethod
+    def generateOrderID(cls):
+        # Prefix of reservation id
+        
+        prefix = 'JJ'
+        
+        #Obtains maximum current ID no from model
+        last_order = Order.objects.all().aggregate(Max('orderId'))
 
-
-
-
+        # Extract the current max number, or default to 0 if no records exist
+        last_order_id = last_order.get('orderId__max', None)
+        
+        #Start from 000001
+        if not last_order_id:
+            new_order_number = 1
+        else:
+            #Extract number from last order id (00000x)
+            last_number = int(last_order_id[6:])
+            new_order_number = last_number + 1
+            
+        #Format the new reservation ID with prefix and 6 digit number
+        new_order_id = f"{prefix}{new_order_number:06d}"
+        
+        return new_order_id
 
 
 
