@@ -38,6 +38,7 @@
 
         <!-- Customer Interface Sidebar -->
         <div class="Cus-sidebar shadow-lg">
+            <!-- Home Button -->
             <a id="CustomerHomeBtn">
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
@@ -46,6 +47,7 @@
                 </span> &nbsp; Home
             </a>
 
+            <!-- Basket Button -->
             <a onclick="window.location.href='{% url 'user-basket'%}'">
                 <span class="icon-container">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
@@ -59,6 +61,7 @@
                 &nbsp; Basket
             </a>
 
+            <!-- Customer Rating Button -->
             <a onclick="window.location.href='{% url 'customer-rating' %}'">
                 <span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-chat-left-text" viewBox="0 0 16 16">

@@ -86,6 +86,9 @@ def waiter_loginAuth(request):
 def displayWaiterHome(request):
     waiter_id = request.session.get("waiter_id")  # Get waiter_id from session
     
+    #Retrieve the waiters notifications
+    notifications = request.session.get(f"waiter_notifications_{waiter_id}", 0)
+    
     if not request.session.session_key:
         request.session.create()  # Create a new session
     
@@ -120,7 +123,8 @@ def displayWaiterHome(request):
                 "drinks": drinks,
                 "categories": unique_categories,
                 "drinkCategories": drink_categories,
-                'order_item_count': order_item_count
+                'order_item_count': order_item_count,
+                'waiter_notifications': notifications
             }
             return render(request, "waiters/home.html", context)
         except Manager.DoesNotExist:
@@ -525,6 +529,9 @@ def generateOrderWaiter(request):
         # Clear the basket by disassociating the order items
         order_items.update(basket=None)
         
+        # Increment the notification count for the waiter in the session
+        notifications = request.session.get(f"waiter_notifications_{waiter_id}", 0) + 1
+        request.session[f"waiter_notifications_{waiter_id}"] = notifications
         
         # Display success message and redirect
         messages.success(request, "Order created successfully!")
