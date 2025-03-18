@@ -111,6 +111,12 @@ def customer_loginAuth(request):
 #Function to display Customer home interface after authentication
 def displayCustomerLoggedInHome(request):
     customer_email = request.session.get("customer_email")  # Get customer_email from session
+    
+    if not request.session.session_key:
+        request.session.create()  # Create a new session
+    
+    session_id = request.session.session_key
+    
     food = Food.objects.all()
     drinks = Drink.objects.all()
     unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
@@ -131,6 +137,19 @@ def displayCustomerLoggedInHome(request):
 
             for item in drinks:
                 item.fav_status = "favourited" if item.drinkId in drink_favourites else "unfavourited"
+                
+                #Get or create the basket using the session ID
+                if customer_email:
+                    customer = Customer.objects.get(email=customer_email)
+                    basket, created = Basket.objects.get_or_create(user=customer)
+                    
+                else:
+                    basket, created = Basket.objects.get_or_create(session_id=session_id)
+
+
+                order_items = OrderItem.objects.filter(basket=basket)
+            
+                order_item_count = order_items.count()
             
             context = {
                 "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
@@ -138,7 +157,8 @@ def displayCustomerLoggedInHome(request):
                 "food": food,
                 "drinks": drinks,
                 "categories": unique_categories,
-                "drinkCategories": drink_categories
+                "drinkCategories": drink_categories,
+                'order_item_count': order_item_count
             }
             return render(request, "customers/logged_in_home.html", context)
         except Customer.DoesNotExist:
@@ -294,6 +314,11 @@ def addItemToFavourites(request, itemID, itemType):
 def displayCustomerFavourites(request):
     customer_email = request.session.get("customer_email")  # Get customer_email from session
     
+    if not request.session.session_key:
+        request.session.create()  # Create a new session
+    
+    session_id = request.session.session_key
+    
     if customer_email:
         customer = Customer.objects.get(email=customer_email)
        
@@ -305,14 +330,28 @@ def displayCustomerFavourites(request):
         drink_favourites = [fav.drink_id for fav in favourites if fav.drink_id]
         unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
         drink_categories = [choice[0] for choice in Drink._meta.get_field('category').choices]
+
+        #Get or create the basket using the session ID
+        if customer_email:
+            customer = Customer.objects.get(email=customer_email)
+            basket, created = Basket.objects.get_or_create(user=customer)
+            
+        else:
+            basket, created = Basket.objects.get_or_create(session_id=session_id)
+
+
+        order_items = OrderItem.objects.filter(basket=basket)
     
+        order_item_count = order_items.count()
+
     context = {
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
         'customer': customer,
         'food': food_favourites,
         'drinks': drink_favourites,
         "categories": unique_categories,
-        "drinkCategories": drink_categories
+        "drinkCategories": drink_categories,
+        'order_item_count': order_item_count
     }
     return render(request, 'customers/favourites.html', context) 
 
@@ -530,6 +569,46 @@ def displayBasket(request):
     
     return render(request, "customers/basket.html", context)
 
+#Function which displays the basket items for logged in customers to view
+def displayCustomerBasket(request):
+    # Get the session ID or customer email from the session
+    customer_email = request.session.get("customer_email")
+    session_id = request.session.session_key
+    
+    # Initialize basket based on session ID or customer email
+    if customer_email:
+        customer = get_object_or_404(Customer, email=customer_email)
+        basket, created = Basket.objects.get_or_create(user=customer)
+    else:
+        basket, created = Basket.objects.get_or_create(session_id=session_id)
+
+    # Get the basket items (order items) for the basket
+    order_items = OrderItem.objects.filter(basket=basket)
+    order_item_count = order_items.count()
+    
+    # Calculate the total price, ensuring that prices are treated as floats
+    total_price = sum(float(item.price.replace('£', '').strip()) for item in order_items)
+
+    # Round the total to 2 decimal places
+    total_price = round(total_price, 2)
+    formatted_price = "{:.2f}".format(total_price)
+    
+    #Retrieve all the tables
+    tables = Table.objects.all()
+    
+    # Prepare the context for the template
+    context = {
+        'basket': basket,
+        'order_items': order_items,
+        'total_price': formatted_price,
+        'order_item_count': order_item_count,
+        'tables': tables,
+        'media_url': settings.MEDIA_URL,  # Pass MEDIA_URL to the template,
+        'customer': customer
+    }
+    
+    return render(request, "customers/loggedIn-basket.html", context)
+
 #Function to delete/remove basket item
 def removeBasketItem(request, itemID):
     if request.method == "POST":
@@ -553,9 +632,33 @@ def displayCustomerRatingForm(request):
         'tables': tables
     }
     return render(request, "customers/rating.html", context)
+
+#Function which displays the customer logged in rating/feedback form
+def displayCustomerLoggedInRatingForm(request):
+    # Get the session ID or customer email from the session
+    customer_email = request.session.get("customer_email")
+    session_id = request.session.session_key
     
+    # Initialize basket based on session ID or customer email
+    if customer_email:
+        customer = get_object_or_404(Customer, email=customer_email)
+        basket, created = Basket.objects.get_or_create(user=customer)
+    else:
+        basket, created = Basket.objects.get_or_create(session_id=session_id)
+        
+    order_items = OrderItem.objects.filter(basket=basket)
+    order_item_count = order_items.count()
+    tables = Table.objects.all()
+    
+    context = {
+        "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
+        'order_item_count': order_item_count,
+        'tables': tables,
+        'customer': customer
+    }
+    return render(request, "customers/loggedIn-rating.html", context)
+
 #Function which creates a customer rating
-@login_required
 def createCustomerRating(request):
     customer_email = request.session.get("customer_email")  # Get customer_email from session
     
@@ -592,7 +695,10 @@ def createCustomerRating(request):
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
     }
     
-    return render(request, "customers/rating.html", context)
+    if customer_email:
+        return render(request, "customers/loggedIn-rating.html", context)
+    else:
+        return render(request, "customers/rating.html", context)
         
 #Function to delete all basket items
 def deleteBasketItems(request):
@@ -735,7 +841,7 @@ def generateOrder(request):
             'order_id': order.orderId,
             'total_duration': max_duration 
         }
-        return render(request, "customers/basket.html", context)
+        return render(request, "customers/loggedIn-basket.html", context)
 
     else:
         basket, created = Basket.objects.get_or_create(session_id=session_id)

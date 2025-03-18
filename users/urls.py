@@ -115,7 +115,9 @@ urlpatterns += [
     path('createCustomerRating', customer_views.createCustomerRating, name="createCustomerRating"),
     path('deleteBasketItems/', customer_views.deleteBasketItems, name="deleteBasketItems"),
     path('fetch-order-item-details/<str:itemID>/', customer_views.fetchOrderItemDetails, name="fetch-order-item-details"),
-    path('generateOrder/', customer_views.generateOrder, name="generateOrder")
+    path('generateOrder/', customer_views.generateOrder, name="generateOrder"),
+    path('customer-basket', customer_views.displayCustomerBasket, name="customer-basket"),
+    path('customer-loggedIn-rating/', customer_views.displayCustomerLoggedInRatingForm, name="customer-loggedIn-rating")
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
