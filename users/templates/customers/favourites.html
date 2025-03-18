@@ -1181,7 +1181,7 @@
                 var drinkPrice = document.getElementById("drink-cus-price").textContent;
 
                 $.ajax({
-                    url: `/users/addItemToBasket/${itemID}/${itemType}/`,
+                    url: `/users/addItemToBasketCustomer/${itemID}/${itemType}/`,
                     type: 'POST',
                     headers: { "X-CSRFToken": getCSRFToken() },
                     data: {

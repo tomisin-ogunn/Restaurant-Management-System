@@ -109,13 +109,16 @@ urlpatterns += [
     path('customer-favourites/', customer_views.displayCustomerFavourites, name="customer-favourites"),
     path('removeItemFromFavourites/<str:itemID>/<str:itemType>/',  customer_views.removeItemFromFavourites, name="removeItemFromFavourites"),
     path('addItemToBasket/<str:itemID>/<str:itemType>/', customer_views.addToBasket, name="addItemToBasket"),
+    path('addItemToBasketCustomer/<str:itemID>/<str:itemType>/', customer_views.addToBasketCustomer, name="addItemToBasketCustomer"),
     path('user-basket/', customer_views.displayBasket, name="user-basket"),
     path('removeItemFromBasket/<str:itemID>/', customer_views.removeBasketItem, name="removeItemFromBasket"),
     path('customer-rating/', customer_views.displayCustomerRatingForm, name="customer-rating"),
     path('createCustomerRating', customer_views.createCustomerRating, name="createCustomerRating"),
     path('deleteBasketItems/', customer_views.deleteBasketItems, name="deleteBasketItems"),
+    path('deleteBasketItemsCustomer/', customer_views.deleteBasketItemsCustomer, name="deleteBasketItemsCustomer"),
     path('fetch-order-item-details/<str:itemID>/', customer_views.fetchOrderItemDetails, name="fetch-order-item-details"),
     path('generateOrder/', customer_views.generateOrder, name="generateOrder"),
+    path('generateOrderCustomer/', customer_views.generateOrderCustomer, name="generateOrderCustomer"),
     path('customer-basket', customer_views.displayCustomerBasket, name="customer-basket"),
     path('customer-loggedIn-rating/', customer_views.displayCustomerLoggedInRatingForm, name="customer-loggedIn-rating")
 ]

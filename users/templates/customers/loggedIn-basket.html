@@ -706,7 +706,7 @@
                     if (result.isConfirmed) {
                         if (result.isConfirmed) {
                             $.ajax({
-                                url: `/users/deleteBasketItems/`,
+                                url: `/users/deleteBasketItemsCustomer/`,
                                 type: 'POST',
                                 headers: { "X-CSRFToken": getCSRFToken() },
                                 success: function(response) {
@@ -819,7 +819,7 @@
                 var name = document.getElementById("order-cus-name").value;
 
                 $.ajax({
-                    url: `/users/generateOrder/`,
+                    url: `/users/generateOrderCustomer/`,
                     type: 'POST',
                     headers: { "X-CSRFToken": getCSRFToken() },
                     data: {

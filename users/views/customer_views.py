@@ -22,7 +22,6 @@ import re
 
 #Function to display Customer home interface
 def displayCustomerHome(request):
-    customer_email = request.session.get("customer_email")  # Get customer_email from session
     if not request.session.session_key:
         request.session.create()  # Create a new session
     
@@ -34,13 +33,7 @@ def displayCustomerHome(request):
     drink_categories = [choice[0] for choice in Drink._meta.get_field('category').choices]
     
     #Get or create the basket using the session ID
-    if customer_email:
-        customer = Customer.objects.get(email=customer_email)
-        basket, created = Basket.objects.get_or_create(user=customer)
-        
-    else:
-       basket, created = Basket.objects.get_or_create(session_id=session_id)
-
+    basket, created = Basket.objects.get_or_create(session_id=session_id)
 
     order_items = OrderItem.objects.filter(basket=basket)
    
@@ -314,6 +307,8 @@ def addItemToFavourites(request, itemID, itemType):
 def displayCustomerFavourites(request):
     customer_email = request.session.get("customer_email")  # Get customer_email from session
     
+    customer = None
+    
     if not request.session.session_key:
         request.session.create()  # Create a new session
     
@@ -383,22 +378,14 @@ def removeItemFromFavourites(request, itemID, itemType):
 
 #Function to add menu item to the basket
 def addToBasket(request, itemID, itemType):
-    customer_email = request.session.get("customer_email")  # Get customer_email from session
-        
-    #if request.method == "POST":
-    #Obtain the session ID
+    # Obtain the session ID
     session_id = request.session.session_key
     if not session_id:
         request.session.create()
         session_id = request.session.session_key
-        
-    #Get or create the basket using the session ID
-    if customer_email:
-        customer = Customer.objects.get(email=customer_email)
-        basket, created = Basket.objects.get_or_create(user=customer)
-        
-    else:
-       basket, created = Basket.objects.get_or_create(session_id=session_id)
+
+    # Get or create the basket using the session ID or the customer email
+    basket, created = Basket.objects.get_or_create(session_id=session_id)
 
     basket.save()
     
@@ -527,21 +514,171 @@ def addToBasket(request, itemID, itemType):
     context = {
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
     }
-        
+    
     return render(request, "customers/home.html", context)
+
+#Function to add menu item to the basket
+def addToBasketCustomer(request, itemID, itemType):
+    customer_email = request.session.get("customer_email")  # Get customer_email from session
+        
+    # Obtain the session ID
+    session_id = request.session.session_key
+    if not session_id:
+        request.session.create()
+        session_id = request.session.session_key
+
+    # Get or create the basket using the session ID or the customer email
+    if customer_email:
+        # User is logged in
+        customer = Customer.objects.get(email=customer_email)
+        basket, created = Basket.objects.get_or_create(user=customer)
+    else:
+        #User is not logged in (non-registered user)
+        basket, created = Basket.objects.get_or_create(session_id=session_id)
+
+    basket.save()
+    
+    if itemType == "mainMealFood":
+        #Get the selected food or drink item
+        food = get_object_or_404(Food, foodId=itemID)
+        
+        price = request.POST.get("foodPrice")
+        soupChoice = request.POST.get("soupChoice")
+        proteinChoice = request.POST.get("proteinChoice")
+        spiceLevel = request.POST.get("spiceLevel")
+        notes = request.POST.get("notes")
+        
+        if food.food_name == 'Pounded Yam' or food.food_name == 'Amala':
+            order_item = OrderItem.objects.create(
+                food_item=food,
+                basket=basket,
+                price=price,
+                spice_level=spiceLevel,
+                protein=proteinChoice,
+                soup_choice=soupChoice,
+                notes=notes
+            )
+            
+        else:
+            order_item = OrderItem.objects.create(
+                food_item=food,
+                basket=basket,
+                price=price,
+                spice_level=spiceLevel,
+                protein=proteinChoice,
+                notes=notes
+            )
+        
+        order_item.save()
+        
+        messages.success(request, "Item added to basket!")
+        context = {
+            'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        }
+        
+        return render(request, "customers/home.html", context)
+    
+    elif itemType == "fastFood":
+        #Get the selected food or drink item
+        food = get_object_or_404(Food, foodId=itemID)
+        
+        price = request.POST.get("foodPrice2")
+        sauce_choice = request.POST.get("sauceChoice")
+        spiceLevel = request.POST.get("spiceLevel2")
+        notes = request.POST.get("notes2")
+        
+        order_item = OrderItem.objects.create(
+            food_item=food,
+            basket=basket,
+            price=price,
+            food_sauce=sauce_choice,
+            notes=notes,
+            spice_level=spiceLevel
+        )
+        
+        order_item.save()
+        
+        messages.success(request, "Item added to basket!")
+        context = {
+            'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        }
+        
+        return render(request, "customers/home.html", context)
+    
+    elif itemType == "deserts":
+        #Get the selected food or drink item
+        food = get_object_or_404(Food, foodId=itemID)
+        
+        price = request.POST.get("foodPrice3")
+        sauce_choice = request.POST.get("sauceChoice3")
+        notes = request.POST.get("notes3")
+        
+        order_item = OrderItem.objects.create(
+            food_item=food,
+            basket=basket,
+            price=price,
+            desert_sauce=sauce_choice,
+            notes=notes
+        )
+        
+        order_item.save()
+        
+        messages.success(request, "Item added to basket!")
+        context = {
+            'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        }
+        
+        return render(request, "customers/home.html", context)
+    
+    elif itemType == "drink":
+        drink = get_object_or_404(Drink, drinkId=itemID)
+        price = request.POST.get("drinkPrice")
+        size = request.POST.get("drinkSize")
+        notes = request.POST.get("drinkNotes")
+        iceChoice = request.POST.get("iceChoice")
+        
+        order_item = OrderItem.objects.create(
+            drink_item=drink,
+            basket=basket,
+            price=price,
+            notes=notes,
+            drink_size=size,
+        )
+        
+        if iceChoice == "Ice":
+            order_item.has_ice = True
+        
+        else:
+            order_item.has_ice = False
+                    
+        order_item.save()
+        
+        messages.success(request, "Item added to basket!")
+        context = {
+            'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+        }
+        
+        return render(request, "customers/home.html", context)
+
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
+    }
+    
+    # if customer_email:
+    #     return render(request, "customers/loggedIn-home.html", context)
+    # else:
+    return render(request, "customers/loggedIn-home.html", context)
 
 #Function which displays the basket items for users to view
 def displayBasket(request):
     # Get the session ID or customer email from the session
-    customer_email = request.session.get("customer_email")
     session_id = request.session.session_key
+    if not session_id:
+        request.session.create()
+        session_id = request.session.session_key
     
     # Initialize basket based on session ID or customer email
-    if customer_email:
-        customer = get_object_or_404(Customer, email=customer_email)
-        basket, created = Basket.objects.get_or_create(user=customer)
-    else:
-        basket, created = Basket.objects.get_or_create(session_id=session_id)
+    basket, created = Basket.objects.get_or_create(session_id=session_id)
 
     # Get the basket items (order items) for the basket
     order_items = OrderItem.objects.filter(basket=basket)
@@ -702,17 +839,31 @@ def createCustomerRating(request):
         
 #Function to delete all basket items
 def deleteBasketItems(request):
-   # Get the session ID or customer email from the session
+    # Get the session ID or customer email from the session
+    session_id = request.session.session_key
+
+    basket, created = Basket.objects.get_or_create(session_id=session_id)
+
+    # Get the basket items (order items) for the basket
+    order_items = OrderItem.objects.filter(basket=basket)
+
+    # Delete all the order items in the basket
+    order_items.delete()
+    
+    return JsonResponse({"success": True, "message": "Items removed from basket."})
+
+#Function to clear the basket of a logged in customer
+def deleteBasketItemsCustomer(request):
     customer_email = request.session.get("customer_email")
     session_id = request.session.session_key
 
-    # Initialize basket based on session ID or customer email
+    #Initialize basket based on session ID or customer email
     if customer_email:
         customer = Customer.objects.get(email=customer_email)
         basket, created = Basket.objects.get_or_create(user=customer)
         
     else:
-       basket, created = Basket.objects.get_or_create(session_id=session_id)
+        basket, created = Basket.objects.get_or_create(session_id=session_id)
 
 
     # Get the basket items (order items) for the basket
@@ -793,10 +944,55 @@ def fetchOrderItemDetails(request, itemID):
 #Function to generate order:
 def generateOrder(request):
     # Get the session ID or customer email from the session
-    customer_email = request.session.get("customer_email")
     session_id = request.session.session_key
     
     # Retrieve the basket based on session ID or customer email
+    basket, created = Basket.objects.get_or_create(session_id=session_id)
+    tableNo = request.POST.get("order-table")
+    name = request.POST.get("order-cus-name")
+    
+    table = Table.objects.get(tableNo=tableNo)
+    
+    # Get the basket items (order items) for the basket
+    order_items = OrderItem.objects.filter(basket=basket)
+
+    # # Get the max duration from all the order items
+    max_duration = max(
+        int(order_item.food_item.duration.replace("mins", "").strip())  # Remove 'mins' and convert to integer
+        for order_item in order_items if order_item.food_item is not None 
+    )
+    
+    order = Order(
+        customer_name=name,
+        table=table,
+        basket=basket,
+        total_expected_duration=max_duration
+    )
+
+    order.orderId = Order.generateOrderID()
+    
+    order.save()
+    
+    order.order_items.set(order_items)
+    
+    # Clear the basket by disassociating the order items
+    order_items.update(basket=None)
+    
+    # Display success message and redirect
+    messages.success(request, "Order created successfully!")
+    
+    context = {
+        'media_url': settings.MEDIA_URL,  # Passing MEDIA_URL to template
+        'order_id': order.orderId,
+        'total_duration': max_duration 
+    }
+    return render(request, "customers/basket.html", context)
+
+#Function to generate order, for logged in Customer
+def generateOrderCustomer(request):
+    # Get the session ID or customer email from the session
+    customer_email = request.session.get("customer_email")
+    
     if customer_email:
         customer = get_object_or_404(Customer, email=customer_email)
         basket, created = Basket.objects.get_or_create(user=customer)
@@ -843,47 +1039,6 @@ def generateOrder(request):
         }
         return render(request, "customers/loggedIn-basket.html", context)
 
-    else:
-        basket, created = Basket.objects.get_or_create(session_id=session_id)
-        tableNo = request.POST.get("order-table")
-        name = request.POST.get("order-cus-name")
-        
-        table = Table.objects.get(tableNo=tableNo)
-        
-        # Get the basket items (order items) for the basket
-        order_items = OrderItem.objects.filter(basket=basket)
-
-        # # Get the max duration from all the order items
-        max_duration = max(
-            int(order_item.food_item.duration.replace("mins", "").strip())  # Remove 'mins' and convert to integer
-            for order_item in order_items if order_item.food_item is not None 
-        )
-        
-        order = Order(
-            customer_name=name,
-            table=table,
-            basket=basket,
-            total_expected_duration=max_duration
-        )
-    
-        order.orderId = Order.generateOrderID()
-        
-        order.save()
-        
-        order.order_items.set(order_items)
-        
-        # Clear the basket by disassociating the order items
-        order_items.update(basket=None)
-        
-        # Display success message and redirect
-        messages.success(request, "Order created successfully!")
-        
-        context = {
-            'media_url': settings.MEDIA_URL,  # Passing MEDIA_URL to template
-            'order_id': order.orderId,
-            'total_duration': max_duration 
-        }
-        return render(request, "customers/basket.html", context)
 
 
 
