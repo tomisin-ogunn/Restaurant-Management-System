@@ -181,7 +181,6 @@ def waiterID_verifier(request):
     }
     return render(request, "waiters/login.html", context)
 
-@login_required
 def addToBasketWaiter(request, itemID, itemType):
     waiter_id = request.session.get("waiter_id")  # Get  waiter_id from session
         
@@ -522,7 +521,7 @@ def generateOrderWaiter(request):
             'order_id': order.orderId,
             'total_duration': max_duration 
         }
-        return render(request, "customers/basket.html", context)
+        return render(request, "waiters/basket.html", context)
 
     else:
         basket = Basket.objects.filter(session_id=session_id).first()
@@ -564,7 +563,7 @@ def generateOrderWaiter(request):
             'order_id': order.orderId,
             'total_duration': max_duration 
         }
-        return render(request, "customers/basket.html", context)
+        return render(request, "waiters/basket.html", context)
 
 
 

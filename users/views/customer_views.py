@@ -343,7 +343,6 @@ def removeItemFromFavourites(request, itemID, itemType):
         return JsonResponse({"error": "Invalid request method"}, status=405)
 
 #Function to add menu item to the basket
-@login_required
 def addToBasket(request, itemID, itemType):
     customer_email = request.session.get("customer_email")  # Get customer_email from session
         
