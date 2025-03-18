@@ -33,6 +33,13 @@ def displayWaiterLogin(request):
 
 #Function to authenticate waiter login credentials
 def waiter_loginAuth(request):
+    
+    #Clear session
+    request.session.flush()
+    
+    # Regenerate CSRF token after flushing the session
+    get_token(request)
+    
     if request.method == "POST":
         waiter_id = request.POST.get("waiter-username")  # Get waiterId from the form
         password = request.POST.get("waiter-password")  # Get password from the form
@@ -59,10 +66,8 @@ def waiter_loginAuth(request):
                     "waiterId": waiter_id
                 }
                 
-                get_token(request)
                 return render(request, "waiters/login.html", context)
             else:
-                get_token(request)
                 messages.success(request, "Login successful!")  # Normal login message
                 
             return redirect("waiter-home")  # Redirect to home page
@@ -155,6 +160,15 @@ def waiterID_verifier(request):
         'media_url': settings.MEDIA_URL,  # Passing the MEDIA_URL to the template
     }
     return render(request, "waiters/login.html", context)
+
+
+
+
+
+
+
+
+
 
 
 

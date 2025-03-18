@@ -1235,6 +1235,14 @@
 
             }
 
+            //Regenerates user session page load
+            window.onload = function() {
+                if (!sessionStorage.getItem("tabOpened")) {
+                    sessionStorage.setItem("tabOpened", "true");
+                    fetch("/regenerate-session/");
+                }
+            };
+
         </script>
 
     {% endblock %}

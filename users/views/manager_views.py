@@ -34,6 +34,13 @@ def display_managerLogin(request):
 
 #Function to authenticate manager login credentials
 def manager_loginAuth(request):
+    
+    #Clear session
+    request.session.flush()
+    
+    # Regenerate CSRF token after flushing the session
+    get_token(request)
+    
     if request.method == "POST":
         manager_id = request.POST.get("username")  # Get managerId from the form
         password = request.POST.get("password")  # Get password from the form
@@ -51,7 +58,6 @@ def manager_loginAuth(request):
             request.session["manager_name"] = manager.first_name
             messages.success(request, "Login successful!")
             
-            get_token(request)
             return redirect("manager-home")  # Redirect to home page
 
         except (Manager.DoesNotExist, ValueError):
@@ -62,7 +68,6 @@ def manager_loginAuth(request):
                 "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
             }
             
-            get_token(request)
             return render(request, "managers/login.html", context)  # Render login form on failure
 
 #Function to display Restaurant Manager home interface after authentication

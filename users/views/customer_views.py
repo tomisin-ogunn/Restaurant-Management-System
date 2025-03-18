@@ -22,7 +22,7 @@ import re
 
 #Function to display Customer home interface
 def displayCustomerHome(request):
-    
+    customer_email = request.session.get("customer_email")  # Get customer_email from session
     if not request.session.session_key:
         request.session.create()  # Create a new session
     
@@ -33,7 +33,15 @@ def displayCustomerHome(request):
     unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
     drink_categories = [choice[0] for choice in Drink._meta.get_field('category').choices]
     
-    basket = Basket.objects.get(session_id=session_id)
+    #Get or create the basket using the session ID
+    if customer_email:
+        customer = Customer.objects.get(email=customer_email)
+        basket, created = Basket.objects.get_or_create(user=customer)
+        
+    else:
+       basket, created = Basket.objects.get_or_create(session_id=session_id)
+
+
     order_items = OrderItem.objects.filter(basket=basket)
    
     order_item_count = order_items.count()
@@ -48,6 +56,12 @@ def displayCustomerHome(request):
     }
     return render(request, "customers/home.html", context)
 
+#Function to regenerate a user session
+def regenerate_session(request):
+    request.session.flush()  # Clears the current session data and starts a new one
+    request.session.create()
+    return JsonResponse({"status": "Session regenerated"})
+
 #Function to display customer log in page
 def displayCustomerLogin(request):
     context = {
@@ -59,6 +73,12 @@ def displayCustomerLogin(request):
 
 #Function to authenticate customer login credentials
 def customer_loginAuth(request):
+    #Clear session
+    request.session.flush()
+    
+    # Regenerate CSRF token after flushing the session
+    get_token(request)
+    
     if request.method == "POST":
         email = request.POST.get("customer-email", "").strip()  # Get email from the form
         password = request.POST.get("customer-password")  # Get password from the form
@@ -76,7 +96,6 @@ def customer_loginAuth(request):
             request.session["customer_name"] = customer.first_name
             messages.success(request, "Login successful!")
             
-            get_token(request)
             return redirect("customer-loggedIn-home")  # Redirect to home page
 
         except (Customer.DoesNotExist, ValueError):
@@ -86,8 +105,6 @@ def customer_loginAuth(request):
             context = {
                 "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
             }
-            
-            get_token(request)
             
             return render(request, "customers/login.html", context)  # Render login form on failure
 

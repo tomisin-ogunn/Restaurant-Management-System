@@ -73,7 +73,8 @@ urlpatterns += [
     path('waiter-authentication', waiter_views.waiter_loginAuth, name="waiter-auth"),
     path('waiter-home/', waiter_views.displayWaiterHome, name="waiter-home"),
     path('update-waiter-password', waiter_views.updateWaiterPassword, name="update-waiter-password"),
-    path('waiter-id-ver', waiter_views.waiterID_verifier, name="waiter-id-ver")
+    path('waiter-id-ver', waiter_views.waiterID_verifier, name="waiter-id-ver"),
+    
 ]
 
 
@@ -86,7 +87,8 @@ urlpatterns += [
     path('update-customer-password', customer_views.update_CustomerPassword, name="update-customer-password"),
     path('customer-register/', customer_views.displayCustomerRegister, name="customer-register"),
     path('customer-registration', customer_views.appendCustomer, name="customer-registration"),
-    path('customer-logout', customer_views.customerLogOut, name="customer-logout")
+    path('customer-logout', customer_views.customerLogOut, name="customer-logout"),
+    path("regenerate-session/", customer_views.regenerate_session, name="regenerate-session")
 ]
 
 #Url patterns for customer actions 
