@@ -112,6 +112,7 @@ def updateWaiterPassword(request):
     if request.method == "POST":
         # Retrieve the passwords entered by the user
         new_password = request.POST.get("waiter-password")
+        new_password2 = request.POST.get("waiter-password2")
         waiterID = request.POST.get("waiterId")
         
         try:
