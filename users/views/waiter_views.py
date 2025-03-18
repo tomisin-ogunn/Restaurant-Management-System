@@ -351,6 +351,9 @@ def displayBasketWaiter(request):
     waiter_id = request.session.get("waiter_id")
     session_id = request.session.session_key
     
+    #Retrieve the waiters notifications
+    notifications = request.session.get(f"waiter_notifications_{waiter_id}", 0)
+    
     # Initialize basket based on session ID or waiter_id
     if  waiter_id:
         waiter = Waiter.objects.get(waiterId=waiter_id)
@@ -385,6 +388,7 @@ def displayBasketWaiter(request):
         'order_item_count': order_item_count,
         'tables': tables,
         'media_url': settings.MEDIA_URL,  # Pass MEDIA_URL to the template
+        'waiter_notifications': notifications
     }
     
     return render(request, "waiters/basket.html", context)
@@ -585,7 +589,40 @@ def generateOrderWaiter(request):
         }
         return render(request, "waiters/basket.html", context)
 
+#Function to display waiter notifications
+def displayWaiterNotifications(request):
+    waiter_id = request.session.get("waiter_id")
+    notifications = request.session.get(f"waiter_notifications_{waiter_id}", 0)
 
+    # Reset the notification count after loading the page
+    request.session[f"waiter_notifications_{waiter_id}"] = 0
+    
+    if not request.session.session_key:
+        request.session.create()  # Create a new session
+    
+    session_id = request.session.session_key
+    
+     #Get or create the basket using the session ID
+    if waiter_id:
+        waiter = Waiter.objects.get(waiterId=waiter_id)
+        basket, created = Basket.objects.get_or_create(waiter=waiter)
+        
+    else:
+       basket, created = Basket.objects.get_or_create(session_id=session_id)
+    
+    #Retrieve the number of order items in basket
+    order_items = OrderItem.objects.filter(basket=basket)
+   
+    order_item_count = order_items.count()
+    
+    context = {
+        "waiter_notifications": notifications,
+        "waiter": waiter,
+        'order_item_count': order_item_count,
+        'waiter_notifications': notifications,
+        "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
+    }
+    return render(request, "waiters/notifications.html", context)
 
 
 
