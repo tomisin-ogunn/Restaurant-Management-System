@@ -53,8 +53,8 @@ admin.site.register(Favourite, FavouriteAdmin)
 #Custom Admin class for the user's basket model
 class BasketAdmin(admin.ModelAdmin):
     #Customize fields displayed in the admin list view
-    list_display = ('id', 'user', 'session_id', 'created_at', 'updated_at')
-    search_fields = ('user', 'session_id', 'created_at', 'updated_at')
+    list_display = ('id', 'user', 'waiter', 'session_id', 'created_at', 'updated_at')
+    search_fields = ('user', 'waiter', 'session_id', 'created_at', 'updated_at')
 
 #Register the Basket Model with the custom admin class
 admin.site.register(Basket, BasketAdmin)

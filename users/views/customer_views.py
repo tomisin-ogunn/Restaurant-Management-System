@@ -501,9 +501,9 @@ def displayBasket(request):
     # Initialize basket based on session ID or customer email
     if customer_email:
         customer = get_object_or_404(Customer, email=customer_email)
-        basket = Basket.objects.filter(user=customer).first() 
+        basket, created = Basket.objects.get_or_create(user=customer)
     else:
-        basket = Basket.objects.filter(session_id=session_id).first()
+        basket, created = Basket.objects.get_or_create(session_id=session_id)
 
     # Get the basket items (order items) for the basket
     order_items = OrderItem.objects.filter(basket=basket)
@@ -603,10 +603,12 @@ def deleteBasketItems(request):
 
     # Initialize basket based on session ID or customer email
     if customer_email:
-        customer = get_object_or_404(Customer, email=customer_email)
-        basket = Basket.objects.filter(user=customer).first()
+        customer = Customer.objects.get(email=customer_email)
+        basket, created = Basket.objects.get_or_create(user=customer)
+        
     else:
-        basket = Basket.objects.filter(session_id=session_id).first()
+       basket, created = Basket.objects.get_or_create(session_id=session_id)
+
 
     # Get the basket items (order items) for the basket
     order_items = OrderItem.objects.filter(basket=basket)
@@ -692,7 +694,7 @@ def generateOrder(request):
     # Retrieve the basket based on session ID or customer email
     if customer_email:
         customer = get_object_or_404(Customer, email=customer_email)
-        basket = Basket.objects.filter(user=customer).first()
+        basket, created = Basket.objects.get_or_create(user=customer)
         
         tableNo = request.POST.get("order-table")
         name = request.POST.get("order-cus-name")
@@ -737,7 +739,7 @@ def generateOrder(request):
         return render(request, "customers/basket.html", context)
 
     else:
-        basket = Basket.objects.filter(session_id=session_id).first()
+        basket, created = Basket.objects.get_or_create(session_id=session_id)
         tableNo = request.POST.get("order-table")
         name = request.POST.get("order-cus-name")
         

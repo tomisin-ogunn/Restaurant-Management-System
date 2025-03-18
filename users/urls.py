@@ -77,6 +77,15 @@ urlpatterns += [
     
 ]
 
+#Url Patterns for Waiter actions/functionalities
+urlpatterns += [
+    path('waiter-basket/', waiter_views.displayBasketWaiter, name="waiter-basket"),
+    path('addItemToBasketWaiter/<str:itemID>/<str:itemType>/', waiter_views.addToBasketWaiter, name="addItemToBasketWaiter"),
+    path('removeItemFromBasketWaiter/<str:itemID>/', waiter_views.removeBasketItemWaiter, name="removeItemFromBasketWaiter"),
+    path('deleteBasketItemsWaiter/', waiter_views.deleteBasketItemsWaiter, name="deleteBasketItemsWaiter"),
+    path('fetch-order-item-details-waiter/<str:itemID>/', waiter_views.fetchOrderItemDetailsWaiter, name="fetch-order-item-details-waiter"),
+    path('generateOrderWaiter/', waiter_views.generateOrderWaiter, name="generateOrderWaiter")
+]
 
 #Url patterns for Customer Authentication Functionalities
 urlpatterns += [

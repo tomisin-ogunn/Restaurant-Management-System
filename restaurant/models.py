@@ -167,6 +167,7 @@ class Favourite(models.Model):
 #Model holding basket information for users
 class Basket(models.Model):
     user = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
+    waiter = models.ForeignKey(Waiter, on_delete=models.SET_NULL, null=True, blank=True)
     session_id = models.CharField(max_length=100, unique=True, null=True, blank=True, default=uuid.uuid4)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
