@@ -86,8 +86,9 @@ Restaurant Waiter Home Page
             </a>
         </div>
 
-
-        <p>TEST</p>
+        {% for order in orders%}
+        <p style="margin-left:500px;">{{ order.orderId }}, {{ order.status }}, {{ order.total_expected_duration }} mins</p>
+        {% endfor %}
 
     {% endblock %}
 

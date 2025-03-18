@@ -607,6 +607,15 @@ def displayWaiterNotifications(request):
         waiter = Waiter.objects.get(waiterId=waiter_id)
         basket, created = Basket.objects.get_or_create(waiter=waiter)
         
+        if waiter:
+        # Fetch all tables assigned to this waiter
+            tables = Table.objects.filter(waiter=waiter)
+            
+            # Get all orders linked to these tables
+            orders = Order.objects.filter(table__in=tables).select_related("table")
+        else:
+            orders = []  # No orders if the waiter is not found
+        
     else:
        basket, created = Basket.objects.get_or_create(session_id=session_id)
     
@@ -620,7 +629,8 @@ def displayWaiterNotifications(request):
         "waiter": waiter,
         'order_item_count': order_item_count,
         'waiter_notifications': notifications,
-        "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
+        "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template,
+        'orders': orders
     }
     return render(request, "waiters/notifications.html", context)
 
