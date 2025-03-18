@@ -157,6 +157,18 @@ def updateWaiterPassword(request):
     }
     return render(request, "waiters/login.html", context)
 
+#Function to log waiter out
+def waiterLogOut(request):
+    # Clear the session
+    request.session.flush()  # This clears all session data
+    # Add a success message
+    messages.success(request, "You have been logged out successfully.")
+    # Redirect to the login page
+    
+    get_token(request)
+     
+    return redirect("waiter-login")
+
 #Function to verify if employee id exists in the waiters model
 def waiterID_verifier(request):
     if request.method == "POST":
@@ -181,6 +193,7 @@ def waiterID_verifier(request):
     }
     return render(request, "waiters/login.html", context)
 
+#Function to append an item to the waiter's basket
 def addToBasketWaiter(request, itemID, itemType):
     waiter_id = request.session.get("waiter_id")  # Get  waiter_id from session
         

@@ -84,7 +84,8 @@ urlpatterns += [
     path('removeItemFromBasketWaiter/<str:itemID>/', waiter_views.removeBasketItemWaiter, name="removeItemFromBasketWaiter"),
     path('deleteBasketItemsWaiter/', waiter_views.deleteBasketItemsWaiter, name="deleteBasketItemsWaiter"),
     path('fetch-order-item-details-waiter/<str:itemID>/', waiter_views.fetchOrderItemDetailsWaiter, name="fetch-order-item-details-waiter"),
-    path('generateOrderWaiter/', waiter_views.generateOrderWaiter, name="generateOrderWaiter")
+    path('generateOrderWaiter/', waiter_views.generateOrderWaiter, name="generateOrderWaiter"),
+    path('waiter-logout', waiter_views.waiterLogOut, name="waiter-logout")
 ]
 
 #Url patterns for Customer Authentication Functionalities

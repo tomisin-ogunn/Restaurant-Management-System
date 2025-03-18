@@ -808,7 +808,7 @@ Restaurant Waiter Home Page
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Logic for logging out
-                        window.location.href = "{% url 'customer-logout' %}";
+                        window.location.href = "{% url 'waiter-logout' %}";
                     } else if (result.isDismissed) {
                         // Logic for canceling logout
                         return false;
