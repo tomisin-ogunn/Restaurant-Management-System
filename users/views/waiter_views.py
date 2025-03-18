@@ -593,7 +593,9 @@ def generateOrderWaiter(request):
 def displayWaiterNotifications(request):
     waiter_id = request.session.get("waiter_id")
     notifications = request.session.get(f"waiter_notifications_{waiter_id}", 0)
-
+    orders = []
+    waiter = []
+    
     # Reset the notification count after loading the page
     request.session[f"waiter_notifications_{waiter_id}"] = 0
     
@@ -615,6 +617,7 @@ def displayWaiterNotifications(request):
             orders = Order.objects.filter(table__in=tables).select_related("table")
         else:
             orders = []  # No orders if the waiter is not found
+            waiter = None
         
     else:
        basket, created = Basket.objects.get_or_create(session_id=session_id)
