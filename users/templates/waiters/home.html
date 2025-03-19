@@ -63,10 +63,11 @@ Restaurant Waiter Home Page
                     {% if waiter_notifications %}
                         {% if waiter_notifications != 0 %}
                             <span class="badge-not">{{ waiter_notifications }}</span><span class="ms-3">Notifications</span>
-                        
-                        {% else %}
-                            <span class="ms-3">Notifications</span>
                         {% endif %}
+
+                        {% else %}
+                            &nbsp;&nbsp; Notifications
+    
                     {% endif %}
                 </span>&nbsp;
             </a>

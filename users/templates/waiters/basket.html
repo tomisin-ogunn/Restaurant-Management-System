@@ -63,12 +63,14 @@
                     {% if waiter_notifications %}
                         {% if waiter_notifications != 0 %}
                             <span class="badge-not">{{ waiter_notifications }}</span><span class="ms-3">Notifications</span>
-                        
-                        {% else %}
-                            <span class="ms-3">Notifications</span>
                         {% endif %}
+
+                        {% else %}
+                            &nbsp;&nbsp; Notifications
+    
                     {% endif %}
-                </span>&nbsp;
+                    
+                </span>
             </a>
 
             <!-- Basket Button -->
@@ -560,6 +562,7 @@
             document.addEventListener("DOMContentLoaded", function () {
                 //Set the title for the webpage
                 document.title = "RMS JJ Waiter";
+                console.log("{{ waiter_notifications }}")
             });
 
             // Function to get CSRF token from cookies
