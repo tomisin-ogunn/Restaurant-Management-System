@@ -88,6 +88,8 @@ Restaurant Waiter Home Page
 
         <br><br><br>
 
+        
+
         <div class="restaurant-orders" >
 
             {% if orders %}
@@ -95,7 +97,16 @@ Restaurant Waiter Home Page
             
                         <div class="orderitem-box" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 8px rgba(0, 0, 0, 0.15)';"
                         onmouseout="setBackgroundColor(this)" style="cursor:pointer">
-                            <p class="order-title">Order: #{{ order.orderId }}</p> <!-- Title -->
+                            {% if order.status != "Delivered"%}
+                                <p class="order-title">Order: #{{ order.orderId }} 
+                                    &nbsp;&nbsp;&nbsp;&nbsp;<button class="mb-1 btn" style="background-color: #FFB000; font-weight:bold; font-size:12px;">Mark Delivered</button>
+                                </p> <!-- Title -->
+
+                            {% else %}
+                                <p class="order-title">Order: #{{ order.orderId }} </p> <!-- Title -->
+
+                            {% endif %}
+
                             <div class="order-details">
 
                                 {% if order.status == 'Pending' or order.status == 'Delayed'%}
@@ -164,11 +175,12 @@ Restaurant Waiter Home Page
                                                 {% if item.notes %}, Sauce: {{ item.notes }}{% endif %}
                                                 
                                                 </em>
-                                                
+
                                             {% endif %}
                                         </p>
                                     {% endfor %}
                                 </ul>
+
                             </div>
                         </div>
                     
