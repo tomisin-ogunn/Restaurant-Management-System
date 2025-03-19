@@ -638,9 +638,15 @@ def displayWaiterNotifications(request):
     }
     return render(request, "waiters/notifications.html", context)
 
-
-
-
+#Function to update the order status
+def updateOrderStatusWaiter(request, orderID):
+    if request.method == "POST":
+        order = get_object_or_404(Order, orderId=orderID)
+        order.status = "Delivered"
+        
+        order.save()
+    
+    return JsonResponse({"success": True, "message": "Order status updated!."})
 
 
 

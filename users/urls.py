@@ -86,7 +86,8 @@ urlpatterns += [
     path('fetch-order-item-details-waiter/<str:itemID>/', waiter_views.fetchOrderItemDetailsWaiter, name="fetch-order-item-details-waiter"),
     path('generateOrderWaiter/', waiter_views.generateOrderWaiter, name="generateOrderWaiter"),
     path('waiter-logout', waiter_views.waiterLogOut, name="waiter-logout"),
-    path('waiter-notifications/', waiter_views.displayWaiterNotifications, name="waiter-notifications")
+    path('waiter-notifications/', waiter_views.displayWaiterNotifications, name="waiter-notifications"),
+    path('updateOrderStatusWaiter/<str:orderID>/', waiter_views.updateOrderStatusWaiter, name="updateOrderStatusWaiter")
 ]
 
 #Url patterns for Customer Authentication Functionalities

@@ -129,7 +129,8 @@ Restaurant Waiter Home Page
                         onmouseout="setBackgroundColor(this)" style="cursor:pointer">
                             {% if order.status != "Delivered"%}
                                 <p class="order-title">Order: #{{ order.orderId }} 
-                                    &nbsp;&nbsp;&nbsp;&nbsp;<button class="mb-1 btn" style="background-color: #FFB000; font-weight:bold; font-size:12px;">Mark Delivered</button>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;<button onclick="updateOrderStatus('{{ order.orderId }}')" class="mb-1 btn" 
+                                    style="background-color: #FFB000; font-weight:bold; font-size:12px;">Mark Delivered</button>
                                 </p> <!-- Title -->
 
                             {% else %}
@@ -309,6 +310,33 @@ Restaurant Waiter Home Page
                 element.style.transform = 'scale(1)';  // Reset scaling
                 element.style.boxShadow = '2px 2px 10px rgba(0, 0, 0, 0.1)';// Reset box-shadow
                 element.style.backgroundColor = '#fff';
+            }
+
+            //Function which updates the status of the order to 'delivered'
+            function updateOrderStatus(orderID){
+                $.ajax({
+                    url: `/users/updateOrderStatusWaiter/${orderID}/`,
+                    type: 'POST',
+                    headers: { "X-CSRFToken": getCSRFToken() },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Status Updated!',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Order Status not updated!',
+                            text: 'There was an issue updating the order status.'
+                        });
+
+                    }
+                });
             }
 
         </script>
