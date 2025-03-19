@@ -697,6 +697,30 @@ input[type="radio"]:hover {
     margin-top: auto; /* Pushes the button to the bottom */
 }
 
+.order-filter-container{
+    background: #f8f8f8;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    color: #444444;
+    padding: 10px 30px;
+    border-radius: 5px;
+    padding: 15px 140px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: sticky; /* Sticks when scrolling */
+    top: 90px;
+    z-index: 999;
+}
+
+
+.order-filter-container div {
+    display: flex;
+    align-items: center;
+    gap: 9px; /* Space between radio button and text */
+    font-size: 16px;
+    white-space: nowrap; /* Prevents wrapping */
+}
 
 
 

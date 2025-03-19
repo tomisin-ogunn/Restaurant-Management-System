@@ -614,7 +614,7 @@ def displayWaiterNotifications(request):
             tables = Table.objects.filter(waiter=waiter)
             
             # Get all orders linked to these tables
-            orders = Order.objects.filter(table__in=tables).select_related("table")
+            orders = Order.objects.filter(table__in=tables).select_related("table").order_by("-placed_at")
         else:
             orders = []  # No orders if the waiter is not found
             waiter = None
@@ -633,7 +633,8 @@ def displayWaiterNotifications(request):
         'order_item_count': order_item_count,
         'waiter_notifications': notifications,
         "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template,
-        'orders': orders
+        'orders': orders,
+        'tables': tables
     }
     return render(request, "waiters/notifications.html", context)
 

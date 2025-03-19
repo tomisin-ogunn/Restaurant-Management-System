@@ -86,10 +86,40 @@ Restaurant Waiter Home Page
             </a>
         </div>
 
-        <br><br><br>
+        <!-- Order Filters -->
+        <div class="order-filter-container">
+            <div class="dropdown-container" id="order-statuses" style="width:120px;">
+                <select class="form-control custom-select">
+                    <option>Pending</option>
+                    <option>Delayed</option>
+                    <option>Ready</option>
+                    <option>Delivered</option>
+                </select>
+            </div>
 
-        
+            <div class="dropdown-container" id="order-tables" style="width:200px;">
+                <select class="form-control custom-select">
+                    <option value="" disabled selected style="color:gray;">Please select a table</option>
+                    {% for table in tables %}
+                        <option>{{ table.tableNo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
+            <div class="dropdown-container" id="order-date" style="width:120px;">
+                <select class="form-control custom-select">
+                    <option>Today</option>
+                    <option>Last 7 days</option>
+                    <option>Last 30 days</option>
+                </select>
+
+            </div>
+           
+        </div>
+
+        <br><br>
+
+        <!-- Orders Associated with waiter -->
         <div class="restaurant-orders" >
 
             {% if orders %}
@@ -159,7 +189,7 @@ Restaurant Waiter Home Page
                                                 {% if item.protein %}, Protein: {{ item.protein }}{% endif %}
                                                 {% if item.food_sauce %}, Sauce: {{ item.food_sauce }}{% endif %}
                                                 {% if item.soup_choice %}, Soup: {{ item.soup_choice }}{% endif %}
-                                                {% if item.desert_sauce %}, Sauce: {{ item.desert_sauce }}{% endif %}
+                                                {% if item.desert_sauce %} - Sauce: {{ item.desert_sauce }}{% endif %}
                                                 {% if item.notes %}, Notes: {{ item.notes }}{% endif %}
                                                 </em>
                                             {% else %}
