@@ -962,6 +962,9 @@ def generateOrder(request):
         for order_item in order_items if order_item.food_item is not None 
     )
     
+    # Fetch the waiter linked to the table
+    waiter = table.waiter if table else None  
+    
     order = Order(
         customer_name=name,
         table=table,
@@ -973,6 +976,12 @@ def generateOrder(request):
     
     order.save()
     
+    # Increment the notification count for the waiter in the session
+    if waiter:
+        waiter_id = waiter.waiterId  # Ensure we have the waiter's ID
+        notifications = request.session.get(f"waiter_notifications_{waiter_id}", 0) + 1
+        request.session[f"waiter_notifications_{waiter_id}"] = notifications
+        
     order.order_items.set(order_items)
     
     # Clear the basket by disassociating the order items
@@ -1023,6 +1032,16 @@ def generateOrderCustomer(request):
         
         order.save()
         
+        # Fetch the waiter linked to the table
+        waiter = table.waiter if table else None 
+        
+        # Increment the notification count for the waiter in the session
+        if waiter:
+            waiter_id = waiter.waiterId  # Ensure we have the waiter's ID
+            notifications = request.session.get(f"waiter_notifications_{waiter_id}", 0) + 1
+            request.session[f"waiter_notifications_{waiter_id}"] = notifications
+            
+        
         order.order_items.set(order_items) 
         
         # Clear the basket by disassociating the order items
@@ -1038,6 +1057,8 @@ def generateOrderCustomer(request):
             'total_duration': max_duration 
         }
         return render(request, "customers/loggedIn-basket.html", context)
+    
+    
 
 
 
