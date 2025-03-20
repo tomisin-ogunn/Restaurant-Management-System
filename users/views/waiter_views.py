@@ -615,6 +615,7 @@ def displayWaiterNotifications(request):
             
             # Get all orders linked to these tables
             orders = Order.objects.filter(table__in=tables).select_related("table").order_by("-placed_at")
+            
         else:
             orders = []  # No orders if the waiter is not found
             waiter = None
@@ -626,6 +627,11 @@ def displayWaiterNotifications(request):
     order_items = OrderItem.objects.filter(basket=basket)
    
     order_item_count = order_items.count()
+    
+    # Calculate the total price for each order
+    for order in orders:
+        total_price = sum(float(item.price.replace('£', '').strip()) for item in order.order_items.all())
+        order.total_price = round(total_price, 2)
     
     context = {
         "waiter_notifications": notifications,
@@ -647,6 +653,9 @@ def updateOrderStatusWaiter(request, orderID):
         order.save()
     
     return JsonResponse({"success": True, "message": "Order status updated!."})
+
+
+
 
 
 
