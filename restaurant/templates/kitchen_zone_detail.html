@@ -1,0 +1,127 @@
+<!-- Kitchen Zone Display for Active orders in preparation -->
+
+{% extends 'layout.html' %}
+
+{% block title %}
+    Kitchen Zone {{ zone.zoneId }}
+{% endblock %}
+
+
+<body>
+
+    {% block content %}
+
+        <!-- Webpage Navbar -->
+        <div id="navbar-menuItems">
+            <nav style="background-color:#300909" class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">
+                        <img src="{{ media_url }}RestaurantLogoDesign-FYP.png" alt="Card Image">
+                    </a>
+                    
+                <div class="mx-auto text-white fw-bold" style="font-size: 1.2rem; float:center;">
+                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="25" height="20" fill="currentColor" class="bi bi-people" viewBox="0 0 16 16">
+                        <path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1zm-7.978-1L7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.002-.014.002zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0M6.936 9.28a6 6 0 0 0-1.23-.247A7 7 0 0 0 5 9c-4 0-5 3-5 4q0 1 1 1h4.216A2.24 2.24 0 0 1 5 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816M4.92 10A5.5 5.5 0 0 0 4 13H1c0-.26.164-1.03.76-1.724.545-.636 1.492-1.256 3.16-1.275ZM1.5 5.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0m3-2a2 2 0 1 0 0 4 2 2 0 0 0 0-4"/>
+                      </svg>&nbsp;Kitchen Zone: {{ zone.zoneId }}
+                </div>
+                
+            </div>
+            </nav>
+        
+        </div>
+
+        <!-- Kitchen Interface Sidebar -->
+        <div class="Kitchen-sidebar shadow-lg">
+
+            <!-- Active Orders Button -->
+            <a id="ActiveOrdersBtn">
+                <span>
+                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-gear-wide-connected" viewBox="0 0 16 16">
+                        <path d="M7.068.727c.243-.97 1.62-.97 1.864 0l.071.286a.96.96 0 0 0 1.622.434l.205-.211c.695-.719 1.888-.03 1.613.931l-.08.284a.96.96 0 0 0 1.187 1.187l.283-.081c.96-.275 1.65.918.931 1.613l-.211.205a.96.96 0 0 0 .434 1.622l.286.071c.97.243.97 1.62 0 1.864l-.286.071a.96.96 0 0 0-.434 1.622l.211.205c.719.695.03 1.888-.931 1.613l-.284-.08a.96.96 0 0 0-1.187 1.187l.081.283c.275.96-.918 1.65-1.613.931l-.205-.211a.96.96 0 0 0-1.622.434l-.071.286c-.243.97-1.62.97-1.864 0l-.071-.286a.96.96 0 0 0-1.622-.434l-.205.211c-.695.719-1.888.03-1.613-.931l.08-.284a.96.96 0 0 0-1.186-1.187l-.284.081c-.96.275-1.65-.918-.931-1.613l.211-.205a.96.96 0 0 0-.434-1.622l-.286-.071c-.97-.243-.97-1.62 0-1.864l.286-.071a.96.96 0 0 0 .434-1.622l-.211-.205c-.719-.695-.03-1.888.931-1.613l.284.08a.96.96 0 0 0 1.187-1.186l-.081-.284c-.275-.96.918-1.65 1.613-.931l.205.211a.96.96 0 0 0 1.622-.434zM12.973 8.5H8.25l-2.834 3.779A4.998 4.998 0 0 0 12.973 8.5m0-1a4.998 4.998 0 0 0-7.557-3.779l2.834 3.78zM5.048 3.967l-.087.065zm-.431.355A4.98 4.98 0 0 0 3.002 8c0 1.455.622 2.765 1.615 3.678L7.375 8zm.344 7.646.087.065z"/>
+                      </svg>
+                </span> &nbsp; Active Orders
+            </a>
+            
+            <!-- Pending Orders Button-->
+            <a>
+                <span>
+                    <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-stopwatch" viewBox="0 0 16 16">
+                        <path d="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5z"/>
+                        <path d="M6.5 1A.5.5 0 0 1 7 .5h2a.5.5 0 0 1 0 1v.57c1.36.196 2.594.78 3.584 1.64l.012-.013.354-.354-.354-.353a.5.5 0 0 1 .707-.708l1.414 1.415a.5.5 0 1 1-.707.707l-.353-.354-.354.354-.013.012A7 7 0 1 1 7 2.071V1.5a.5.5 0 0 1-.5-.5M8 3a6 6 0 1 0 .001 12A6 6 0 0 0 8 3"/>
+                      </svg>
+                </span> &nbsp; Pending Orders
+            </a>
+
+            <!-- Stock Level Button -->
+            <a>
+                <span>
+                    <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
+                      </svg>
+                </span> &nbsp; Update Inventory
+            </a>
+
+        </div>
+
+        <br><br><br>
+
+        <div style="margin:0 auto;">
+            <h1>{{ zone.zoneId }}</h1>
+            <p>Active Orders: {{ zone.active_orders }}</p>
+            <p>Total Remaining Time: {{ zone.total_remaining_time }} minutes</p>
+        </div>
+
+
+    {% endblock %}
+
+
+    <!-- Dynamic JavaScript Functionality -->
+    {% block scripts %}
+
+        <script>
+
+            //Sets the title for the webpage
+            document.addEventListener("DOMContentLoaded", function () {
+                //Set the title for the webpage
+                document.title = "JJ Kitchen Zone - {{ zone.zoneId }}";
+            });
+
+            //Function to toggle navbar divs to highlight when clicked / active
+            document.addEventListener("DOMContentLoaded", function () {
+
+                let links = document.querySelectorAll(".Cus-sidebar a");
+                let activeOrdersButton = document.getElementById("ActiveOrdersBtn");
+            
+                // Function to set the active button
+                function setActive(link) {
+                    links.forEach(a => a.classList.remove("active"));
+                    if (link) {
+                        link.classList.add("active");
+                        localStorage.setItem("activeLink", link.id); // Save active link in local storage
+                    }
+                }
+            
+                // Set active class when clicked
+                links.forEach(link => {
+                    link.addEventListener("click", function () {
+                        setActive(this);
+                    });
+                });
+            
+                // Restore active state on page load
+                let savedLinkId = localStorage.getItem("activeLink");
+                let activeLink = savedLinkId ? document.getElementById(savedLinkId) : null;
+            
+                if (activeLink) {
+                    setActive(activeLink); // Restore last active button
+                } else if (activeOrdersButton) {
+                    setActive(activeOrdersButton); // Default to activeOrdersButton
+                }
+            });
+
+        </script>
+
+    {% endblock %}
+
+</body>

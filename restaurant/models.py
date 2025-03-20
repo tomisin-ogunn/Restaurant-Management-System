@@ -269,11 +269,20 @@ class Order(models.Model):
         
         return new_order_id
 
+#Model holding KitchenZone(models.Model):
+class KitchenZone(models.Model):
+    zoneId = models.AutoField(primary_key=True)
+    active_orders = models.PositiveIntegerField(default=0)
+    total_remaining_time = models.PositiveBigIntegerField(default=0)
 
-
-
-
-
+    #Displays table view of model in Django Admin
+    def __str__(self):
+        return f"Zone {self.zoneId} - Active Orders:{self.active_orders}, Remaining_Cooking_Time: {self.total_remaining_time}"
+    
+    @property
+    def is_overloaded(self):
+        """Check if the zone is overloaded (has 3 orders or more)."""
+        return self.active_orders >= 3
 
 
 

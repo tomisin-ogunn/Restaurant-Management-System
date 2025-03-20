@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Table, Reservation, Food, Drink, Favourite, Basket, OrderItem, Rating, Order
+from .models import KitchenZone
 
 # Register your models here.
 
@@ -106,12 +107,18 @@ class OrderAdmin(admin.ModelAdmin):
     
     get_order_items.short_description = 'Order Items'
     
-#Register the Basket Model with the custom admin class
+#Register the Order Model with the custom admin class
 admin.site.register(Order, OrderAdmin)
 
 
+#Custom Admin Class for the Kitchen Zone model
+class KitchenZoneAdmin(admin.ModelAdmin):
+    #Customize fields displayed in the admin list view
+    list_display = ('zoneId', 'active_orders', 'total_remaining_time')
+    search_fields = ('zoneId', 'active_orders', 'total_remaining_time')
 
-
+#Register the Kitchen Model with the custom admin class
+admin.site.register(KitchenZone, KitchenZoneAdmin)
 
 
 

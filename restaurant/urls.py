@@ -16,18 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from restaurant.views import kitchen_views
 from . import views
+from users.views import manager_views, waiter_views, customer_views
 from django.conf.urls.static import static
 from django.conf import settings
 import debug_toolbar
 
-#Routes for respective interfaces in the application, by mapping urls to their corresponding views
+#Url patterns for kitchen actions
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.display_homepage),
-    path('__debug__', include(debug_toolbar.urls)),
-    path('users/', include('users.urls')),
-    path('restaurant/', include('restaurant.urls'))
+   path('kitchen-zone/<int:zoneID>/', kitchen_views.displayKitchenZone, name='kitchen_zone_detail'),
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

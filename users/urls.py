@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from restaurant.views import kitchen_views
 from users.views import manager_views, waiter_views, customer_views
 from django.conf.urls.static import static
 from django.conf import settings
@@ -123,6 +124,7 @@ urlpatterns += [
     path('customer-basket', customer_views.displayCustomerBasket, name="customer-basket"),
     path('customer-loggedIn-rating/', customer_views.displayCustomerLoggedInRatingForm, name="customer-loggedIn-rating")
 ]
+
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

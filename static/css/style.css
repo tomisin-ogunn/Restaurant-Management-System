@@ -723,9 +723,36 @@ input[type="radio"]:hover {
 }
 
 
+/* Kitchen Zone Interface Styling */
+.Kitchen-sidebar{
+    height: 100%;
+    width: 220px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #F5E9DC;
+    padding-top: 92px;
+    color: #444444;
+    z-index: 1000;
+}
 
+.Kitchen-sidebar a {
+    display: block;
+    padding: 18px;
+    text-decoration: none;
+    font-size: 18px;
+    color:#444444 !important;
+}
 
+.Kitchen-sidebar a:hover {
+    background-color: #efc292;
+    cursor: pointer;
+}
 
+.Kitchen-sidebar a.active{
+    background-color: #efc292;
+    color: #444444;
+}
 
 
 
