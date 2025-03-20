@@ -717,10 +717,10 @@ input[type="radio"]:hover {
 .order-filter-container div {
     display: flex;
     align-items: center;
-    gap: 9px; /* Space between radio button and text */
+    gap: 9px; 
     font-size: 16px;
-    white-space: nowrap; /* Prevents wrapping */
-}
+    white-space: nowrap;
+} 
 
 
 /* Kitchen Zone Interface Styling */

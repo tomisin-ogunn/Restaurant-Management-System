@@ -90,7 +90,8 @@ Restaurant Waiter Home Page
         <div class="order-filter-container">
 
             <!-- Status -->
-            <div class="dropdown-container" id="order-statuses" style="width:120px;">
+            <div class="dropdown-container" id="order-statuses" style="width:180px;">
+                <label for="order-statuses">Status</label>
                 <select class="form-control custom-select" id="order-status" onchange="filterOrderItems(this.value)">
                     <option>Pending</option>
                     <option>Delayed</option>
@@ -100,7 +101,8 @@ Restaurant Waiter Home Page
             </div>
 
             <!-- Table -->
-            <div class="dropdown-container" id="order-tables" style="width:100px;">
+            <div class="dropdown-container" id="order-tables" style="width:120px;">
+                <label for="order-tables">Table</label>
                 <select class="form-control custom-select" id="table-filter">
                     <option value="all" selected style="color:gray;">All</option>
                     {% for table in tables %}
@@ -110,7 +112,8 @@ Restaurant Waiter Home Page
             </div>
 
             <!-- Date -->
-            <div class="dropdown-container" id="order-dates" style="width:120px;">
+            <div class="dropdown-container" id="order-dates" style="width:160px;">
+                <label for="order-dates">Date</label>
                 <select class="form-control custom-select" id="date-filter">
                     <option>Today</option>
                     <option>Last 7 days</option>
