@@ -604,7 +604,7 @@ def displayWaiterNotifications(request):
     
     session_id = request.session.session_key
     
-     #Get or create the basket using the session ID
+    #Get or create the basket using the session ID
     if waiter_id:
         waiter = Waiter.objects.get(waiterId=waiter_id)
         basket, created = Basket.objects.get_or_create(waiter=waiter)
@@ -642,6 +642,7 @@ def displayWaiterNotifications(request):
         'orders': orders,
         'tables': tables
     }
+    
     return render(request, "waiters/notifications.html", context)
 
 #Function to update the order status
