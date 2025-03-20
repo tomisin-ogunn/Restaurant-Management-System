@@ -88,6 +88,8 @@ Restaurant Waiter Home Page
 
         <!-- Order Filters -->
         <div class="order-filter-container">
+
+            <!-- Status -->
             <div class="dropdown-container" id="order-statuses" style="width:120px;">
                 <select class="form-control custom-select" id="order-status" onchange="filterOrderItems(this.value)">
                     <option>Pending</option>
@@ -97,7 +99,8 @@ Restaurant Waiter Home Page
                 </select>
             </div>
 
-            <div class="dropdown-container" id="order-tables" style="width:200px;">
+            <!-- Table -->
+            <div class="dropdown-container" id="order-tables" style="width:100px;">
                 <select class="form-control custom-select" id="table-filter">
                     <option value="all" selected style="color:gray;">All</option>
                     {% for table in tables %}
@@ -106,8 +109,9 @@ Restaurant Waiter Home Page
                 </select>
             </div>
 
-            <div class="dropdown-container" id="order-date" style="width:120px;">
-                <select class="form-control custom-select">
+            <!-- Date -->
+            <div class="dropdown-container" id="order-dates" style="width:120px;">
+                <select class="form-control custom-select" id="date-filter">
                     <option>Today</option>
                     <option>Last 7 days</option>
                     <option>Last 30 days</option>
@@ -173,7 +177,7 @@ Restaurant Waiter Home Page
                                 <p><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar2-plus" viewBox="0 0 16 16">
                                     <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/>
                                     <path d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5zM8 8a.5.5 0 0 1 .5.5V10H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V11H6a.5.5 0 0 1 0-1h1.5V8.5A.5.5 0 0 1 8 8"/>
-                                </svg>&nbsp;&nbsp;Placed at: {{ order.placed_at}}</p>
+                                </svg>&nbsp;&nbsp;Placed at: <span id="order-date">{{ order.placed_at}}</span></p>
 
                                 <p><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-coin" viewBox="0 0 16 16">
                                     <path d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518z"/>
@@ -354,6 +358,12 @@ Restaurant Waiter Home Page
             document.addEventListener("DOMContentLoaded", function() {
                 filterOrderItems("Pending"); // Load pending orders by default
                 const tableFilter = document.getElementById("table-filter");
+                const dateFilter = document.getElementById("date-filter");
+
+                if (dateFilter) {
+                    dateFilter.value = "Today"; // Set default selection
+                }
+
                 if (tableFilter) {
                     tableFilter.addEventListener("change", function () {
                         const selectedStatus = document.querySelector("#order-status").value;
@@ -361,6 +371,14 @@ Restaurant Waiter Home Page
 
                     });
                 }
+
+                if (dateFilter) {
+                    dateFilter.addEventListener("change", function () {
+                        const selectedStatus = document.querySelector("#order-status").value;
+                        filterOrderItems(selectedStatus);
+                    });
+                }
+
             });
             
             //Function to filter orders based on status
@@ -368,8 +386,12 @@ Restaurant Waiter Home Page
                 const orderItems = document.querySelectorAll(".orderitem-box");
                 const parentContainer = document.querySelector(".restaurant-orders");
                 const tableFilter = document.getElementById("table-filter");
+                const dateFilter = document.getElementById("date-filter");
+
                 const selectedTable = tableFilter ? tableFilter.value.trim() : "";
-            
+                const selectedDateRange = dateFilter ? dateFilter.value.trim().toLowerCase() : "today";
+                console.log(selectedDateRange);
+
                 if (parentContainer) {
                     parentContainer.style.display = "grid";
                     parentContainer.style.gridTemplateColumns = "repeat(3, 1fr)";
@@ -378,16 +400,49 @@ Restaurant Waiter Home Page
                     parentContainer.style.paddingLeft = "200px";
                 }
             
+                //Date Filter Logic
+                const now = new Date();
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const last7Days = new Date(today);
+                last7Days.setDate(today.getDate() - 7);
+
+                const last30Days = new Date(today);
+                last30Days.setDate(today.getDate() - 30);
+
+
                 orderItems.forEach(item => {
                     const itemStatus = item.querySelector(".order-details p").textContent.trim();
                     const itemTableElement = item.querySelector("#order-tableNo"); // Get the table number element inside the item
                     const itemTable = itemTableElement ? itemTableElement.textContent.trim() : "";
-            
+                    
+                    //Retrieves order item date
+                    const itemDateElement = item.querySelector("#order-date");
+                    const itemDateText = itemDateElement ? itemDateElement.textContent.trim() : "";
+                    const itemDate = parseCustomDate(itemDateText);
+                    console.log(itemDate)
+
                     // Check if status and table match
                     const statusMatches = (status === "all" || itemStatus.includes(status));
                     const tableMatches = (selectedTable === "all" || itemTable === selectedTable);
-            
-                    if (statusMatches && tableMatches) {
+                    let dateMatches = true;
+                    
+                    //Filters based on selected value
+                    if (itemDate instanceof Date && !isNaN(itemDate)) {
+                        if (selectedDateRange === "today") {
+                            dateMatches = itemDate >= today;
+                        } else if (selectedDateRange === "last 7 days") {
+                            dateMatches = itemDate >= last7Days;
+                        } else if (selectedDateRange === "last 30 days") {
+                            dateMatches = itemDate >= last30Days;
+                        }
+                    } else {
+                        dateMatches = false; // If date is invalid, do not display
+                    }
+        
+
+                    if (statusMatches && tableMatches && dateMatches) {
                         item.style.display = "block";
                         item.style.border = "1px solid #ccc";
                         item.style.padding = "10px";
@@ -403,6 +458,24 @@ Restaurant Waiter Home Page
             
                 parentContainer.offsetHeight; // Force reflow
             }
+
+            //Function which parses date value into JavaScript Date Object
+            function parseCustomDate(dateString) {
+                if (!dateString) return null;
+            
+                try {
+                    // Remove the time and extract the date
+                    const [datePart, timePart] = dateString.split(", ");
+                    const formattedDateString = datePart + "," + timePart.replace(/\./g, ""); // Remove dots
+            
+                    // Convert "March 19, 2025, 7:21 p.m." into a valid Date object
+                    return new Date(formattedDateString);
+                } catch (error) {
+                    console.error("Invalid date format:", dateString);
+                    return null;
+                }
+            }
+            
 
         </script>
 
