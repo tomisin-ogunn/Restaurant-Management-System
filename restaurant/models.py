@@ -217,6 +217,21 @@ class Rating(models.Model):
     comments = models.CharField(max_length=255, null=True, blank=True)
     submission_date = models.DateTimeField(auto_now_add=True)
 
+#Model holding KitchenZone(models.Model):
+class KitchenZone(models.Model):
+    zoneId = models.AutoField(primary_key=True)
+    active_orders = models.PositiveIntegerField(default=0)
+    total_remaining_time = models.PositiveBigIntegerField(default=0)
+
+    #Displays table view of model in Django Admin
+    def __str__(self):
+        return f"Zone {self.zoneId} - Active Orders:{self.active_orders}, Remaining_Cooking_Time: {self.total_remaining_time}"
+    
+    @property
+    def is_overloaded(self):
+        """Check if the zone is overloaded (has 3 orders or more)."""
+        return self.active_orders >= 3
+
 #Model holding Orders information
 class Order(models.Model):
     orderId = models.CharField(max_length=100, primary_key=True, blank=True, unique=True)
@@ -226,9 +241,10 @@ class Order(models.Model):
     basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
     customer_name = models.CharField(max_length=60)
-    status = models.CharField(max_length=50, choices=[('Pending', 'Pending'), ('Delayed', 'Delayed'), ('Ready', 'Ready'), ('Delivered', 'Delivered')],
+    status = models.CharField(max_length=50, choices=[('Pending', 'Pending'), ('Delayed', 'Delayed'), ('Assigned', 'Assigned'), ('Ready', 'Ready'), ('Delivered', 'Delivered')],
             default='Pending')
     order_items = models.ManyToManyField(OrderItem, related_name='orders')
+    assigned_zone = models.ForeignKey(KitchenZone, on_delete=models.SET_NULL, null=True, blank=True)
     
     #Function to increment reservation id after record has been added manually to the Orders.
     def save(self, *args, **kwargs):
@@ -269,20 +285,7 @@ class Order(models.Model):
         
         return new_order_id
 
-#Model holding KitchenZone(models.Model):
-class KitchenZone(models.Model):
-    zoneId = models.AutoField(primary_key=True)
-    active_orders = models.PositiveIntegerField(default=0)
-    total_remaining_time = models.PositiveBigIntegerField(default=0)
 
-    #Displays table view of model in Django Admin
-    def __str__(self):
-        return f"Zone {self.zoneId} - Active Orders:{self.active_orders}, Remaining_Cooking_Time: {self.total_remaining_time}"
-    
-    @property
-    def is_overloaded(self):
-        """Check if the zone is overloaded (has 3 orders or more)."""
-        return self.active_orders >= 3
 
 
 

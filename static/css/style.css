@@ -755,9 +755,22 @@ input[type="radio"]:hover {
 }
 
 
+.KD-orderitem-box{
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    width:25vw;
+    height:75vh;
+}
 
-
-
+.KD-order-details {
+    font-size: 14px;
+    color: #555;
+    overflow-y:auto;
+    height:65vh;
+}
 
 
 

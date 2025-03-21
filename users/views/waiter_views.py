@@ -1,4 +1,4 @@
-# Waiter Backend Views & Functipnalities for RMS JJ Web application
+# Waiter Backend Views & Functionalities for RMS JJ Web application
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
@@ -11,6 +11,7 @@ from django.contrib.auth import logout
 from django.utils import timezone
 from users.models import Manager, Waiter
 from restaurant.models import Table, Reservation, Food, Drink, Order, OrderItem, Basket
+from restaurant.views.kitchen_views import assign_order_to_zone
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 import string
@@ -526,7 +527,8 @@ def generateOrderWaiter(request):
         
         order.orderId = Order.generateOrderID()
         
-        order.save()
+        #Schedule order to kitchen zone for preparation
+        assign_order_to_zone(order)
         
         order.order_items.set(order_items) 
         
@@ -655,31 +657,6 @@ def updateOrderStatusWaiter(request, orderID):
     
     return JsonResponse({"success": True, "message": "Order status updated!."})
 
-# Dynamic Load Balancing Scheduling logic
-def assign_order_to_zone(order):
-    zones = list(KitchenZone.objects.all().order_by('zoneId'))  # Get zones in order
-    total_orders = Order.objects.exclude(status='completed').count()  # Count active & pending orders
-    
-    # Determine the next zone in sequence (1 → 2 → 3 → Repeat)
-    next_zone_index = total_orders % len(zones)  # Cycles through index 0, 1, 2 (Zone 1, 2, 3)
-
-    # Get the next zone in round-robin sequence
-    selected_zone = zones[next_zone_index]
-
-    if selected_zone.active_orders < 3:
-        # Assign order to this zone
-        order.assigned_zone = selected_zone
-        order.status = 'assigned'
-        selected_zone.active_orders += 1
-        selected_zone.total_remaining_time += order.total_expected_duration
-        selected_zone.save()
-    else:
-        # If all zones are full, find the least busy one for pending queue
-        least_busy_zone = min(zones, key=lambda z: (z.active_orders, z.total_remaining_time))
-        order.assigned_zone = least_busy_zone
-        order.status = 'pending'  # Mark as waiting
-
-    order.save()
 
 
 

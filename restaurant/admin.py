@@ -90,8 +90,8 @@ class OrderItemInline(admin.TabularInline):  # Or use StackedInline for a differ
 #Custom Admin class for the order items model
 class OrderAdmin(admin.ModelAdmin):
     #Customize fields displayed in the admin list view
-    list_display = ('orderId', 'table', 'total_expected_duration', 'placed_at', 'basket', 'customer', 'customer_name', 'status', 'get_order_items')
-    search_fields = ('orderId', 'table', 'total_expected_duration', 'placed_at', 'basket', 'customer', 'customer_name', 'status')
+    list_display = ('orderId', 'table', 'total_expected_duration', 'placed_at', 'basket', 'customer', 'customer_name', 'status', 'get_order_items', 'assigned_zone')
+    search_fields = ('orderId', 'table', 'total_expected_duration', 'placed_at', 'basket', 'customer', 'customer_name', 'status', 'assigned_zone')
 
     # Custom method to display order items in the list view
     def get_order_items(self, obj):
