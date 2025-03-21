@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'users',
-    'restaurant'
+    'restaurant',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -79,6 +80,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'RMS.wsgi.application'
+
+
+ASGI_APPLICATION = "RMS.asgi.application"
+
+# WebSocket configuration
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",  # Use Redis in production
+    }
+}
 
 
 # Database

@@ -66,16 +66,7 @@
 
         <br><br>
 
-        {% comment %} <div style="margin:0 auto;">
-            <h1>{{ zone.zoneId }}</h1>
-            <p>Active Orders: {{ zone.active_orders }}</p>
-            <p>Total Remaining Time: {{ zone.total_remaining_time }} minutes</p>
-            {% for order in orders%}
-
-                <p>{{ order.orderId }} </p>
-            {% endfor %}
-        </div> {% endcomment %}
-
+        <!-- Kitchen Zone Assigned Orders -->
         <div class="restaurant-orders" >
 
             {% if orders %}
@@ -90,7 +81,7 @@
                             <h1><svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="35" height="40" fill="currentColor" class="bi bi-alarm" viewBox="0 0 16 16">
                                 <path d="M8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9z"/>
                                 <path d="M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1zm1.038 3.018a6 6 0 0 1 .924 0 6 6 0 1 1-.924 0M0 3.5c0 .753.333 1.429.86 1.887A8.04 8.04 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5M13.5 1c-.753 0-1.429.333-1.887.86a8.04 8.04 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1"/>
-                              </svg> Timer: </h1>
+                              </svg> Timer: </h1> <span id="order-duration"></span>
                             <br>
 
                             <div class="KD-order-details">
@@ -164,6 +155,106 @@
 
         </div>
 
+        <script>
+
+            //Functions which dynamically fetches orders, to update kitchen display in real time
+            function fetchOrders() {
+                var zoneID = "{{ zone.zoneId }}";  // Get the zone ID from Django context
+                $.ajax({
+                    url: `/restaurant/get-kitchen-orders/${zoneID}`,  // Fetch orders for the specific zone
+                    type: 'GET',
+                    success: function(response) {
+                        // Handle success: update the orders on the page with the JSON data
+                        updateOrdersOnPage(response.orders);
+                    },
+                    error: function(error) {
+                        console.log('Error fetching orders:', error);
+                    }
+                });
+            }
+
+            function updateOrdersOnPage(orders) {
+                var orderContainer = document.querySelector('.restaurant-orders');
+                orderContainer.innerHTML = ''; // Clear current orders
+        
+                if (orders.length === 0) {
+                    orderContainer.innerHTML = '<center><em><p style="color:gray; text-align:center;">No orders to display</p></em></center>';
+                }
+        
+                orders.forEach(function(order) {
+                    var orderBox = document.createElement('div');
+                    orderBox.classList.add('KD-orderitem-box');
+        
+                    var orderHtml = `
+                        <p class="order-title">Order: #${order.orderId} 
+                            &nbsp;&nbsp;&nbsp;&nbsp;<button class="mb-1 btn" style="background-color: #FFB000; font-weight:bold; font-size:12px;">Complete Order</button>
+                        </p>
+                        <h1><svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="35" height="40" fill="currentColor" class="bi bi-alarm" viewBox="0 0 16 16">
+                            <path d="M8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9z"/>
+                            <path d="M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1zm1.038 3.018a6 6 0 0 1 .924 0 6 6 0 1 1-.924 0M0 3.5c0 .753.333 1.429.86 1.887A8.04 8.04 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5M13.5 1c-.753 0-1.429.333-1.887.86a8.04 8.04 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1"/>
+                        </svg> Timer: </h1><br>
+                        <div class="KD-order-details">
+
+                            <p><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-table" viewBox="0 0 16 16">
+                                <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>
+                            </svg>&nbsp;&nbsp;Table: ${order.table}</p>
+                            <p><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar2-plus" viewBox="0 0 16 16">
+                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z"/>
+                                <path d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5zM8 8a.5.5 0 0 1 .5.5V10H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V11H6a.5.5 0 0 1 0-1h1.5V8.5A.5.5 0 0 1 8 8"/>
+                            </svg>&nbsp;&nbsp;Placed at: ${order.placed_at}</p>
+                            <p><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-coin" viewBox="0 0 16 16">
+                                    <path d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518z"/>
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                    <path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11m0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12"/>
+                                  </svg>&nbsp;&nbsp;Total Amount: £${order.total_price.toFixed(2)}</p>
+                            <p><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-square" viewBox="0 0 16 16">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                    <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z"/>
+                                </svg>&nbsp;&nbsp;Customer: ${order.customer_name}</p>
+
+                                <p><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-list" viewBox="0 0 16 16">
+                                    <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
+                                    <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
+                                  </svg>&nbsp;&nbsp;Order Items:</p>
+                                <ul>
+                                    ${order.order_items.map(item => `
+                                        <p>
+                                            ${item.food_name ? `
+                                                <em>${item.food_name} (${item.price})</em>
+                                                <em>
+                                                    ${item.spice_level ? ` - Spice-Level: ${item.spice_level}` : ''}
+                                                    ${item.protein ? `, Protein: ${item.protein}` : ''}
+                                                    ${item.food_sauce ? `, Sauce: ${item.food_sauce}` : ''}
+                                                    ${item.soup_choice ? `, Soup: ${item.soup_choice}` : ''}
+                                                    ${item.desert_sauce ? ` - Sauce: ${item.desert_sauce}` : ''}
+                                                    ${item.notes ? `, Notes: ${item.notes}` : ''}
+                                                    
+                                                </em>
+                                            ` : ''}
+                                            
+                                            ${item.drink_name ? `
+                                                <em>${item.drink_name} (${item.price})</em>
+                                                <em>
+                                                    ${item.drink_size ? ` - Size: ${item.drink_size}` : ''}
+                                                    ${item.has_ice !== undefined ? `, With Ice: ${item.has_ice ? 'Yes' : 'No'}` : ''}
+                                                    ${item.notes ? `, Notes: ${item.notes}` : ''}
+                                                </em>
+                                             ` : ''}
+                                        </p>
+                                    `).join('')}
+                                </ul>
+                        </div>
+                    `;
+        
+                    orderBox.innerHTML = orderHtml;
+                    orderContainer.appendChild(orderBox);
+                });
+            }
+        
+            // Call the function to fetch orders on page load
+            setInterval(fetchOrders, 5000);
+
+        </script>
 
     {% endblock %}
 
