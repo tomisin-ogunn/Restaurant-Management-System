@@ -178,6 +178,19 @@ def completeOrder(request, orderID, zoneID):
         
         order.save()
         
+        # Fetch the table linked to the order
+        table = order.table if order else None  
+
+        # Fetch the waiter linked to the table
+        waiter = table.waiter if table else None  
+
+        # Increment the notification count for the waiter in the session
+        if waiter:
+            waiter_id = waiter.waiterId  # Ensure we have the waiter's ID
+            notifications = request.session.get(f"waiter_notifications_{waiter_id}", 0) + 1
+            request.session[f"waiter_notifications_{waiter_id}"] = notifications
+        
+        #Obtain the kitchen zone
         zone = get_object_or_404(KitchenZone, zoneId=zoneID)
         
         
