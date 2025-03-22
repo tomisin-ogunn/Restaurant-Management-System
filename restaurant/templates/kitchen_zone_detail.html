@@ -286,7 +286,7 @@
         
                     var orderHtml = `
                         <p class="order-title">Order: #${order.orderId} 
-                            &nbsp;&nbsp;&nbsp;&nbsp;<button onclick="completeOrder(${order.orderId}, ${order.assigned_zone})" class="mb-1 btn" style="background-color: #FFB000; font-weight:bold; font-size:12px;">Complete Order</button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<button onclick="completeOrder('${order.orderId}', ${order.assigned_zone})" class="mb-1 btn" style="background-color: #FFB000; font-weight:bold; font-size:12px;">Complete Order</button>
                         </p>
                         <p hidden id="order-duration">${order.total_expected_duration}</p>
                         <h1 style="text-align: center; display: block;"><svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="35" height="40" fill="currentColor" class="bi bi-alarm" viewBox="0 0 16 16">
