@@ -31,6 +31,9 @@ def displayKitchenZone(request, zoneID):
     #Retrieve the assigned orders  
     orders = Order.objects.filter(assigned_zone=zone, status="Assigned")
     
+    #Count the number of active orders
+    active_orders =  orders.count()
+    
     # Calculate the total price for each order
     for order in orders:
         total_price = sum(float(item.price.replace('£', '').strip()) for item in order.order_items.all())
@@ -39,7 +42,8 @@ def displayKitchenZone(request, zoneID):
     context = {
             "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
             'zone': zone,
-            "orders": orders
+            "orders": orders,
+            'active_orders': active_orders
         }
     # Pass the kitchen zone and its orders to the template
     return render(request, 'kitchen_zone_detail.html', context)
@@ -47,7 +51,7 @@ def displayKitchenZone(request, zoneID):
 # Dynamic Load Balancing Scheduling logic
 def assign_order_to_zone(order):
     zones = list(KitchenZone.objects.all().order_by('zoneId'))  # Get zones in order
-    total_orders = Order.objects.filter(status='Assigned').count() # Count active & pending orders
+    total_orders = Order.objects.filter(status='Assigned').count() # Count active orders
     
     # Determine the next zone in sequence (1 → 2 → 3 → Repeat)
     next_zone_index = total_orders % len(zones)  # Cycles through index 0, 1, 2 (Zone 1, 2, 3)

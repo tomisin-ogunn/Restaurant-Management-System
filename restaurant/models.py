@@ -241,7 +241,7 @@ class Order(models.Model):
     basket = models.ForeignKey(Basket, on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
     customer_name = models.CharField(max_length=60)
-    status = models.CharField(max_length=50, choices=[('Pending', 'Pending'), ('Delayed', 'Delayed'), ('Assigned', 'Assigned'), ('Ready', 'Ready'), ('Delivered', 'Delivered')],
+    status = models.CharField(max_length=50, choices=[('Pending', 'Pending'), ('Assigned', 'Assigned'), ('Ready', 'Ready'), ('Delivered', 'Delivered')],
             default='Pending')
     order_items = models.ManyToManyField(OrderItem, related_name='orders')
     assigned_zone = models.ForeignKey(KitchenZone, on_delete=models.SET_NULL, null=True, blank=True)
