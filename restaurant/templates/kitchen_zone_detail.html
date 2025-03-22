@@ -43,13 +43,17 @@
             </a>
             
             <!-- Pending Orders Button-->
-            <a>
-                <span>
+            <a href="{% url 'kitchen_zone_pending' zoneID=zone.zoneId %}">
+                <span class="icon-container">
                     <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-stopwatch" viewBox="0 0 16 16">
                         <path d="M8.5 5.6a.5.5 0 1 0-1 0v2.9h-3a.5.5 0 0 0 0 1H8a.5.5 0 0 0 .5-.5z"/>
                         <path d="M6.5 1A.5.5 0 0 1 7 .5h2a.5.5 0 0 1 0 1v.57c1.36.196 2.594.78 3.584 1.64l.012-.013.354-.354-.354-.353a.5.5 0 0 1 .707-.708l1.414 1.415a.5.5 0 1 1-.707.707l-.353-.354-.354.354-.013.012A7 7 0 1 1 7 2.071V1.5a.5.5 0 0 1-.5-.5M8 3a6 6 0 1 0 .001 12A6 6 0 0 0 8 3"/>
-                      </svg>
-                </span> &nbsp; Pending Orders
+                    </svg>
+                        <!-- Badge with order item count -->
+                        {% if pending_orders_count != 0 %}
+                            <span class="badge-not-kitchen">{{ pending_orders_count }}</span>
+                        {% endif %}<span class="ms-3">Pending Orders</span>
+                </span>
             </a>
 
             <!-- Stock Level Button -->
@@ -66,8 +70,6 @@
 
         <br><br>
 
-        {% comment %} <p style="margin: 0 auto;">{{ active_orders }}</p> {% endcomment %}
-
         <!-- Kitchen Zone Assigned Orders -->
         <div class="restaurant-orders" >
 
@@ -76,7 +78,7 @@
             
                         <div class="KD-orderitem-box">
                             <p class="order-title">Order: #{{ order.orderId }} 
-                                &nbsp;&nbsp;&nbsp;&nbsp;<button class="mb-1 btn" 
+                                &nbsp;&nbsp;&nbsp;&nbsp;<button onclick="completeOrder('{{ order.orderId }}', '{{ zone.zoneId }}')" class="mb-1 btn" 
                                 style="background-color: #FFB000; font-weight:bold; font-size:12px;">Complete Order</button>
                             </p> <!-- Title -->
 
@@ -85,7 +87,7 @@
                             <h1 style="text-align: center; display: block;"><svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="35" height="40" fill="currentColor" class="bi bi-alarm" viewBox="0 0 16 16">
                                 <path d="M8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9z"/>
                                 <path d="M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1zm1.038 3.018a6 6 0 0 1 .924 0 6 6 0 1 1-.924 0M0 3.5c0 .753.333 1.429.86 1.887A8.04 8.04 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5M13.5 1c-.753 0-1.429.333-1.887.86a8.04 8.04 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1"/>
-                              </svg> Timer <span style="font-weight:bold; display: inline-block; width: 100%; background-color:rgb(55, 193, 55); text-align:center; color:white" id="order-timer">24:59</span> </h1>
+                              </svg> Timer <span style="font-weight:bold; display: inline-block; width: 100%; background-color:rgb(55, 193, 55); text-align:center; color:white" id="order-timer-{{ order.orderId }}">{{ order.total_expected_duration }}:00</span> </h1>
                             <br>
 
                             <div class="KD-order-details">
@@ -151,46 +153,67 @@
                         
                         <!-- Timer Functionality -->
                         <script>
-                            {% comment %} // Start timer for each order dynamically
-                            document.addEventListener("DOMContentLoaded", function() {
-                                var orderDuration = {{ order.total_expected_duration }}; // Get the expected duration in minutes
-                                //var orderId = {{ order.orderId }}; // Unique ID for each order
-                                var timeField = document.getElementById("order-timer");
+                            // Start timer for each order dynamically
 
-                                //startOrderTimer(orderDuration, orderId); // Start the timer for this specific order
-                                startOrderTimer(orderDuration)
-                                
-                            }); {% endcomment %}
+                            document.addEventListener("DOMContentLoaded", function () {
+                                // Find all order timers in the initial HTML and start timers
+                                document.querySelectorAll("[id^='order-timer-']").forEach((timerElement) => {
+                                    var orderId = timerElement.id.replace("order-timer-", ""); // Extract order ID
+                                    var durationText = timerElement.innerText.split(":")[0]; // Get minutes
+                                    var duration = parseInt(durationText, 10); // Convert to integer
+                            
+                                    // Start the timer
+                                    if (!isNaN(duration)) {
+                                        startOrderTimer(orderId, duration);
+                                    }
+                                });
+                            });
 
-                            {% comment %} // Function to start the timer
-                            function startOrderTimer(durationInMinutes) {
+                            // Store active timers globally
+                            var orderTimers = {};
+
+                            function startOrderTimer(orderId, durationInMinutes) {
+                                // Prevent restarting if timer is already running
+                                if (orderTimers[orderId]) return;
+
                                 var duration = durationInMinutes * 60; // Convert minutes to seconds
-                                var timerInterval = setInterval(function() {
-                                    var minutes = Math.floor(duration / 60); // Calculate minutes
-                                    var seconds = duration % 60; // Calculate seconds
+                                var endTime = Date.now() + duration * 1000; // Store end time in milliseconds
 
-                                    // Format minutes and seconds as MM:SS
+                                function updateTimer() {
+                                    var remainingTime = Math.max(0, Math.floor((endTime - Date.now()) / 1000)); // Ensure non-negative
+                                    var minutes = Math.floor(remainingTime / 60);
+                                    var seconds = remainingTime % 60;
                                     var timeFormatted = `${padZero(minutes)}:${padZero(seconds)}`;
-                                    
-                                    // Update the order-time span (specific to this order)
-                                    //document.getElementById('order-timer-' + orderId).innerText = timeFormatted;
-                                    document.getElementById('order-timer').innerText = timeFormatted;
 
-                                    // If time runs out, stop the timer
-                                    if (duration <= 0) {
-                                        clearInterval(timerInterval);
-                                        console.log("Time's up for Order #" + orderId);
+                                    var timerElement = document.getElementById('order-timer-' + orderId);
+                                    if (timerElement) {
+                                        timerElement.innerText = timeFormatted;
                                     }
 
-                                    // Decrease the duration by one second
-                                    duration--;
-                                }, 1000); // Update every second (1000 ms)
+                                    // Check if remaining time is 5 minutes (300 seconds) or less
+                                    if (remainingTime <= 300) {
+                                        timerElement.style.backgroundColor = "yellow"; // Change background to yellow
+                                        timerElement.style.color = "black"; // Ensure text remains readable
+                                    }
 
-                                // Function to add a leading zero for single-digit minutes/seconds
+
+                                    if (remainingTime <= 0) {
+                                        clearInterval(orderTimers[orderId]); // Stop timer
+                                        timerElement.style.backgroundColor = "red"; // Change background to yellow
+                                        timerElement.style.color = "white";
+                                        delete orderTimers[orderId]; // Remove from tracking
+                                       
+                                    }
+                                }
+
+                                // Start interval timer
+                                orderTimers[orderId] = setInterval(updateTimer, 1000);
+                                updateTimer(); // Run immediately to avoid 1s delay
+
                                 function padZero(num) {
                                     return num < 10 ? '0' + num : num;
                                 }
-                            } {% endcomment %}
+                            }
 
                         </script>
 
@@ -245,18 +268,31 @@
                 }
         
                 orders.forEach(function(order) {
+                    var timerElement = document.getElementById(`order-timer-${order.orderId}`);
+
+                    // If the timer already exists, DO NOT reset it
+                    if (!orderTimers[order.orderId] && timerElement) {
+                        var timeParts = timerElement.textContent.split(":");
+                        var remainingMinutes = parseInt(timeParts[0], 10);
+                        var remainingSeconds = parseInt(timeParts[1], 10);
+    
+                        // Convert remaining time back to minutes and start the timer
+                        startOrderTimer(remainingMinutes + remainingSeconds / 60, order.orderId);
+                    }
+
+
                     var orderBox = document.createElement('div');
                     orderBox.classList.add('KD-orderitem-box');
         
                     var orderHtml = `
                         <p class="order-title">Order: #${order.orderId} 
-                            &nbsp;&nbsp;&nbsp;&nbsp;<button class="mb-1 btn" style="background-color: #FFB000; font-weight:bold; font-size:12px;">Complete Order</button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<button onclick="completeOrder(${order.orderId}, ${order.assigned_zone})" class="mb-1 btn" style="background-color: #FFB000; font-weight:bold; font-size:12px;">Complete Order</button>
                         </p>
                         <p hidden id="order-duration">${order.total_expected_duration}</p>
                         <h1 style="text-align: center; display: block;"><svg class="mb-2" xmlns="http://www.w3.org/2000/svg" width="35" height="40" fill="currentColor" class="bi bi-alarm" viewBox="0 0 16 16">
                                 <path d="M8.5 5.5a.5.5 0 0 0-1 0v3.362l-1.429 2.38a.5.5 0 1 0 .858.515l1.5-2.5A.5.5 0 0 0 8.5 9z"/>
                                 <path d="M6.5 0a.5.5 0 0 0 0 1H7v1.07a7.001 7.001 0 0 0-3.273 12.474l-.602.602a.5.5 0 0 0 .707.708l.746-.746A6.97 6.97 0 0 0 8 16a6.97 6.97 0 0 0 3.422-.892l.746.746a.5.5 0 0 0 .707-.708l-.601-.602A7.001 7.001 0 0 0 9 2.07V1h.5a.5.5 0 0 0 0-1zm1.038 3.018a6 6 0 0 1 .924 0 6 6 0 1 1-.924 0M0 3.5c0 .753.333 1.429.86 1.887A8.04 8.04 0 0 1 4.387 1.86 2.5 2.5 0 0 0 0 3.5M13.5 1c-.753 0-1.429.333-1.887.86a8.04 8.04 0 0 1 3.527 3.527A2.5 2.5 0 0 0 13.5 1"/>
-                              </svg> Timer <span style="font-weight:bold; display: inline-block; width: 100%; background-color:rgb(55, 193, 55); text-align:center; color:white" id="order-timer">24:59</span> </h1>
+                              </svg> Timer <span id="order-timer-${order.orderId}"style="font-weight:bold; display: inline-block; width: 100%; background-color:rgb(55, 193, 55); text-align:center; color:white" id="order-timer"></span> </h1>
                         <br>
                         <div class="KD-order-details" style=" font-size: 14px;color: #555;overflow-y:auto;height:40vh;">
 
@@ -313,6 +349,11 @@
         
                     orderBox.innerHTML = orderHtml;
                     orderContainer.appendChild(orderBox);
+
+                    if (!orderTimers[order.orderId]) {
+                        startOrderTimer(order.orderId, order.total_expected_duration);
+                    }
+    
                 });
             }
         
@@ -366,6 +407,48 @@
                     setActive(activeOrdersButton); // Default to activeOrdersButton
                 }
             });
+
+            //Function which updates the status of the order to 'Ready'
+            function completeOrder(orderID, zoneID){
+                $.ajax({
+                    url: `/restaurant/completeOrder/${orderID}/${zoneID}/`,
+                    type: 'POST',
+                    headers: { "X-CSRFToken": getCSRFToken() },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Completed!',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload();
+                            }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Order Status not updated!',
+                            text: 'There was an issue updating the order status.'
+                        });
+
+                    }
+                });
+            }
+
+            // Function to get CSRF token from cookies
+            function getCSRFToken() {
+                let cookieValue = null;
+                let cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.startsWith('csrftoken=')) {
+                        cookieValue = cookie.substring('csrftoken='.length, cookie.length);
+                        break;
+                    }
+                }
+                return cookieValue;
+            }
+
 
         </script>
 

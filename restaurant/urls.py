@@ -25,6 +25,8 @@ import debug_toolbar
 
 #Url patterns for kitchen actions
 urlpatterns = [
-   path('kitchen-zone/<int:zoneID>/', kitchen_views.displayKitchenZone, name='kitchen_zone_detail'),
-     path('get-kitchen-orders/<int:zoneID>/', kitchen_views.get_kitchen_orders, name='get_kitchen_orders'),  
+    path('kitchen-zone/<int:zoneID>/', kitchen_views.displayKitchenZone, name='kitchen_zone_detail'),
+    path('get-kitchen-orders/<int:zoneID>/', kitchen_views.get_kitchen_orders, name='get_kitchen_orders'),  
+    path('kitchen-zone-pending/<int:zoneID>/', kitchen_views.displayKitchenPendingOrders, name='kitchen_zone_pending'),
+    path('completeOrder/<str:orderID>/<int:zoneID>/', kitchen_views.completeOrder, name="completeOrder")
 ]
