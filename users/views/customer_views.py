@@ -11,6 +11,7 @@ from django.contrib.auth import logout
 from django.utils import timezone
 from users.models import Manager, Waiter, Customer
 from restaurant.models import Table, Reservation, Food, Drink, Favourite, Basket, OrderItem, Rating, Order
+from restaurant.views.kitchen_views import assign_order_to_zone
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from django.middleware.csrf import get_token
@@ -974,7 +975,8 @@ def generateOrder(request):
 
     order.orderId = Order.generateOrderID()
     
-    order.save()
+    #Schedule order to kitchen zone for preparation
+    assign_order_to_zone(order)
     
     # Increment the notification count for the waiter in the session
     if waiter:
@@ -1030,7 +1032,8 @@ def generateOrderCustomer(request):
         
         order.orderId = Order.generateOrderID()
         
-        order.save()
+        #Schedule order to kitchen zone for preparation
+        assign_order_to_zone(order)
         
         # Fetch the waiter linked to the table
         waiter = table.waiter if table else None 

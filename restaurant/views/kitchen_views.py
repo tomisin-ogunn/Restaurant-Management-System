@@ -57,17 +57,15 @@ def displayKitchenZone(request, zoneID):
 
 # Dynamic Load Balancing Scheduling logic
 def assign_order_to_zone(order):
-    # Get all zones ordered by ID
+    # Get all zones ordered by ID (ascending)
     zones = list(KitchenZone.objects.all().order_by('zoneId'))
     total_orders = Order.objects.filter(status='Assigned').count()
 
     # If no active orders in any zone, assign the first 3 orders sequentially
     if total_orders < 3:
-        # Assign first three orders to zones 1, 2, and 3 in sequence
         next_zone_index = total_orders % len(zones)
         selected_zone = zones[next_zone_index]
 
-        # Assign the order to this zone
         order.assigned_zone = selected_zone
         order.status = 'Assigned'
         selected_zone.active_orders += 1
@@ -79,14 +77,10 @@ def assign_order_to_zone(order):
     for zone in zones:
         active_orders = Order.objects.filter(assigned_zone=zone, status='Assigned')
 
-         # Handle NoneType for placed_at and convert to aware datetime
-        if order.placed_at:
-            placed_at_aware = (
-                timezone.make_aware(order.placed_at) if timezone.is_naive(order.placed_at) else order.placed_at
-            )
-        else:
-            placed_at_aware = timezone.now()  # Default to current time if placed_at is None
-
+        # Handle NoneType for placed_at and convert to aware datetime
+        placed_at_aware = (
+            timezone.make_aware(order.placed_at) if order.placed_at and timezone.is_naive(order.placed_at) else order.placed_at or timezone.now()
+        )
 
         # Calculate the earliest completion time (min of all end times)
         earliest_completion_time = min(
@@ -106,16 +100,17 @@ def assign_order_to_zone(order):
         zone.total_workload = total_workload
         zone.active_orders_count = active_orders.count()
 
-    # Find the least busy zone dynamically
+    # Find the least busy zone dynamically, prioritizing the lowest active orders count
     least_busy_zone = min(
         zones,
-        key=lambda z: (z.active_orders_count, z.earliest_completion_time, z.total_workload)
+        key=lambda z: (z.active_orders_count, z.earliest_completion_time, z.total_workload, z.zoneId)
     )
 
     # Assign the order to the least busy zone
     order.assigned_zone = least_busy_zone
     order.status = 'Assigned' if least_busy_zone.active_orders_count < 3 else 'Pending'
-    least_busy_zone.active_orders += 1 if order.status == 'Assigned' else 0
+    if order.status == 'Assigned':
+        least_busy_zone.active_orders += 1
     least_busy_zone.save()
     order.save()
 
@@ -200,6 +195,7 @@ def completeOrder(request, orderID, zoneID):
         # Fetch the waiter linked to the table
         waiter = table.waiter if table else None  
 
+        print(f"{waiter}")
         # Increment the notification count for the waiter in the session
         if waiter:
             waiter_id = waiter.waiterId  # Ensure we have the waiter's ID
