@@ -268,18 +268,6 @@
                 }
         
                 orders.forEach(function(order) {
-                    var timerElement = document.getElementById(`order-timer-${order.orderId}`);
-
-                    // If the timer already exists, DO NOT reset it
-                    if (!orderTimers[order.orderId] && timerElement) {
-                        var timeParts = timerElement.textContent.split(":");
-                        var remainingMinutes = parseInt(timeParts[0], 10);
-                        var remainingSeconds = parseInt(timeParts[1], 10);
-    
-                        // Convert remaining time back to minutes and start the timer
-                        startOrderTimer(remainingMinutes + remainingSeconds / 60, order.orderId);
-                    }
-
 
                     var orderBox = document.createElement('div');
                     orderBox.classList.add('KD-orderitem-box');

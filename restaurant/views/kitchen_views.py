@@ -57,50 +57,66 @@ def displayKitchenZone(request, zoneID):
 
 # Dynamic Load Balancing Scheduling logic
 def assign_order_to_zone(order):
-    zones = list(KitchenZone.objects.all().order_by('zoneId'))  # Get zones in order
-    total_orders = Order.objects.filter(status='Assigned').count() # Count active orders
-    
-    # Determine the next zone in sequence (1 → 2 → 3 → Repeat)
-    next_zone_index = total_orders % len(zones)  # Cycles through index 0, 1, 2 (Zone 1, 2, 3)
+    # Get all zones ordered by ID
+    zones = list(KitchenZone.objects.all().order_by('zoneId'))
+    total_orders = Order.objects.filter(status='Assigned').count()
 
-    # Get the next zone in round-robin sequence
-    selected_zone = zones[next_zone_index]
+    # If no active orders in any zone, assign the first 3 orders sequentially
+    if total_orders < 3:
+        # Assign first three orders to zones 1, 2, and 3 in sequence
+        next_zone_index = total_orders % len(zones)
+        selected_zone = zones[next_zone_index]
 
-    if selected_zone.active_orders < 3:
-        # Assign order to this zone
+        # Assign the order to this zone
         order.assigned_zone = selected_zone
         order.status = 'Assigned'
         selected_zone.active_orders += 1
-        # selected_zone.total_remaining_time += order.total_expected_duration
         selected_zone.save()
-    else:
-        # If all zones are full, find the least busy one for pending queue
-        for zone in zones:
-        # Get all active orders for the current zone
-                active_orders = Order.objects.filter(assigned_zone=zone, status='Assigned')
-                
-                # Calculate the earliest completion time (min of all end times)
-                earliest_completion_time = min(
-                    (order.placed_at + timedelta(minutes=int(order.total_expected_duration)) for order in active_orders if order.total_expected_duration),
-                    default=datetime.now()
-                )
-                
-                # Calculate the total workload (sum of all durations)
-                total_workload = sum(int(order.total_expected_duration) for order in active_orders if order.total_expected_duration.isdigit())
+        order.save()
+        return
 
-                # Store earliest completion time and total workload as attributes for comparison
-                zone.earliest_completion_time = earliest_completion_time
-                zone.total_workload = total_workload
-                zone.save()
-                
-        # Find the least busy zone with the earliest completion time, then smallest workload, then fewest active orders
-        least_busy_zone = min(
-            zones,
-            key=lambda z: (z.earliest_completion_time, z.total_workload, z.active_orders)
+    # Calculate workload and earliest completion time for each zone dynamically
+    for zone in zones:
+        active_orders = Order.objects.filter(assigned_zone=zone, status='Assigned')
+
+         # Handle NoneType for placed_at and convert to aware datetime
+        if order.placed_at:
+            placed_at_aware = (
+                timezone.make_aware(order.placed_at) if timezone.is_naive(order.placed_at) else order.placed_at
+            )
+        else:
+            placed_at_aware = timezone.now()  # Default to current time if placed_at is None
+
+
+        # Calculate the earliest completion time (min of all end times)
+        earliest_completion_time = min(
+            (placed_at_aware + timedelta(minutes=int(active_order.total_expected_duration))
+             for active_order in active_orders if active_order.total_expected_duration),
+            default=timezone.now()
         )
-        order.assigned_zone = least_busy_zone
-        order.status = 'Pending'  # Mark as waiting
 
+        # Calculate the total workload (sum of all durations)
+        total_workload = sum(
+            int(active_order.total_expected_duration) for active_order in active_orders
+            if str(active_order.total_expected_duration).isdigit()
+        )
+
+        # Assign calculated values to the zone for comparison
+        zone.earliest_completion_time = earliest_completion_time
+        zone.total_workload = total_workload
+        zone.active_orders_count = active_orders.count()
+
+    # Find the least busy zone dynamically
+    least_busy_zone = min(
+        zones,
+        key=lambda z: (z.active_orders_count, z.earliest_completion_time, z.total_workload)
+    )
+
+    # Assign the order to the least busy zone
+    order.assigned_zone = least_busy_zone
+    order.status = 'Assigned' if least_busy_zone.active_orders_count < 3 else 'Pending'
+    least_busy_zone.active_orders += 1 if order.status == 'Assigned' else 0
+    least_busy_zone.save()
     order.save()
 
 #Function which dynamically updates orders for kitchen zones in real time
