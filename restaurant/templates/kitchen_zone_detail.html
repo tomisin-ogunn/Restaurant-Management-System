@@ -231,7 +231,8 @@
         <script>
             // Store active timers globally with their end times
             var orderTimers = {};
-            
+            var completedTimers = {}; // Tracks finished timers
+
             //Functions which dynamically fetches orders, to update kitchen display in real time
             function fetchOrders() {
                 var zoneID = "{{ zone.zoneId }}";  // Get the zone ID from Django context
@@ -383,53 +384,73 @@
                 });
             }
 
-            
-
+            // Start timer for each order dynamically
             function startOrderTimer(orderId, durationInMinutes) {
-                // Prevent restarting if timer is already running
-                if (orderTimers[orderId]) return;
-
-                var duration = durationInMinutes * 60; // Convert minutes to seconds
-                var endTime = Date.now() + duration * 1000; // Store end time in milliseconds
-                orderTimers[orderId] = endTime; // Track end time globally
-
-                    function updateTimer() {
-                        var remainingTime = Math.max(0, Math.floor((orderTimers[orderId] - Date.now()) / 1000)); // Non-negative
-                        var minutes = Math.floor(remainingTime / 60);
-                        var seconds = remainingTime % 60;
-                        var timeFormatted = `${padZero(minutes)}:${padZero(seconds)}`;
-
-                        var timerElement = document.getElementById('order-timer-' + orderId);
+                if (orderTimers[orderId] || completedTimers[orderId]) return; // Prevent restart
+            
+                var duration = durationInMinutes * 60; // Convert to seconds
+                var endTime = Date.now() + duration * 1000; // Store end time in ms
+            
+                function updateTimer() {
+                    var remainingTime = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+                    var minutes = Math.floor(remainingTime / 60);
+                    var seconds = remainingTime % 60;
+                    var timerElement = document.getElementById('order-timer-' + orderId);
+            
+                    if (timerElement) {
+                        timerElement.innerText = `${padZero(minutes)}:${padZero(seconds)}`;
+                    }
+            
+                    // Stop when time reaches zero
+                    if (remainingTime <= 0) {
+                        clearInterval(orderTimers[orderId]); // Stop timer
+                        delete orderTimers[orderId]; // Remove from active timers
+                        completedTimers[orderId] = true; // Mark as completed
+            
                         if (timerElement) {
-                            timerElement.innerText = timeFormatted;
+                            timerElement.style.backgroundColor = "red";
+                            timerElement.style.color = "white";
                         }
-
-                        // Change background color based on remaining time
-                        if (remainingTime <= 300) {
-                            timerElement.style.backgroundColor = "yellow"; // Warning (5 minutes or less)
+                        return;
+                    }
+            
+                    // Change background color based on remaining time
+                    if (remainingTime <= 300) {
+                        if (timerElement) {
+                            timerElement.style.backgroundColor = "yellow";
                             timerElement.style.color = "black";
                         }
-                        if (remainingTime <= 0) {
-                            clearInterval(orderTimers[orderId]); // Stop timer
-                            timerElement.style.backgroundColor = "red"; // Expired
-                            timerElement.style.color = "white";
-                            delete orderTimers[orderId]; // Remove from tracking
-                        }
                     }
-
-                    // Start interval timer
-                    setInterval(updateTimer, 1000);
-                    updateTimer(); // Run immediately
-
-                    function padZero(num) {
-                        return num < 10 ? '0' + num : num;
-                    }
+                }
+            
+                // Start interval timer
+                orderTimers[orderId] = setInterval(updateTimer, 1000);
+                updateTimer();
+            
+                function padZero(num) {
+                    return num < 10 ? '0' + num : num;
+                }
+            }
+        
+            function initializeTimers(order) {
+                var orderId = order.orderId;
+                var duration = parseInt(order.total_expected_duration, 10);
+            
+                if (isNaN(duration) || duration <= 0) {
+                    console.warn(`Invalid duration for order #${orderId}`);
+                    return;
+                }
+            
+                // Prevent restarting if order already completed
+                if (!orderTimers.hasOwnProperty(orderId) && !completedTimers[orderId]) {
+                    startOrderTimer(orderId, duration);
+                }
             }
 
             // Dynamically start timers when orders are fetched
             function initializeTimers(order) {
                 var orderId = order.orderId;
-                var duration = parseInt(order.total_expected_duration, 10); // Ensure the duration is an integer
+                var duration = parseInt(order.total_expected_duration, 10);
             
                 // Check if duration is valid before proceeding
                 if (isNaN(duration) || duration <= 0) {
@@ -442,10 +463,9 @@
                     startOrderTimer(orderId, duration);
                 }
             }
-        
             
             // Call the function to fetch orders on page load
-            setInterval(fetchOrders, 5000);
+            setInterval(fetchOrders, 2000);
             //setInterval(reloadOrders, 1000);
 
         </script>
@@ -507,7 +527,7 @@
                             title: 'Order Completed!',
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.reload();
+                                return false;
                             }
                         });
                     },
