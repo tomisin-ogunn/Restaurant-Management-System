@@ -114,8 +114,8 @@ admin.site.register(Order, OrderAdmin)
 #Custom Admin Class for the Kitchen Zone model
 class KitchenZoneAdmin(admin.ModelAdmin):
     #Customize fields displayed in the admin list view
-    list_display = ('zoneId', 'active_orders', 'total_remaining_time')
-    search_fields = ('zoneId', 'active_orders', 'total_remaining_time')
+    list_display = ('zoneId', 'active_orders')
+    search_fields = ('zoneId', 'active_orders')
 
 #Register the Kitchen Model with the custom admin class
 admin.site.register(KitchenZone, KitchenZoneAdmin)

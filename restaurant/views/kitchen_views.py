@@ -117,8 +117,8 @@ def assign_order_to_zone(order):
 #Function which dynamically updates orders for kitchen zones in real time
 def get_kitchen_orders(request, zoneID):
     zone = get_object_or_404(KitchenZone, zoneId=zoneID)
-    orders = Order.objects.filter(assigned_zone=zone, status="Assigned")
-
+    orders = Order.objects.filter(assigned_zone=zone, status="Assigned")    
+    
     # Prepare the orders data for JSON response
     orders_data = []
     for order in orders:
@@ -195,7 +195,6 @@ def completeOrder(request, orderID, zoneID):
         # Fetch the waiter linked to the table
         waiter = table.waiter if table else None  
 
-        print(f"{waiter}")
         # Increment the notification count for the waiter in the session
         if waiter:
             waiter_id = waiter.waiterId  # Ensure we have the waiter's ID
@@ -226,7 +225,16 @@ def completeOrder(request, orderID, zoneID):
     
     return JsonResponse({"success": True, "message": "Order status updated!."})
 
-
+#Function to get the active order count per zone
+def get_active_orders_count(request, zoneID):
+    #Obtain the kitchen zone
+    zone = get_object_or_404(KitchenZone, zoneId=zoneID)
+    
+    orders = Order.objects.filter(assigned_zone=zone, status="Assigned")
+    
+    #Count the number of active orders
+    active_orders =  orders.count()
+    return JsonResponse({'active_orders': active_orders})
 
 
 

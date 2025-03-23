@@ -221,11 +221,10 @@ class Rating(models.Model):
 class KitchenZone(models.Model):
     zoneId = models.AutoField(primary_key=True)
     active_orders = models.PositiveIntegerField(default=0)
-    total_remaining_time = models.PositiveBigIntegerField(default=0)
 
     #Displays table view of model in Django Admin
     def __str__(self):
-        return f"Zone {self.zoneId} - Active Orders:{self.active_orders}, Remaining_Cooking_Time: {self.total_remaining_time}"
+        return f"Zone {self.zoneId} - Active Orders:{self.active_orders}"
     
     @property
     def is_overloaded(self):

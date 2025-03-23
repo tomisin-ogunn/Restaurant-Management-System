@@ -152,7 +152,7 @@
                         </div>
                         
                         <!-- Timer Functionality -->
-                        <script>
+                        {% comment %} <script>
                             // Start timer for each order dynamically
 
                             document.addEventListener("DOMContentLoaded", function () {
@@ -213,9 +213,9 @@
                                 function padZero(num) {
                                     return num < 10 ? '0' + num : num;
                                 }
-                            }
+                            } 
 
-                        </script>
+                        </script> {% endcomment %}
 
                 {% endfor %}
 
@@ -229,7 +229,9 @@
 
         <!-- Real Time JavaScript Functionality-->
         <script>
-
+            // Store active timers globally with their end times
+            var orderTimers = {};
+            
             //Functions which dynamically fetches orders, to update kitchen display in real time
             function fetchOrders() {
                 var zoneID = "{{ zone.zoneId }}";  // Get the zone ID from Django context
@@ -245,6 +247,46 @@
                     }
                 });
             }
+
+            //Function to reload page when active order count starts from 0 to 1
+            function reloadOrders(){
+                // Get the current active order count from the template
+                var activeOrders = parseInt("{{ active_orders }}", 10);
+                var zoneID = "{{ zone.zoneId }}";
+
+                // Check if the active order count has increased from 0 to 1
+                if (activeOrders === 0) {
+                    // Make an AJAX call to fetch the current active order count
+                    $.ajax({
+                        url: `/restaurant/get-active-orders-count/${zoneID}/`, 
+                        type: 'GET',
+                        success: function(response) {
+                            var currentActiveOrders = parseInt(response.active_orders, 10);
+
+                            console.log(currentActiveOrders);
+                            // If the count has changed from 0 to 1, reload the page
+                            if (currentActiveOrders == 1) {
+                                window.location.reload();
+                            }
+                        },
+                        error: function(error) {
+                            console.log('Error fetching active order count:', error);
+                        }
+                    });
+                }
+            }
+            
+            // Find all order timers in the initial HTML and start timers
+            document.querySelectorAll("[id^='order-timer-']").forEach((timerElement) => {
+                var orderId = timerElement.id.replace("order-timer-", ""); // Extract order ID
+                var durationText = timerElement.innerText.split(":")[0]; // Get minutes
+                var duration = parseInt(durationText, 10); // Convert to integer
+
+                // Start the timer
+                if (!isNaN(duration)) {
+                    startOrderTimer(orderId, duration);
+                }
+            });
 
             //Function which formats date-time value
             function formatDateTime(isoString) {
@@ -268,7 +310,7 @@
                 }
         
                 orders.forEach(function(order) {
-
+                    initializeTimers(order);
                     var orderBox = document.createElement('div');
                     orderBox.classList.add('KD-orderitem-box');
         
@@ -338,15 +380,73 @@
                     orderBox.innerHTML = orderHtml;
                     orderContainer.appendChild(orderBox);
 
-                    if (!orderTimers[order.orderId]) {
-                        startOrderTimer(order.orderId, order.total_expected_duration);
-                    }
-    
                 });
             }
+
+            
+
+            function startOrderTimer(orderId, durationInMinutes) {
+                // Prevent restarting if timer is already running
+                if (orderTimers[orderId]) return;
+
+                var duration = durationInMinutes * 60; // Convert minutes to seconds
+                var endTime = Date.now() + duration * 1000; // Store end time in milliseconds
+                orderTimers[orderId] = endTime; // Track end time globally
+
+                    function updateTimer() {
+                        var remainingTime = Math.max(0, Math.floor((orderTimers[orderId] - Date.now()) / 1000)); // Non-negative
+                        var minutes = Math.floor(remainingTime / 60);
+                        var seconds = remainingTime % 60;
+                        var timeFormatted = `${padZero(minutes)}:${padZero(seconds)}`;
+
+                        var timerElement = document.getElementById('order-timer-' + orderId);
+                        if (timerElement) {
+                            timerElement.innerText = timeFormatted;
+                        }
+
+                        // Change background color based on remaining time
+                        if (remainingTime <= 300) {
+                            timerElement.style.backgroundColor = "yellow"; // Warning (5 minutes or less)
+                            timerElement.style.color = "black";
+                        }
+                        if (remainingTime <= 0) {
+                            clearInterval(orderTimers[orderId]); // Stop timer
+                            timerElement.style.backgroundColor = "red"; // Expired
+                            timerElement.style.color = "white";
+                            delete orderTimers[orderId]; // Remove from tracking
+                        }
+                    }
+
+                    // Start interval timer
+                    setInterval(updateTimer, 1000);
+                    updateTimer(); // Run immediately
+
+                    function padZero(num) {
+                        return num < 10 ? '0' + num : num;
+                    }
+            }
+
+            // Dynamically start timers when orders are fetched
+            function initializeTimers(order) {
+                var orderId = order.orderId;
+                var duration = parseInt(order.total_expected_duration, 10); // Ensure the duration is an integer
+            
+                // Check if duration is valid before proceeding
+                if (isNaN(duration) || duration <= 0) {
+                    console.warn(`Invalid duration for order #${orderId}`);
+                    return;
+                }
+            
+                // Check if timer already exists for this order, otherwise start it
+                if (!orderTimers.hasOwnProperty(orderId)) {
+                    startOrderTimer(orderId, duration);
+                }
+            }
         
+            
             // Call the function to fetch orders on page load
             setInterval(fetchOrders, 5000);
+            //setInterval(reloadOrders, 1000);
 
         </script>
 
