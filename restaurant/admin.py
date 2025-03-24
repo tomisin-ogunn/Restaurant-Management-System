@@ -117,9 +117,8 @@ class KitchenZoneAdmin(admin.ModelAdmin):
     list_display = ('zoneId', 'active_orders')
     search_fields = ('zoneId', 'active_orders')
 
-#Register the Kitchen Model with the custom admin class
+#Register the Kitchen Zone Model with the custom admin class
 admin.site.register(KitchenZone, KitchenZoneAdmin)
-
 
 
 

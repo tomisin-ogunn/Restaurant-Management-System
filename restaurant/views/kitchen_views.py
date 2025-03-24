@@ -50,7 +50,7 @@ def displayKitchenZone(request, zoneID):
             'zone': zone,
             "orders": orders,
             'active_orders': active_orders,
-            'pending_orders_count': pending_orders_count
+            'pending_orders_count': pending_orders_count,
         }
     # Pass the kitchen zone and its orders to the template
     return render(request, 'kitchen_zone_detail.html', context)
@@ -235,8 +235,6 @@ def get_active_orders_count(request, zoneID):
     #Count the number of active orders
     active_orders =  orders.count()
     return JsonResponse({'active_orders': active_orders})
-
-
 
 
 

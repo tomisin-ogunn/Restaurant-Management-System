@@ -23,6 +23,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 import debug_toolbar
 
+
 urlpatterns = [
     #Route for user views (manager) authentication functionalities
     path('manager-login/', manager_views.display_managerLogin, name="manager-login"),
@@ -32,6 +33,11 @@ urlpatterns = [
     path('manager_email_verifier', manager_views.managerEmail_verifier, name='manager_email_verifier'),
     path('manager-update-password', manager_views.update_ManagerPassword, name="manager-update-password"),
    
+]
+
+#Url patterns for manager actions
+urlpatterns += [
+    path('manager-customer-feedback/', manager_views.displayCustomerFeedback, name="manager-customer-feedback"),
 ]
 
 #Url Patterns for waiter management functionalities for managers

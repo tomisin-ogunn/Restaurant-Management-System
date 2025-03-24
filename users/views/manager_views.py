@@ -11,7 +11,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.utils import timezone
 from users.models import Manager, Waiter
-from restaurant.models import Table, Reservation, Food, Drink
+from restaurant.models import Table, Reservation, Food, Drink, Rating
 from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from datetime import datetime
@@ -834,7 +834,29 @@ def updateDrinkItem(request):
 
     return render(request, "managers/menu_items.html", context)
 
-
+#Function to display the customer rating/feedback page
+def displayCustomerFeedback(request):
+    manager_id = request.session.get("manager_id")  # Get manager_id from session
+    if manager_id:
+        # Retrieve manager details if authenticated
+        try:
+            manager = Manager.objects.get(managerId=manager_id)
+            
+            customer_ratings = Rating.objects.all()
+            context = {
+                "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
+                "manager": manager,
+                "ratings": customer_ratings
+            }
+            return render(request, "managers/customer_ratings.html", context)
+        except Manager.DoesNotExist:
+            # If manager not found in the database, clear the session and redirect to login
+            messages.error(request, "Manager not found. Please log in again.")
+            return redirect("manager-login")
+    else:
+        # If no session exists, redirect to login page
+        messages.error(request, "You must be logged in to view this page.")
+        return redirect("manager-login")
 
 
 

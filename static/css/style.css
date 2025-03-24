@@ -788,7 +788,39 @@ input[type="radio"]:hover {
 }
 
 
+/* Customer Feedback ~ Manager Interface Styling */
+.customer-ratings {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+    gap: 30px; /* Spacing between orders */
+    margin: 0 auto;
+    padding-left: 200px;
+}
 
+.CR-orderitem-box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    width:16vw;
+    height:40vh;
+}
+
+.CR-order-title {
+    font-weight: bold;
+    text-align: center;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #ddd; /* Separator line */
+    margin-bottom: 10px;
+}
+
+.CR-order-details {
+    font-size: 14px;
+    color: #555;
+    overflow-y:auto;
+    height:25vh;
+}
 
 
 

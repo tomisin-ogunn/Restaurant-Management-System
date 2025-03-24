@@ -286,6 +286,3 @@ class Order(models.Model):
 
 
 
-
-
-
