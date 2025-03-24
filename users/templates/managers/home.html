@@ -98,6 +98,40 @@ Restaurant Manager Home Page
             
         </div>
 
+        <br><br>
+
+        <!-- Metrics Div -->
+        <div class="order-metrics">
+            <canvas id="salesChart"></canvas>
+
+            <!-- -->
+            <script>
+                var ctx = document.getElementById('salesChart').getContext('2d');
+                var salesChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: {{ dates|safe }}, // Days (YYYY-MM-DD)
+                        datasets: [{
+                            label: 'Total Order Sales (£) per Week',
+                            data: {{ sales|safe }}, // Sales data
+                            borderColor: 'blue',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: { title: { display: true, text: 'Date' }},
+                            y: { title: { display: true, text: 'Total Sales (£)' }}
+                        }
+                    }
+                });
+            </script>
+           
+
+        </div>
+
+
     {% endblock %}
 
     <!-- Dynamic JavaScript Functionality -->

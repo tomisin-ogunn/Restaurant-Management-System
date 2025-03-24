@@ -11,9 +11,11 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.utils import timezone
 from users.models import Manager, Waiter
-from restaurant.models import Table, Reservation, Food, Drink, Rating
+from restaurant.models import Table, Reservation, Food, Drink, Rating, Order
+from collections import defaultdict
 from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
+from django.utils.timezone import now, timedelta
 from datetime import datetime
 import string
 import secrets
@@ -77,9 +79,36 @@ def displayManagerHome(request):
         # Retrieve manager details if authenticated
         try:
             manager = Manager.objects.get(managerId=manager_id)
+            
+            #Retrieve all orders for metrics display
+            orders = Order.objects.all()
+            
+            # Get orders assigned to the zone and filter only "Assigned" ones from the last 7 days
+            start_date = now() - timedelta(days=6)  # Last 7 days including today
+            orders = Order.objects.filter(placed_at__date__gte=start_date.date())
+
+            # Aggregate total sales per day
+            daily_sales = defaultdict(float)
+
+            for order in orders:
+                order_date = order.placed_at.date().strftime('%Y-%m-%d')  # Convert to date string (YYYY-MM-DD)
+
+                # Calculate total price for the order
+                total_price = sum(float(item.price.replace('£', '').strip()) for item in order.order_items.all())
+
+                # Add to daily total
+                daily_sales[order_date] += round(total_price, 2)
+
+            # Ensures all last 7 days appear in chart
+            date_list = [(now() - timedelta(days=i)).date().strftime('%Y-%m-%d') for i in range(6, -1, -1)]
+            sales_data = [daily_sales[date] for date in date_list]  # Get sales for each date
+
+                        
             context = {
                 "media_url": settings.MEDIA_URL,  # Passing MEDIA_URL to the template
                 "manager": manager,
+                "sales": sales_data,
+                "dates": date_list
             }
             return render(request, "managers/home.html", context)
         except Manager.DoesNotExist:
