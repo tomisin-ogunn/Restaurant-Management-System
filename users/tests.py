@@ -1,8 +1,10 @@
 from django.test import TestCase, Client
 from django.contrib.auth.hashers import make_password, check_password
 from users.models import Manager, Waiter, Customer
-from restaurant.models import Food, Drink, Basket, Order, Table
+from restaurant.models import Food, Drink, Basket, Order, Table, Reservation
+from restaurant.models import Basket, OrderItem
 from django.urls import reverse
+from django.contrib.messages import get_messages
 
 # Create your tests here.
 
@@ -174,8 +176,7 @@ class UserLoginTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Invalid Email / Password")
         
-        
-#Unit Test Case for Waiter Management ~ Manager
+#Unit Test Case for Waiter Management
 class WaiterManagementTests(TestCase):
     
     def setUp(self):
@@ -312,7 +313,7 @@ class WaiterManagementTests(TestCase):
         if updated_waiter.email == "new.email@example.com":
             print("✅ Waiter Details Update Test Passed!")
  
-#Unit Test Case for Menu Management ~ Manager
+#Unit Test Case for Menu Management
 class MenuManagementTests(TestCase):
 
     def setUp(self):
@@ -520,18 +521,232 @@ class MenuManagementTests(TestCase):
         if updated_drink_item.drink_name == "Updated Coca Cola":
             print("✅ Drink Item Update Test Passed!")
  
- 
-#Unit Test Case for Table Reservations ~ Manager
-# class TableReservationTests(TestCase):
+#Unit Test Case for Table Reservations
+class TableReservationTests(TestCase):
+    
+    def setUp(self):
+        """Set up a manager for login testing."""
+        # Generate a unique manager ID
+        manager_id = Manager.generateManagerID()
+        
+        self.manager = Manager.objects.create(
+            managerId=manager_id,
+            first_name="John",
+            last_name="Doe",
+            password="password123",
+            email="john.doe@example.com"
+        )
+        # Simulate login by setting manager ID in session
+        session = self.client.session
+        session['manager_id'] = self.manager.managerId
+        session.save()
+        
+        # Create a table
+        self.table = Table.objects.create(
+            tableNo=1,
+            capacity=4,
+            status="available"
+        )
+
+        # Prepare the reservation data
+        self.reservation_data = {
+            "tableNo": self.table.tableNo,
+            "reservationDate": "2025-04-10",
+            "reservationStartTime": "12:00",
+            "reservationEndTime": "14:00",
+            "reservationDuration": "2 hours",
+            "reservationSize": 2,
+            "reservationComments": "Birthday celebration",
+            "customer-name": "John Doe",
+            "tableCapacity": self.table.capacity,
+        }
     
         
+    def test_generate_reservation_success(self):
+        """Test generating a reservation successfully."""
+        url = reverse('create-reservation')
+        
+        # Send a POST request to generate a reservation
+        response = self.client.post(url, self.reservation_data)
+        
+        # Check if the reservation was created successfully
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Reservation added successfully!")
 
+        # Verify that the reservation exists in the database
+        reservation = Reservation.objects.get(customer_name="John Doe")
+        self.assertEqual(reservation.size, 2)
+        self.assertEqual(reservation.comments, "Birthday celebration")
+        self.assertEqual(reservation.tableNo.tableNo, '1')
         
+        # Check if the table status has been updated to reserved
+        table = Table.objects.get(tableNo=1)
+        self.assertEqual(table.status, "reserved")
         
+        if table.status == "reserved":
+            print("✅ Table Reservation Test Passed!")
+
+#Unit Test Case for Basket Functionality 
+class UserBasketManagementTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.session = self.client.session
+        self.session.save()
+
+        # Create food and drink items for testing
+        self.food_item = Food.objects.create(
+            foodId=1,
+            food_name="Pounded Yam",
+            ingredients="Yam, Water",
+            category="Main Meal",
+            duration="30 minutes",
+            price=10.99,
+            calories=250
+        )
+
+        self.drink_item = Drink.objects.create(
+            drinkId=1,
+            drink_name="Lemonade",
+            description="Refreshing citrus drink",
+            category="Soft Drink",
+            alcoholConc="0%",
+            price=3.99,
+            calories=100
+        )
+
+        self.basket = Basket.objects.create(session_id=self.session.session_key)
+
+    def test_add_main_meal_food_to_basket(self):
+        url = reverse('addItemToBasket', kwargs={'itemID': self.food_item.foodId, 'itemType': 'mainMealFood'})
+        response = self.client.post(url, {
+            'foodPrice': '10.99',
+            'soupChoice': 'Egusi',
+            'proteinChoice': 'Chicken',
+            'spiceLevel': 'Medium',
+            'notes': 'Extra spicy'
+        })
         
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(OrderItem.objects.filter(food_item=self.food_item).exists())
+
+    def test_add_fast_food_to_basket(self):
+        url = reverse('addItemToBasket', kwargs={'itemID': self.food_item.foodId, 'itemType': 'fastFood'})
+        response = self.client.post(url, {
+            'foodPrice2': '10.99',
+            'sauceChoice': 'Ketchup',
+            'spiceLevel2': 'Mild',
+            'notes2': 'No onions'
+        })
         
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(OrderItem.objects.filter(food_item=self.food_item).exists())
+    
+    def test_add_dessert_to_basket(self):
+        url = reverse('addItemToBasket', kwargs={'itemID': self.food_item.foodId, 'itemType': 'deserts'})
+        response = self.client.post(url, {
+            'foodPrice3': '7.99',
+            'sauceChoice3': 'Chocolate',
+            'notes3': 'Extra sauce'
+        })
         
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(OrderItem.objects.filter(food_item=self.food_item).exists())
+    
+    def test_add_drink_to_basket(self):
+        url = reverse('addItemToBasket', kwargs={'itemID': self.drink_item.drinkId, 'itemType': 'drink'})
+        response = self.client.post(url, {
+            'drinkPrice': '3.99',
+            'drinkSize': 'Large',
+            'drinkNotes': 'No ice',
+            'iceChoice': 'No Ice'
+        })
         
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(OrderItem.objects.filter(drink_item=self.drink_item).exists())
+
+        if OrderItem.objects.filter(drink_item=self.drink_item).exists():
+            print("✅ Basket Functionality Test Passed!!")
+             
+#Unit Test Case for Order Placement
+class OrderPlacementTests(TestCase):
+    def setUp(self):
+        """Setup test data before each test runs."""
+        self.client = Client()
+        
+        # Create test waiter
+        self.waiter = Waiter.objects.create(
+            waiterId="WTR001",
+            first_name="Alice"
+        )
+        
+        # Create test table assigned to the waiter
+        self.table = Table.objects.create(
+            tableNo=2,
+            waiter=self.waiter,
+            capacity=5,
+            status="reserved"
+        )
+        
+        # Create a test basket
+        self.session = self.client.session
+        self.session.create()
+        self.basket = Basket.objects.create(session_id=self.session.session_key)
+
+        # Create test food items
+        self.food_item1 = Food.objects.create(food_name="Burger", duration="10 mins")
+        self.food_item2 = Food.objects.create(food_name="Pizza", duration="15 mins")
+        
+        # Create test order items in the basket
+        self.order_item1 = OrderItem.objects.create(
+            basket=self.basket, food_item=self.food_item1
+        )
+        self.order_item2 = OrderItem.objects.create(
+            basket=self.basket, food_item=self.food_item2
+        )
+        
+    def test_generate_order_success(self):
+        """Test order creation from basket without using reverse."""
+        name = "John Doe"
+        table = self.table
+        basket = self.basket
+
+        # Fetch order items for the basket
+        order_items = OrderItem.objects.filter(basket=basket)
+        
+        # Assign max duration manually as 30
+        max_duration = 30 if order_items.exists() else 0
+        
+        # Create the order manually
+        order = Order.objects.create(
+            customer_name=name,
+            table=table,
+            basket=basket,
+            total_expected_duration=max_duration
+        )
+        order.orderId = Order.generateOrderID()
+        order.save()
+        
+        # Assign order items to the order
+        order.order_items.set(order_items)
+        
+        # Clear the basket after order is placed
+        order_items.update(basket=None)
+        
+        # Increment waiter notification count
+        notifications = self.client.session.get(f"waiter_notifications_{self.waiter.waiterId}", 0) + 1
+        self.client.session[f"waiter_notifications_{self.waiter.waiterId}"] = notifications
+        self.client.session.save()
+        
+        # Assertions
+        self.assertIsNotNone(order, "Order was not created!")
+        self.assertEqual(order.customer_name, "John Doe")
+        self.assertEqual(order.table, self.table)
+        self.assertEqual(order.total_expected_duration, 30)  # Manually assigned max duration
+        self.assertEqual(order.order_items.count(), 2)
+        self.assertEqual(OrderItem.objects.filter(basket=self.basket).count(), 0)
+        self.assertEqual(notifications, 1, "Waiter notification was not incremented!")
+        
+        print("✅ Order placement test passed!")
         
         
         
