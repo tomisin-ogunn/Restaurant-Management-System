@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from users.models import Manager, Waiter, Customer
-from restaurant.models import Food, Drink, Basket, Order
+from restaurant.models import Food, Drink, Basket, Order, Table
 from django.urls import reverse
 
 # Create your tests here.
@@ -176,8 +176,141 @@ class UserLoginTests(TestCase):
         
         
 #Unit Test Case for Waiter Management ~ Manager
+class WaiterManagementTests(TestCase):
+    
+    def setUp(self):
+        
+        """Set up a manager for login testing."""
+        # Generate a unique manager ID
+        manager_id = Manager.generateManagerID()
+        
+        self.manager = Manager.objects.create(
+            managerId=manager_id,
+            first_name="John",
+            last_name="Doe",
+            password="password123",
+            email="john.doe@example.com"
+        )
+        # Simulate login by setting manager ID in session
+        session = self.client.session
+        session['manager_id'] = self.manager.managerId
+        session.save()
+        
+        # Set up the test waiter data
+        self.waiter_data = {
+            "first-name": "John",
+            "last-name": "Doe",
+            "waiter-email": "john.doe@example.com"
+        }
+        self.table = Table.objects.create(tableNo=1, capacity=5)
 
+    def test_add_waiter_success(self):
+        """Test adding a new waiter successfully."""
+        url = reverse('append-waiter')
+        
+        response = self.client.post(url, self.waiter_data)
+        
+        # Assert that the waiter was successfully added
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Waiter added successfully!")
 
+        # Check if the waiter exists in the database
+        waiter = Waiter.objects.get(email=self.waiter_data["waiter-email"])
+        self.assertEqual(waiter.first_name, "John")
+        self.assertEqual(waiter.last_name, "Doe")
+        self.assertEqual(waiter.email, "john.doe@example.com")
+        
+        if waiter:
+            print("✅ Waiter Addition test passed!")
+
+    def test_assign_waiter_success(self):
+        """Test successfully assigning a waiter to a table."""
+        # Create a waiter to be assigned
+        waiter = Waiter.objects.create(
+            first_name="Jane",
+            last_name="Smith",
+            email="jane.smith@example.com",
+            password="hashed_password"
+        )
+        self.table.waiter = waiter
+        self.table.save()
+
+        url = reverse('assign-waiter')
+        data = {
+            "waiters": waiter.waiterId,
+            "tables": self.table.tableNo
+        }
+
+        response = self.client.post(url, data)
+
+        # Assert that the waiter was successfully assigned
+        self.assertEqual(response.status_code, 200)
+
+        # Verify that the table is assigned to the waiter
+        table = Table.objects.get(tableNo=self.table.tableNo)
+        self.assertEqual(table.waiter, waiter)
+        
+        if table.waiter == waiter:
+            print("✅ Waiter Edit Test Passed!")
+
+    # def test_update_waiter_details_success(self):
+        """Test successfully updating a waiter's details."""
+        # Create a waiter to be updated
+        # waiter = Waiter.objects.create(
+        #     first_name="Sarah",
+        #     last_name="Connor",
+        #     email="sarah.connor@example.com",
+        #     password="hashed_password"
+        # )
+
+        # url = reverse('update-waiter-details')
+        # data = {
+        #     "updWaiterID": waiter.waiterId,
+        #     "updfirst-name": "Sarah",
+        #     "updlast-name": "Connor",
+        #     "waiter-email": "new.email@example.com"
+        # }
+
+        # response = self.client.post(url, data)
+
+        # # Assert that the waiter details were successfully updated
+        # self.assertEqual(response.status_code, 200)
+        # self.assertContains(response, "Waiter details have been successfully updated!")
+
+        # # Verify that the waiter's email was updated
+        # updated_waiter = Waiter.objects.get(waiterId=waiter.waiterId)
+        # self.assertEqual(updated_waiter.email, "new.email@example.com")
+ 
+    def test_update_waiter_details_success(self):
+        """Test successfully updating a waiter's details."""
+        # Create a waiter to be updated
+        waiter = Waiter.objects.create(
+            first_name="Sarah",
+            last_name="Connor",
+            email="sarah.connor@example.com",
+            password="hashed_password"
+        )
+
+        url = reverse('update-waiter-details')
+        data = {
+            "updWaiterID": waiter.waiterId,
+            "updfirst-name": "Sarah",
+            "updlast-name": "Connor",
+            "waiter-email": "new.email@example.com"
+        }
+
+        response = self.client.post(url, data)
+
+        # Assert that the waiter details were successfully updated
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Waiter details have been successfully updated!")
+
+        # Verify that the waiter's email was updated
+        updated_waiter = Waiter.objects.get(waiterId=waiter.waiterId)
+        self.assertEqual(updated_waiter.email, "new.email@example.com")
+        
+        if updated_waiter.email == "new.email@example.com":
+            print("✅ Waiter Details Update Test Passed!")
  
 #Unit Test Case for Menu Management ~ Manager
 class MenuManagementTests(TestCase):
@@ -389,9 +522,10 @@ class MenuManagementTests(TestCase):
  
  
 #Unit Test Case for Table Reservations ~ Manager
-       
+# class TableReservationTests(TestCase):
+    
         
-        
+
         
         
         
