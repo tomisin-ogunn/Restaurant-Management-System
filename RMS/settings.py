@@ -81,6 +81,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'RMS.wsgi.application'
 
+CSRF_TRUSTED_ORIGINS = ['http://testserver']
 
 ASGI_APPLICATION = "RMS.asgi.application"
 

@@ -1,4 +1,4 @@
-<!-- Restaurant Manager Home Page Interface, when logged in -->
+<!-- Restaurant Manager Home Page Interface displaying metrics, when logged in -->
 
 {% extends 'layout.html' %}
 
@@ -112,7 +112,7 @@ Restaurant Manager Home Page
                     data: {
                         labels: {{ dates|safe }}, // Days (YYYY-MM-DD)
                         datasets: [{
-                            label: 'Total Order Sales (£) per Week',
+                            label: 'Total Order Sales (£) per Day',
                             data: {{ sales|safe }}, // Sales data
                             borderColor: 'blue',
                             backgroundColor: 'rgba(54, 162, 235, 0.2)',

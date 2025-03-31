@@ -83,7 +83,7 @@ def displayManagerHome(request):
             #Retrieve all orders for metrics display
             orders = Order.objects.all()
             
-            # Get orders assigned to the zone and filter only "Assigned" ones from the last 7 days
+            # Get orders from the last 7 days
             start_date = now() - timedelta(days=6)  # Last 7 days including today
             orders = Order.objects.filter(placed_at__date__gte=start_date.date())
 
