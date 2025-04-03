@@ -242,6 +242,20 @@
                     }
                 }
             });
+
+            //Checks that all values are filled in the form
+            document.getElementById("EmailAddForm").addEventListener("submit", function(event ){
+                var email = document.getElementById("email").value;
+
+                //check if email field is empty
+                if (!email) {
+                    // Show the alert
+                    alert("Please enter your email address!");
+        
+                    // Prevent the form submission from redirecting or reloading the page
+                    event.preventDefault();
+                }
+            });            
           
             //Function to toggle password toggle Password Visibility
             function togglePasswordVisibility(password, iconId){
