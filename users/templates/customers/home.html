@@ -1188,6 +1188,7 @@
                             title: 'Item added to basket!',
                         }).then((result) => {
                             if (result.isConfirmed) {
+                                //Reload the page and retain the filtered category value
                                 window.location.reload();
                             }
                         });
