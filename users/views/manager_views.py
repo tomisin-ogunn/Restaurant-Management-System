@@ -773,6 +773,10 @@ def fetchItemDetails(request, itemID, itemType):
 def updateFoodItem(request):
     manager_id = request.session.get("manager_id")
     manager = Manager.objects.get(managerId=manager_id)
+    food = Food.objects.all()
+    drinks = Drink.objects.all()
+    unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
+    drink_categories = [choice[0] for choice in Drink._meta.get_field('category').choices]
 
     if request.method == "POST":
         #Retrieve form inputs
@@ -813,6 +817,10 @@ def updateFoodItem(request):
     context = {
         'media_url': settings.MEDIA_URL,
         'manager': manager,
+        "food": food,
+        "drinks": drinks,
+        "categories": unique_categories,
+        "drinkCategories": drink_categories
     }
 
     return render(request, "managers/menu_items.html", context)
@@ -821,6 +829,10 @@ def updateFoodItem(request):
 def updateDrinkItem(request):
     manager_id = request.session.get("manager_id")
     manager = Manager.objects.get(managerId=manager_id)
+    food = Food.objects.all()
+    drinks = Drink.objects.all()
+    unique_categories = [choice[0] for choice in Food._meta.get_field('category').choices]
+    drink_categories = [choice[0] for choice in Drink._meta.get_field('category').choices]
 
     if request.method == "POST":
         #Retrieve form inputs
@@ -859,6 +871,10 @@ def updateDrinkItem(request):
     context = {
         'media_url': settings.MEDIA_URL,
         'manager': manager,
+        "food": food,
+        "drinks": drinks,
+        "categories": unique_categories,
+        "drinkCategories": drink_categories
     }
 
     return render(request, "managers/menu_items.html", context)
