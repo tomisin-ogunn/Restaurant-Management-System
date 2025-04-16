@@ -20,7 +20,7 @@ class Manager(models.Model):
     #Function to hash password and increment manager Id after record has been added manually to Managers table
     def save(self, *args, **kwargs):
         # Hash the password before saving
-        if self.password and not self.password.startswith('pbkdf2_'):  # Avoid rehashing
+        if self.password and not self.password.startswith('pbkdf2_'):
             self.password = self.hashPassword()
 
         # Generate a managerId if not already set
@@ -131,10 +131,10 @@ class Customer(models.Model):
         # Hash the password using Django's built-in utility
         return make_password(self.password)
     
-    #Function to hash password and increment waiter Id after record has been added to Waiters table
+    #Function to increment waiter Id after record has been added to Waiters table
     def save(self, *args, **kwargs):
         # Hash the password before saving
-        if self.password and not self.password.startswith('pbkdf2_'):  # Avoid rehashing
+        if self.password and not self.password.startswith('pbkdf2_'): 
             self.password = self.hashPassword()
 
         # Generate a customerId if not already set
