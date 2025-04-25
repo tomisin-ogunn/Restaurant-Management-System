@@ -170,7 +170,6 @@ RMS/
 Windows: venv\Scripts\activate
 Unix/MacOS: source venv/bin/activate
 ```
-- Install dependencies: pip install -r requirements.txt
 - Apply migrations: python manage.py migrate
 - Create a superuser: python manage.py createsuperuser
 - Run the development server: python manage.py runserver
