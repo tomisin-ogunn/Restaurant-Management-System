@@ -66,8 +66,7 @@ The system implements a multi-tier architecture with:
 **Additional Features**
 
 - User authentication with role-based access control
-- Responsive design for various device sizes
-- Interactive data visualization for analytics
+- Customer feedback and collection and display
 - Real-time communication between interfaces
 
 **File Structure**
@@ -167,9 +166,10 @@ RMS/
 - Create a virtual environment: python -m venv venv
 - Activate the virtual environment:
 
+```
 Windows: venv\Scripts\activate
 Unix/MacOS: source venv/bin/activate
-
+```
 - Install dependencies: pip install -r requirements.txt
 - Apply migrations: python manage.py migrate
 - Create a superuser: python manage.py createsuperuser
