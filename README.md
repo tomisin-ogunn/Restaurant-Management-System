@@ -71,7 +71,6 @@ The system implements a multi-tier architecture with:
 - Real-time communication between interfaces
 
 **File Structure**
-
 RMS/
 │
 ├── media/                      # Media files uploaded by users
