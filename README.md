@@ -71,6 +71,8 @@ The system implements a multi-tier architecture with:
 - Real-time communication between interfaces
 
 **File Structure**
+
+```
 RMS/
 │
 ├── media/                      # Media files uploaded by users
@@ -129,6 +131,7 @@ RMS/
 ├── manage.py                   # Django management script
 └── README.md                   # Project documentationCode Standards and Conventions
 
+```
 
 **Naming Conventions**
 
