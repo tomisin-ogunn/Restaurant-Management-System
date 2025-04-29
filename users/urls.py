@@ -21,7 +21,6 @@ from restaurant.views import kitchen_views
 from users.views import manager_views, waiter_views, customer_views
 from django.conf.urls.static import static
 from django.conf import settings
-import debug_toolbar
 
 
 urlpatterns = [
