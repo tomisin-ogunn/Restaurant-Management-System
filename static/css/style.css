@@ -518,6 +518,10 @@ input[type="radio"]:hover {
     gap:10px;
 }
 
+/* @media {
+    
+} */
+
 /* Waiter Interface Styling */
 .waiter-menu-actions {
     display: flex;
