@@ -525,6 +525,8 @@ input[type="radio"]:hover {
 
 @media only screen and (max-width: 600px) {
 
+    /* Menu Display */
+
     .burger-menu-btn{
         display: block;
         background-size: cover;
@@ -597,6 +599,8 @@ input[type="radio"]:hover {
         gap: 18px;
     }
 
+    /* Category Filter Nav Display */
+
     .category-container{
         width:100%;
         justify-content: flex-start;
@@ -612,6 +616,8 @@ input[type="radio"]:hover {
         white-space: nowrap; /* Prevents wrapping */
     }
 
+    /* Restaurant Products Display */
+
     .menuitem-box{
         min-width: 170px !important; /* Prevents shrinking too much */
         max-width: 200px !important; /* Prevents growing too large */
@@ -623,13 +629,22 @@ input[type="radio"]:hover {
         max-width: 200px !important; /* Prevents growing too large */
     }
 
+    /* Mobile Responsive Sidebar */
     .Cus-sidebar{
         display:none;
     }
 
+    .badge{
+        font-size: 10px !important;
+        min-width: 10px !important;
+    }
+
+    /* Customer Interface Pages Display */
+
     .basket-container{
         width:90vw !important;
         margin-top: -40px !important;
+        height: 45vh !important;
     }
 
     .Customer-Rating-Container{
@@ -638,12 +653,38 @@ input[type="radio"]:hover {
         margin-top: -40px !important;
     }
 
-    .badge{
-        font-size: 10px !important;
-        min-width: 10px !important;
+    /* Item Modal Mobile Responsive Design */
+    #food-image, #drink-image, #food-cus-image, #food-cus-image2, #food-cus-image3, #drink-cus-image{
+        height: 30vh !important;
+    }
+
+    #drink-size-icon{
+        display:none;
+    }
+
+    #basket-item-name{
+        font-size: 14px;
+    }
+
+    #basket-item-img{
+        height: 80px;
+        width: 70px;
+    }
+
+    #view-details-btn, #delete-item-btn{
+        font-size: 11px;
+    }
+
+    #desktop-view-item-btn, #desktop-view-delete-btn{
+        display:none !important;
+    }
+
+    #view-item-btn, #delete-item-btn{
+        display: block !important;
     }
 
 }
+
 
 /* Waiter Interface Styling */
 .waiter-menu-actions {
@@ -665,6 +706,10 @@ input[type="radio"]:hover {
     flex-direction: column; /* Ensures each item appears in a new row */
     gap: 20px; /* Adds space between each item */
     overflow-y:auto;
+}
+
+#view-item-btn, #delete-item-btn{
+    display: none;
 }
 
 .basket-item {
@@ -701,7 +746,7 @@ input[type="radio"]:hover {
     align-items: center;
 }
 
-.basket-item .delete-basket-btn{
+.basket-item .delete-basket-btn, .view-basket-btn{
     padding: 2px;
 }
 
@@ -734,8 +779,6 @@ input[type="radio"]:hover {
     display: inline-flex;
     align-items: center;
 }
-
-
 
 .badge {
     position: absolute;

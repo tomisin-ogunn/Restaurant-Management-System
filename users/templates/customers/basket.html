@@ -124,63 +124,99 @@
                     {% if item.food_item %}
                         <div class="basket-item">
                             <div class="item-name">
-                                <p>{{ item.food_item.food_name }}</p>
+                                <p id="basket-item-name">{{ item.food_item.food_name }}</p>
                             </div>
                             <div class="item-image">
-                                <img style="width:70px; border-radius:5px; height:60px;" src="{{ item.food_item.image.url }}" alt="{{ item.food_item.food_name }}" />
+                                <img id="basket-item-img"style="width:70px; border-radius:5px; height:60px;" src="{{ item.food_item.image.url }}" alt="{{ item.food_item.food_name }}" />
                             </div>
                             <div class="item-price">
                                 <p>{{ item.price }}</p>
                             </div>
 
-                            <div class="delete-basket-btn">
-                                <button onclick="openOrderItemModal({{ item.id }});" class="btn" style="font-weight:bold; background-color: #FFB000; width:100%;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                            <!-- View Item Button -->
+                            <div class="view-basket-btn">
+                                <button id="desktop-view-item-btn" onclick="openOrderItemModal({{ item.id }});" class="btn" style="font-weight:bold; background-color: #FFB000; width:100%;" onmouseover="this.style.backgroundColor='#CC8A00';"
                                 onmouseout="this.style.backgroundColor='#FFB000';">
                                 <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                                     <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
                                     </svg> View Details
                                 </button>
+
+                                <!-- Mobile Responsive Button Design -->
+                                <button id="view-item-btn" onclick="openOrderItemModal({{ item.id }});" class="btn" style="font-weight:bold; background-color: #FFB000; width:100%;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                                onmouseout="this.style.backgroundColor='#FFB000';">
+                                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                    </svg> 
+                                </button>
                             </div>
 
+                            <!-- Delete Item Button -->
                             <div class="delete-basket-btn">
-                                <button style="float:right;" onclick="deleteBasketItem({{ item.id }});" type="button" class="btn btn-danger ms-2">
+                                <button id="desktop-view-delete-btn" style="float:right;" onclick="deleteBasketItem({{ item.id }});" type="button" class="btn btn-danger ms-2">
                                     <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                         <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
                                     </svg>
                                     Delete
+                                </button>
+
+                                <!-- Mobile Responsive Button Design -->
+                                <button id="delete-item-btn" style="float:right;" onclick="deleteBasketItem({{ item.id }});" type="button" class="btn btn-danger ms-2">
+                                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                    </svg>
                                 </button>
                             </div>
                         </div>
                     {% else %}
                         <div class="basket-item">
                             <div class="item-name">
-                                <p>{{ item.drink_item.drink_name }}</p>
+                                <p id="basket-item-name">{{ item.drink_item.drink_name }}</p>
                             </div>
                             <div class="item-image">
-                                <img style="width:70px; border-radius:5px; height:60px;" src="{{ item.drink_item.image.url }}" alt="{{ item.drink_item.drink_name }}" />
+                                <img id="basket-item-img" style="width:70px; border-radius:5px; height:60px;" src="{{ item.drink_item.image.url }}" alt="{{ item.drink_item.drink_name }}" />
                             </div>
                             <div class="item-price">
                                 <p>{{ item.price }}</p>
                             </div>
 
-                            <div class="delete-basket-btn">
-                                <button onclick="openOrderItemModal({{ item.id }});" class="btn" style="font-weight:bold; background-color: #FFB000; width:100%;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                            <div class="view-basket-btn">
+                                <button id="desktop-view-item-btn" onclick="openOrderItemModal({{ item.id }});" class="btn" style="font-weight:bold; background-color: #FFB000; width:100%;" onmouseover="this.style.backgroundColor='#CC8A00';"
                                 onmouseout="this.style.backgroundColor='#FFB000';">
                                 <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
                                     <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                                     <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
                                     </svg> View Details
                                 </button>
+
+                                <!-- Mobile Responsive Button Design -->
+                                <button id="view-item-btn" onclick="openOrderItemModal({{ item.id }});" class="btn" style="font-weight:bold; background-color: #FFB000; width:100%;" onmouseover="this.style.backgroundColor='#CC8A00';"
+                                onmouseout="this.style.backgroundColor='#FFB000';">
+                                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                                    </svg> 
+                                </button>
+
                             </div>
 
                             <div class="delete-basket-btn">
-                                <button style="float:right;" onclick="deleteBasketItem({{ item.id }});" type="button" class="btn btn-danger ms-2">
+                                <button id="desktop-view-delete-btn" style="float:right;" onclick="deleteBasketItem({{ item.id }});" type="button" class="btn btn-danger ms-2">
                                     <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                                         <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
                                     </svg>
                                     Delete
                                 </button>
+
+                                <!-- Mobile Responsive Button Design -->
+                                <button id="delete-item-btn" style="float:right;" onclick="deleteBasketItem({{ item.id }});" type="button" class="btn btn-danger ms-2">
+                                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                                    </svg>
+                                </button>
+
                             </div>
                         </div>
                     
