@@ -572,7 +572,7 @@ input[type="radio"]:hover {
 
     .JJBurger-menu ul li a:hover{
        background-color: #efc292;
-     }
+    }
 
     #customer-register-btn, #customer-login-btn{
         display:none !important;
@@ -581,8 +581,20 @@ input[type="radio"]:hover {
     .restaurant-menu{
         margin-top: -40px !important;
         width:100%;
-        padding-left: 20px !important;
+        padding-left: 10px !important;
         
+    }
+    
+    .restaurant-menu-drinks{
+        padding-left: 10px !important;
+        margin-top: -50px !important;
+    }
+
+    .drink-category-row{
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 18px;
     }
 
     .category-container{
@@ -603,12 +615,33 @@ input[type="radio"]:hover {
     .menuitem-box{
         min-width: 170px !important; /* Prevents shrinking too much */
         max-width: 200px !important; /* Prevents growing too large */
+
+    }
+
+    .drink-menuitem-box{
+        min-width: 170px !important; /* Prevents shrinking too much */
+        max-width: 200px !important; /* Prevents growing too large */
     }
 
     .Cus-sidebar{
         display:none;
     }
 
+    .basket-container{
+        width:90vw !important;
+        margin-top: -40px !important;
+    }
+
+    .Customer-Rating-Container{
+        width: 85vw !important;
+        height: 60vh !important;
+        margin-top: -40px !important;
+    }
+
+    .badge{
+        font-size: 10px !important;
+        min-width: 10px !important;
+    }
 
 }
 
