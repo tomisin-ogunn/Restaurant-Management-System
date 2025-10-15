@@ -669,6 +669,7 @@ input[type="radio"]:hover {
     #basket-item-img{
         height: 80px;
         width: 70px;
+        object-fit: cover;
     }
 
     #view-details-btn, #delete-item-btn{
@@ -683,8 +684,15 @@ input[type="radio"]:hover {
         display: block !important;
     }
 
-}
+    .basket-item{
+        display: flex;
+        align-items: center; /* Vertically aligns the content in the middle */
+        justify-content: space-between; /* Distributes space evenly between columns */
+        flex: 1;
+        padding: 2px;
+    }
 
+}
 
 /* Waiter Interface Styling */
 .waiter-menu-actions {
