@@ -11,6 +11,52 @@
 
     {% block content %}
 
+        <!-- Burger Menu Mobile Version -->
+        <nav class="JJBurger-menu pb-3">
+            <ul>
+                <li>
+                    <svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                    </svg>&nbsp; Welcome {{ customer.first_name }} !
+                </li>
+                <li><a onclick="window.location.href='{% url 'customer-loggedIn-home' %}'"><svg class="mb-1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
+                        <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
+                    </svg>&nbsp;Home</a></li>
+                <li><a onclick="window.location.href='{% url 'customer-favourites' %}'">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                        </svg>
+                    </span>&nbsp;Favourites</a>
+                </li>
+                <li><a onclick="window.location.href='{% url 'customer-basket'%}'">
+                        <span class="icon-container">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                            </svg>
+                            <!-- Badge with order item count -->
+                            {% if order_item_count != 0 %}
+                                <span class="badge">{{ order_item_count }}</span>
+                            {% endif %}<span>&nbsp;Basket</span>
+                        </span>
+                    </a></li>
+                <li><a onclick="window.location.href='{% url 'customer-loggedIn-rating' %}'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-left-text" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+                    </svg>&nbsp;Make review</a></li>
+
+                <li><a onclick="logOutConfirmation()">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0z"/>
+                            <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708z"/>
+                        </svg>
+                    </span>&nbsp;Log Out
+                </a></li>
+            </ul>
+        </nav>
+
         <!-- Webpage Navbar -->
         <div id="navbar-menuItems">
             <nav style="background-color:#300909" class="navbar navbar-expand-lg">
@@ -18,7 +64,7 @@
                     <a class="navbar-brand" href="#">
                         <img src="{{ media_url }}RestaurantLogoDesign-FYP.png" alt="Card Image">
                     </a>
-                    <div class="dropdown" style="float:right; margin-right: 2rem;">
+                    <div id="customer-name-dropdown" class="dropdown" style="float:right; margin-right: 2rem;">
                         <a style="color:white;" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
                             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
@@ -36,6 +82,22 @@
                                 &nbsp;Logout</a></li>
                         </ul>
                     </div>
+
+                    <!-- Mobile Responsiveness User Icon -->
+                    <div onclick="toggleUserIconMenu()" id="mobile-customer-name-dropdown" class="dropdown" style="float:right; margin-right: 2rem;">
+                        <a style="color:white;" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <!-- Icon for when menu closed -->
+                            <svg id="burger-icon" xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                            </svg>
+
+                            <!-- Icon for when menu open -->
+                            <svg hidden id="X-icon" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                        </a>
+                    </div>
+
                 </div>
             </nav>
         </div>
@@ -843,6 +905,28 @@
                         });
                     }
                 });
+            }
+
+            //Function to toggle user icon in mobile view
+            function toggleUserIconMenu(){
+                var hamBurgerMenu = document.getElementsByClassName("JJBurger-menu")[0];
+                var userMenuClosedIcon = document.getElementById("burger-icon");
+                var xIcon = document.getElementById("X-icon");
+
+                //Icon Toggle Logic
+                if(xIcon.hasAttribute("hidden")){
+                    hamBurgerMenu.style.display = "block";
+                    userMenuClosedIcon.setAttribute("hidden", "");
+                    document.getElementById("mobile-customer-name-dropdown").classList.remove("dropdown");
+                    xIcon.removeAttribute("hidden");
+                }
+
+                else{
+                    hamBurgerMenu.style.display = "none";
+                    xIcon.setAttribute("hidden", "");
+                    userMenuClosedIcon.removeAttribute("hidden");
+                    document.getElementById("mobile-customer-name-dropdown").classList.add("dropdown");
+                }
             }
 
         </script>
