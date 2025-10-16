@@ -23,8 +23,8 @@ import re
 
 #Function to display Customer home interface
 def displayCustomerHome(request):
-    if not request.session.session_key:
-        request.session.create()  # Create a new session
+    # if not request.session.session_key:
+        # request.session.create()  # Create a new session
     
     session_id = request.session.session_key
 
