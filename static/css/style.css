@@ -585,7 +585,7 @@ input[type="radio"]:hover {
     }
 
     .navbar-brand img{
-        width: 50%;
+        width: 50% !important;
     }
 
     .restaurant-menu{
