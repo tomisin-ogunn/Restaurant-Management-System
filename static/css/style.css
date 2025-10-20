@@ -527,7 +527,7 @@ input[type="radio"]:hover {
 
 /* Mobile responsiveness styling */
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 600px) and (min-width: 300px){
 
     /* Menu Display */
 
