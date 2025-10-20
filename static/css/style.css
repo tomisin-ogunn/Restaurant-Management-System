@@ -584,6 +584,10 @@ input[type="radio"]:hover {
         display:none !important;
     }
 
+    #restaurant-logo{
+        width: 30vw;
+    }
+
     .restaurant-menu{
         margin-top: -40px !important;
         width:100%;
