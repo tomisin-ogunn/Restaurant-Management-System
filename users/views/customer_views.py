@@ -757,7 +757,11 @@ def removeBasketItem(request, itemID):
 
 #Function which displays customer rating/feedback form
 def displayCustomerRatingForm(request):
+    # Get the session ID or customer email from the session
     session_id = request.session.session_key
+    if not session_id:
+        request.session.create()
+        session_id = request.session.session_key
 
     basket = Basket.objects.get(session_id=session_id)
     order_items = OrderItem.objects.filter(basket=basket)
