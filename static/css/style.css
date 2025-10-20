@@ -712,7 +712,7 @@ input[type="radio"]:hover {
 
 @media only screen and (min-width: 800px){
     .Customer-Rating-Container{
-        height:70vh;
+        height:60vh !important;
     }
     
 }   
