@@ -585,7 +585,7 @@ input[type="radio"]:hover {
     }
 
     .navbar-brand img{
-        width: 50% !important;
+        width: 40% !important;
     }
 
     .restaurant-menu{
@@ -709,6 +709,13 @@ input[type="radio"]:hover {
     }
 
 }
+
+@media only screen and (min-width: 800px){
+    .Customer-Rating-Container{
+        height:70vh;
+    }
+    
+}   
 
 /* Waiter Interface Styling */
 .waiter-menu-actions {
