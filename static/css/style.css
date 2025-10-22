@@ -584,10 +584,6 @@ input[type="radio"]:hover {
         display:none !important;
     }
 
-    .navbar-brand img{
-        width: 40% !important;
-    }
-
     .restaurant-menu{
         margin-top: -40px !important;
         width:100%;
