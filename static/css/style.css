@@ -538,7 +538,7 @@ input[type="radio"]:hover {
         background-color: #FFB000;
         border-radius: 5px;
         cursor: pointer;
-        float:right !important;
+        float:right;
     }
 
     .JJBurger-menu{
