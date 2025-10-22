@@ -532,7 +532,6 @@ input[type="radio"]:hover {
     /* Menu Display */
 
     .burger-menu-btn{
-        /* display: block; */
         display: flex;
         background-size: cover;
         background-repeat: no-repeat;
